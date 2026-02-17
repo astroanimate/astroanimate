@@ -1,0 +1,102 @@
+---
+interface Props {
+  effect?: "fade" | "slide-up";
+  delay?: number;
+  once?: boolean;
+}
+
+const { effect = "fade", delay = 0, once = true } = Astro.props;
+const id = `astro-reveal-${crypto.randomUUID()}`;
+---
+
+<style>
+  /* Base state: Visible by default (Progressive Enhancement) */
+  .astro-reveal {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 600ms ease-out,
+      transform 600ms ease-out;
+  }
+
+  /* Hidden state applied by JS */
+  .astro-reveal[data-reveal="hidden"] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .astro-reveal.astro-reveal--fade[data-reveal="hidden"] {
+    transform: none;
+  }
+
+  /* Visible state applied by JS intersection */
+  .astro-reveal[data-reveal="visible"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Reduced Motion currently forces visibility */
+  @media (prefers-reduced-motion: reduce) {
+    .astro-reveal,
+    .astro-reveal[data-reveal="hidden"],
+    .astro-reveal[data-reveal="visible"] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<div
+  id={id}
+  class={`astro-reveal astro-reveal--${effect}`}
+  style={`transition-delay: ${delay}ms`}
+  data-once={String(once)}
+>
+  <slot />
+</div>
+
+<script>
+  const init = () => {
+    const elements = document.querySelectorAll(
+      ".astro-reveal:not([data-reveal-init])",
+    );
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const target = entry.target as HTMLElement;
+          const once = target.dataset.once === "true";
+
+          if (entry.isIntersecting) {
+            target.setAttribute("data-reveal", "visible");
+            if (once) {
+              observer.unobserve(target);
+            }
+          } else {
+            if (!once) {
+              target.setAttribute("data-reveal", "hidden");
+            }
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+
+    elements.forEach((el) => {
+      el.setAttribute("data-reveal-init", "true");
+
+      const reduceMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      ).matches;
+
+      if (!reduceMotion) {
+        el.setAttribute("data-reveal", "hidden");
+        observer.observe(el);
+      }
+    });
+  };
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

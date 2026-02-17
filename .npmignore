@@ -1,0 +1,6 @@
+# Demo app and tooling stay out of the published package
+my_first_component/
+.git/
+.gitignore
+*.log
+.DS_Store

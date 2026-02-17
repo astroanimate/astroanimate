@@ -1,0 +1,172 @@
+---
+interface Props {
+  /**
+   * Explicit opt-in to JS enhancement (Scroll Reveal).
+   * If false, component renders visible immediately with no animation.
+   * @default false
+   */
+  enhance?: boolean;
+
+  /**
+   * Direction of entrance animation.
+   * @default "none" (just opacity)
+   */
+  direction?: "none" | "up" | "down" | "left" | "right";
+
+  /**
+   * Distance of travel in pixels (if direction is not "none").
+   * @default 20
+   */
+  distance?: number;
+
+  /**
+   * Duration of animation in milliseconds.
+   * @default 500
+   */
+  duration?: number;
+  
+  /**
+   * Delay before animation starts in milliseconds.
+   * @default 0
+   */
+  delay?: number;
+
+  /**
+   * CSS easing function.
+   * @default "ease-out"
+   */
+  easing?: string;
+
+  /**
+   * Whether animation should only play once.
+   * If false, it reverses when scrolling out.
+   * @default true
+   */
+  once?: boolean;
+
+  /**
+   * Initial blur amount (e.g. "10px").
+   * @default "0px"
+   */
+  blur?: string;
+
+  /**
+   * Class name for the root element.
+   */
+  class?: string;
+  
+   /**
+   * As: Element tag
+   * @default "div"
+   */
+   as?: string;
+}
+
+const {
+  enhance = false,
+  direction = "none",
+  distance = 20,
+  duration = 500,
+  delay = 0,
+  easing = "ease-out",
+  once = true,
+  blur = "0px",
+  class: className = "",
+  as: Tag = "div",
+} = Astro.props;
+
+// Calculate transform based on direction
+const getTransform = () => {
+  switch (direction) {
+    case "up": return `translateY(${distance}px)`;
+    case "down": return `translateY(-${distance}px)`;
+    case "left": return `translateX(${distance}px)`;
+    case "right": return `translateX(-${distance}px)`;
+    default: return "none";
+  }
+};
+
+const initialTransform = getTransform();
+---
+
+<style>
+  /* 
+   * 🟢 NO-JS / DEFAULT STATE 
+   * Visible immediately. No transitions.
+   */
+  [data-astro-fade-in] {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 
+   * 🟡 ENHANCER INITIALIZATION 
+   * JS adds [data-ready="true"] to signal it's taking control.
+   * We hide it immediately to prepare for entry.
+   */
+  [data-astro-fade-in][data-ready="true"][data-state="hidden"] {
+    opacity: 0;
+    transform: var(--fade-transform);
+    filter: blur(var(--fade-blur));
+  }
+
+  /* 
+   * 🟢 VISIBLE STATE 
+   * Applied when element enters viewport.
+   */
+  [data-astro-fade-in][data-ready="true"][data-state="visible"] {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+    transition: 
+      opacity var(--fade-duration) var(--fade-easing) var(--fade-delay),
+      transform var(--fade-duration) var(--fade-easing) var(--fade-delay),
+      filter var(--fade-duration) var(--fade-easing) var(--fade-delay);
+  }
+
+  /* 
+   * ♿ REDUCED MOTION 
+   * Force visibility and disable transitions regardless of JS state.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    [data-astro-fade-in] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      filter: none !important;
+    }
+  }
+</style>
+
+<Tag
+  class:list={["astro-fade-in", className]}
+  data-astro-fade-in
+  data-enhance={enhance ? "true" : "false"}
+  data-once={once ? "true" : "false"}
+  style={`
+    --fade-duration: ${duration}ms;
+    --fade-delay: ${delay}ms;
+    --fade-easing: ${easing};
+    --fade-transform: ${initialTransform};
+    --fade-blur: ${blur};
+  `}
+>
+  <slot />
+</Tag>
+
+{enhance && (
+  <script>
+    import { enhanceFadeIn } from "../../enhancers/fadein";
+    
+    const elements = document.querySelectorAll(
+      '[data-astro-fade-in][data-enhance="true"]:not([data-ready])'
+    );
+    
+    elements.forEach((el) => {
+      if (el instanceof HTMLElement) {
+        el.dataset.ready = "true";
+        enhanceFadeIn(el);
+      }
+    });
+  </script>
+)}

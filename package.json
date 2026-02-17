@@ -1,0 +1,36 @@
+{
+  "name": "astroanimate",
+  "version": "0.1.0",
+  "description": "Astro-native animation component library",
+  "type": "module",
+  "author": "Vipin",
+  "exports": {
+    ".": "./src/index.ts",
+    "./components/*": "./src/components/*.astro",
+    "./enhancers/textrotate": "./src/enhancers/textrotate.ts"
+  },
+  "files": [
+    "src"
+  ],
+  "keywords": [
+    "astro",
+    "animation",
+    "components",
+    "astro-component"
+  ],
+  "peerDependencies": {
+    "astro": ">=4.0.0"
+  },
+  "devDependencies": {
+    "astro": "^4.0.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/astroanimate/astroanimate"
+  },
+  "bugs": {
+    "url": "https://github.com/astroanimate/astroanimate/issues"
+  },
+  "license": "MIT"
+}

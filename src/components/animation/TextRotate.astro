@@ -1,0 +1,231 @@
+---
+type Variant = "slideUp" | "slideDown" | "fade";
+type Easing = "smooth" | "snappy" | "gentle";
+
+interface Props {
+  texts: string[];
+
+  /** Explicit opt-in to JS enhancement */
+  enhance?: boolean;
+
+  rotationInterval?: number;
+  transitionDuration?: number;
+  variant?: Variant;
+  easing?: Easing;
+  as?: "span" | "p" | "div";
+  rootClassName?: string;
+  trackClassName?: string;
+  itemClassName?: string;
+  animateWidth?: boolean;
+}
+
+const {
+  texts,
+  enhance = false,
+  rotationInterval = 2000,
+  transitionDuration = 500,
+  variant = "slideUp",
+  easing = "smooth",
+  as: Tag = "span",
+  rootClassName = "",
+  trackClassName = "",
+  itemClassName = "",
+  animateWidth = false
+} = Astro.props;
+
+const count = texts.length;
+
+const easingCurves: Record<Easing, string> = {
+  smooth: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+  snappy: "cubic-bezier(0.32, 0.72, 0, 1)",
+  gentle: "cubic-bezier(0.33, 1, 0.68, 1)",
+};
+const easingValue = easingCurves[easing as Easing];
+---
+<style>
+  /* Root container */
+  [data-astro-text-rotate] {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+  }
+
+  /* Track holds stacked items */
+  .astro-text-rotate__track {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* All items are stacked */
+  .astro-text-rotate__item {
+    position: absolute;
+    inset: 0;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100%);
+  }
+
+  /* 🟢 CSS-only baseline (no JS) */
+  [data-astro-text-rotate]:not([data-current])
+    .astro-text-rotate__item:first-child {
+    position: relative;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  /* 🔴 JS active → hide everything by default */
+  [data-astro-text-rotate][data-current]
+    .astro-text-rotate__item {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  /* 🟣 ENTER state */
+  [data-astro-text-rotate][data-current]
+    .astro-text-rotate__item[data-state="enter"] {
+    position: relative;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+    transition:
+      opacity var(--text-rotate-duration),
+      transform var(--text-rotate-duration);
+  }
+
+  /* 🔵 EXIT state */
+  [data-astro-text-rotate][data-current]
+    .astro-text-rotate__item[data-state="exit"] {
+    opacity: 0;
+    transform: translateY(-120%);
+    transition:
+      opacity var(--text-rotate-duration),
+      transform var(--text-rotate-duration);
+  }
+
+  /* 🍊 Orange slot (pill) */
+.astro-text-rotate__track {
+  background-color: #f26b4f; /* FancyComponents-like orange */
+  color: white;
+  padding: 0.25em 0.6em;
+  border-radius: 0.4em;
+
+  /* Inline pill behavior */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Important for smooth width change */
+  overflow: hidden;
+  transition: width var(--text-rotate-duration, 500ms);
+}
+
+[data-astro-text-rotate][data-current]
+  .astro-text-rotate__item[data-state="enter"] {
+  position: relative;
+}
+/* Default: no width animation */
+.astro-text-rotate__track {
+  transition: none;
+}
+
+/* Opt-in width animation */
+[data-astro-text-rotate][data-animate-width="true"]
+  .astro-text-rotate__track {
+  transition: width var(--text-rotate-duration);
+}
+
+  /* ♿ Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .astro-text-rotate__item {
+      transition: none !important;
+      transform: none !important;
+    }
+    .astro-text-rotate__track {
+      transition: none !important;
+    }
+  }
+</style>
+
+<Tag
+  class:list={["astro-text-rotate", rootClassName]}
+  data-astro-text-rotate
+  data-enhance={enhance ? "true" : "false"}
+  data-variant={variant}
+  data-count={count}
+  data-interval={rotationInterval}
+  data-duration={transitionDuration}
+  data-animate-width={animateWidth ? "true" : "false"}
+  style={`--text-rotate-duration: ${transitionDuration}ms; --text-rotate-easing: ${easingValue};`}
+>
+  <span
+    class={`astro-text-rotate__track ${trackClassName}`.trim()}
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    {texts.map((text: string, i: number) => (
+      <span
+        class={`astro-text-rotate__item ${itemClassName}`.trim()}
+        data-index={i}
+      >
+        {text}
+      </span>
+    ))}
+  </span>
+</Tag>
+
+<!-- 🔑 JS inlined so it runs when component is consumed from node_modules (scripts there are not bundled) -->
+{enhance && (
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var initialized = new WeakMap();
+      function enhanceTextRotate(root) {
+        if (initialized.has(root)) return;
+        var count = Number(root.dataset.count || "0");
+        if (count <= 1) return;
+        var items = root.querySelectorAll(".astro-text-rotate__item[data-index]");
+        if (!items.length) return;
+
+        var current = 0;
+        root.setAttribute("data-current", "0");
+        items[0].setAttribute("data-state", "enter");
+        var intervalMs = Number(root.dataset.interval || "2000");
+        var durationMs = Number(root.dataset.duration || "500");
+
+        var timer = window.setInterval(function () {
+          var next = (current + 1) % count;
+          if (items[current]) items[current].setAttribute("data-state", "exit");
+          if (items[next]) items[next].setAttribute("data-state", "enter");
+          root.setAttribute("data-current", String(next));
+          current = next;
+          setTimeout(function () {
+            for (var i = 0; i < items.length; i++) {
+              if (i === current) items[i].setAttribute("data-state", "enter");
+              else items[i].removeAttribute("data-state");
+            }
+          }, durationMs);
+        }, intervalMs);
+        initialized.set(root, timer);
+
+        var observer = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            clearInterval(timer);
+            observer.disconnect();
+            initialized.delete(root);
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+
+      document
+        .querySelectorAll('[data-astro-text-rotate][data-enhance="true"]')
+        .forEach(function (el) {
+          enhanceTextRotate(el);
+        });
+    })();
+  </script>
+)}
