@@ -1,4 +1,4 @@
-import { canEnhance } from "./shared/guards";
+import { canEnhance } from "./guards";
 
 const initialized = new WeakMap<HTMLElement, IntersectionObserver | CleanupFn>();
 type CleanupFn = () => void;

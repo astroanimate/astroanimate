@@ -1,6 +1,7 @@
-# Demo app and tooling stay out of the published package
-my_first_component/
+# Development and tooling
 .git/
 .gitignore
 *.log
 .DS_Store
+node_modules/
+*.tgz
