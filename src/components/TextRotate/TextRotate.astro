@@ -196,13 +196,14 @@ const easingValue = easingCurves[easing as Easing];
         var intervalMs = Number(root.dataset.interval || "2000");
         var durationMs = Number(root.dataset.duration || "500");
 
+        var cleanupTimer = null;
         var timer = window.setInterval(function () {
           var next = (current + 1) % count;
           if (items[current]) items[current].setAttribute("data-state", "exit");
           if (items[next]) items[next].setAttribute("data-state", "enter");
           root.setAttribute("data-current", String(next));
           current = next;
-          setTimeout(function () {
+          cleanupTimer = setTimeout(function () {
             for (var i = 0; i < items.length; i++) {
               if (i === current) items[i].setAttribute("data-state", "enter");
               else items[i].removeAttribute("data-state");
@@ -214,6 +215,7 @@ const easingValue = easingCurves[easing as Easing];
         var observer = new MutationObserver(function () {
           if (!document.contains(root)) {
             clearInterval(timer);
+            clearTimeout(cleanupTimer);
             observer.disconnect();
             initialized.delete(root);
           }

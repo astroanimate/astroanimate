@@ -1,7 +1,6 @@
 import { canEnhance } from "./guards";
 
-const initialized = new WeakMap<HTMLElement, IntersectionObserver | CleanupFn>();
-type CleanupFn = () => void;
+const initialized = new WeakMap<HTMLElement, IntersectionObserver>();
 
 export function enhanceFadeIn(root: HTMLElement) {
   if (!canEnhance()) return;
