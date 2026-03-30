@@ -1,4 +1,9 @@
 ---
+import {
+  getTextRotateVariantStyles,
+  type TextRotateVariant,
+} from "../../internal/textrotate";
+
 type Variant = "slideUp" | "slideDown" | "fade";
 type Easing = "smooth" | "snappy" | "gentle";
 
@@ -16,7 +21,6 @@ interface Props {
   rootClassName?: string;
   trackClassName?: string;
   itemClassName?: string;
-  animateWidth?: boolean;
 }
 
 const {
@@ -29,9 +33,8 @@ const {
   as: Tag = "span",
   rootClassName = "",
   trackClassName = "",
-  itemClassName = "",
-  animateWidth = false
-} = Astro.props;
+  itemClassName = ""
+} = Astro.props as Props;
 
 const count = texts.length;
 
@@ -41,6 +44,7 @@ const easingCurves: Record<Easing, string> = {
   gentle: "cubic-bezier(0.33, 1, 0.68, 1)",
 };
 const easingValue = easingCurves[easing as Easing];
+const variantStyles = getTextRotateVariantStyles(variant as TextRotateVariant);
 ---
 <style>
   /* Root container */
@@ -63,7 +67,7 @@ const easingValue = easingCurves[easing as Easing];
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transform: translateY(100%);
+    transform: var(--text-rotate-enter-from);
   }
 
   /* 🟢 CSS-only baseline (no JS) */
@@ -79,7 +83,7 @@ const easingValue = easingCurves[easing as Easing];
   [data-astro-text-rotate][data-current]
     .astro-text-rotate__item {
     opacity: 0;
-    transform: translateY(100%);
+    transform: var(--text-rotate-enter-from);
   }
 
   /* 🟣 ENTER state */
@@ -87,55 +91,34 @@ const easingValue = easingCurves[easing as Easing];
     .astro-text-rotate__item[data-state="enter"] {
     position: relative;
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
     pointer-events: auto;
     transition:
-      opacity var(--text-rotate-duration),
-      transform var(--text-rotate-duration);
+      opacity var(--text-rotate-duration) var(--text-rotate-easing),
+      transform var(--text-rotate-duration) var(--text-rotate-easing);
   }
 
   /* 🔵 EXIT state */
   [data-astro-text-rotate][data-current]
     .astro-text-rotate__item[data-state="exit"] {
     opacity: 0;
-    transform: translateY(-120%);
+    transform: var(--text-rotate-exit-to);
     transition:
-      opacity var(--text-rotate-duration),
-      transform var(--text-rotate-duration);
+      opacity var(--text-rotate-duration) var(--text-rotate-easing),
+      transform var(--text-rotate-duration) var(--text-rotate-easing);
   }
 
-  /* 🍊 Orange slot (pill) */
-.astro-text-rotate__track {
-  background-color: #f26b4f; /* FancyComponents-like orange */
-  color: white;
-  padding: 0.25em 0.6em;
-  border-radius: 0.4em;
-
-  /* Inline pill behavior */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  /* Important for smooth width change */
-  overflow: hidden;
-  transition: width var(--text-rotate-duration, 500ms);
-}
-
-[data-astro-text-rotate][data-current]
-  .astro-text-rotate__item[data-state="enter"] {
-  position: relative;
-}
-/* Default: no width animation */
-.astro-text-rotate__track {
-  transition: none;
-}
-
-/* Opt-in width animation */
-[data-astro-text-rotate][data-animate-width="true"]
   .astro-text-rotate__track {
-  transition: width var(--text-rotate-duration);
-}
-
+    background-color: #f26b4f;
+    color: #fff;
+    padding: 0.25em 0.6em;
+    border-radius: 0.4em;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: none;
+  }
   /* ♿ Reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .astro-text-rotate__item {
@@ -156,8 +139,12 @@ const easingValue = easingCurves[easing as Easing];
   data-count={count}
   data-interval={rotationInterval}
   data-duration={transitionDuration}
-  data-animate-width={animateWidth ? "true" : "false"}
-  style={`--text-rotate-duration: ${transitionDuration}ms; --text-rotate-easing: ${easingValue};`}
+  style={`
+    --text-rotate-duration: ${transitionDuration}ms;
+    --text-rotate-easing: ${easingValue};
+    --text-rotate-enter-from: ${variantStyles.enterFrom};
+    --text-rotate-exit-to: ${variantStyles.exitTo};
+  `}
 >
   <span
     class={`astro-text-rotate__track ${trackClassName}`.trim()}
@@ -191,6 +178,7 @@ const easingValue = easingCurves[easing as Easing];
         if (!items.length) return;
 
         var current = 0;
+        root.setAttribute("data-ready", "true");
         root.setAttribute("data-current", "0");
         items[0].setAttribute("data-state", "enter");
         var intervalMs = Number(root.dataset.interval || "2000");
@@ -224,7 +212,7 @@ const easingValue = easingCurves[easing as Easing];
       }
 
       document
-        .querySelectorAll('[data-astro-text-rotate][data-enhance="true"]')
+        .querySelectorAll('[data-astro-text-rotate][data-enhance="true"]:not([data-ready])')
         .forEach(function (el) {
           enhanceTextRotate(el);
         });

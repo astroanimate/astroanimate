@@ -1,0 +1,31 @@
+---
+import FadeIn from "@astroanimate/core/FadeIn";
+import Reveal from "@astroanimate/core/Reveal";
+import TextRotate from "@astroanimate/core/TextRotate";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>astroanimate basic example</title>
+  </head>
+  <body>
+    <main>
+      <h1>
+        <TextRotate
+          texts={["Astro-native", "Progressively enhanced", "Motion-aware"]}
+          enhance
+        />
+      </h1>
+
+      <FadeIn enhance direction="up" distance={24}>
+        <p>FadeIn stays visible without JavaScript and enhances when opted in.</p>
+      </FadeIn>
+
+      <Reveal enhance effect="slide-up" delay={120}>
+        <p>Reveal now follows the same opt-in enhancement pattern.</p>
+      </Reveal>
+    </main>
+  </body>
+</html>

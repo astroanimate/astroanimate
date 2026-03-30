@@ -5,3 +5,17 @@
 .DS_Store
 node_modules/
 *.tgz
+tests/
+examples/
+.github/
+.changeset/
+tsup.config.ts
+vitest.config.ts
+eslint.config.js
+.eslintrc.cjs
+.prettierrc
+tsconfig.json
+CONTRIBUTING.md
+SECURITY.md
+*.spec.ts
+*.test.ts

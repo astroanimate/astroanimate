@@ -1,45 +1,46 @@
 ---
 interface Props {
+  enhance?: boolean;
   effect?: "fade" | "slide-up";
   delay?: number;
   once?: boolean;
+  class?: string;
 }
 
-const { effect = "fade", delay = 0, once = true } = Astro.props;
-const id = `astro-reveal-${crypto.randomUUID()}`;
+const {
+  enhance = false,
+  effect = "fade",
+  delay = 0,
+  once = true,
+  class: className = "",
+} = Astro.props as Props;
 ---
 
 <style>
-  /* Base state: Visible by default (Progressive Enhancement) */
-  .astro-reveal {
+  [data-astro-reveal] {
     opacity: 1;
     transform: none;
     transition:
-      opacity 600ms ease-out,
-      transform 600ms ease-out;
+      opacity 600ms ease-out var(--reveal-delay),
+      transform 600ms ease-out var(--reveal-delay);
   }
 
-  /* Hidden state applied by JS */
-  .astro-reveal[data-reveal="hidden"] {
+  [data-astro-reveal][data-ready="true"][data-state="hidden"] {
     opacity: 0;
     transform: translateY(20px);
   }
 
-  .astro-reveal.astro-reveal--fade[data-reveal="hidden"] {
+  [data-astro-reveal][data-effect="fade"][data-ready="true"][data-state="hidden"] {
     transform: none;
   }
 
-  /* Visible state applied by JS intersection */
-  .astro-reveal[data-reveal="visible"] {
+  [data-astro-reveal][data-ready="true"][data-state="visible"] {
     opacity: 1;
     transform: none;
   }
 
-  /* Reduced Motion currently forces visibility */
   @media (prefers-reduced-motion: reduce) {
-    .astro-reveal,
-    .astro-reveal[data-reveal="hidden"],
-    .astro-reveal[data-reveal="visible"] {
+    [data-astro-reveal] {
       opacity: 1 !important;
       transform: none !important;
       transition: none !important;
@@ -48,55 +49,80 @@ const id = `astro-reveal-${crypto.randomUUID()}`;
 </style>
 
 <div
-  id={id}
-  class={`astro-reveal astro-reveal--${effect}`}
-  style={`transition-delay: ${delay}ms`}
+  class:list={["astro-reveal", className]}
+  data-astro-reveal
+  data-enhance={enhance ? "true" : "false"}
+  data-effect={effect}
   data-once={String(once)}
+  style={`--reveal-delay: ${delay}ms;`}
 >
   <slot />
 </div>
 
-<script>
-  const init = () => {
-    const elements = document.querySelectorAll(
-      ".astro-reveal:not([data-reveal-init])",
-    );
+{enhance && (
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const target = entry.target as HTMLElement;
-          const once = target.dataset.once === "true";
+      var initialized = new WeakMap();
 
-          if (entry.isIntersecting) {
-            target.setAttribute("data-reveal", "visible");
-            if (once) {
-              observer.unobserve(target);
-            }
-          } else {
-            if (!once) {
-              target.setAttribute("data-reveal", "hidden");
-            }
+      function enhanceReveal(root) {
+        if (!(root instanceof HTMLElement)) return;
+        if (initialized.has(root)) return;
+
+        root.dataset.ready = "true";
+        root.dataset.state = "hidden";
+
+        var isOnce = root.dataset.once === "true";
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.target !== root) return;
+
+              if (entry.isIntersecting) {
+                root.dataset.state = "visible";
+
+                if (isOnce) {
+                  observer.unobserve(root);
+                  observer.disconnect();
+                  cleanupObserver.disconnect();
+                  initialized.delete(root);
+                }
+              } else if (!isOnce) {
+                root.dataset.state = "hidden";
+              }
+            });
+          },
+          { threshold: 0.15 }
+        );
+
+        observer.observe(root);
+
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            observer.disconnect();
+            cleanupObserver.disconnect();
+            initialized.delete(root);
           }
         });
-      },
-      { threshold: 0.15 },
-    );
 
-    elements.forEach((el) => {
-      el.setAttribute("data-reveal-init", "true");
+        cleanupObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
 
-      const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-      ).matches;
-
-      if (!reduceMotion) {
-        el.setAttribute("data-reveal", "hidden");
-        observer.observe(el);
+        initialized.set(root, {
+          observer: observer,
+          cleanupObserver: cleanupObserver,
+        });
       }
-    });
-  };
 
-  init();
-  document.addEventListener("astro:page-load", init);
-</script>
+      document
+        .querySelectorAll('[data-astro-reveal][data-enhance="true"]:not([data-ready])')
+        .forEach(function (element) {
+          enhanceReveal(element);
+        });
+    })();
+  </script>
+)}

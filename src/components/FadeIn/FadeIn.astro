@@ -1,4 +1,6 @@
 ---
+type FadeInTag = "article" | "div" | "li" | "p" | "section" | "span";
+
 interface Props {
   /**
    * Explicit opt-in to JS enhancement (Scroll Reveal).
@@ -59,7 +61,7 @@ interface Props {
    * As: Element tag
    * @default "div"
    */
-   as?: string;
+   as?: FadeInTag;
 }
 
 const {
@@ -73,7 +75,7 @@ const {
   blur = "0px",
   class: className = "",
   as: Tag = "div",
-} = Astro.props;
+} = Astro.props as Props;
 
 // Calculate transform based on direction
 const getTransform = () => {
@@ -155,18 +157,69 @@ const initialTransform = getTransform();
 </Tag>
 
 {enhance && (
-  <script>
-    import { enhanceFadeIn } from "../../internal/fadein";
-    
-    const elements = document.querySelectorAll(
-      '[data-astro-fade-in][data-enhance="true"]:not([data-ready])'
-    );
-    
-    elements.forEach((el) => {
-      if (el instanceof HTMLElement) {
-        el.dataset.ready = "true";
-        enhanceFadeIn(el);
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var initialized = new WeakMap();
+
+      function enhanceFadeIn(root) {
+        if (!(root instanceof HTMLElement)) return;
+        if (initialized.has(root)) return;
+
+        root.dataset.ready = "true";
+        root.dataset.state = "hidden";
+
+        var isOnce = root.dataset.once === "true";
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.target !== root) return;
+
+              if (entry.isIntersecting) {
+                root.dataset.state = "visible";
+
+                if (isOnce) {
+                  observer.unobserve(root);
+                  observer.disconnect();
+                  cleanupObserver.disconnect();
+                  initialized.delete(root);
+                }
+              } else if (!isOnce) {
+                root.dataset.state = "hidden";
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px",
+          }
+        );
+
+        observer.observe(root);
+
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            observer.disconnect();
+            cleanupObserver.disconnect();
+            initialized.delete(root);
+          }
+        });
+
+        cleanupObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+
+        initialized.set(root, observer);
       }
-    });
+
+      document
+        .querySelectorAll('[data-astro-fade-in][data-enhance="true"]:not([data-ready])')
+        .forEach(function (element) {
+          enhanceFadeIn(element);
+        });
+    })();
   </script>
 )}

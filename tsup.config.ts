@@ -1,0 +1,24 @@
+import { defineConfig } from "tsup";
+
+export default defineConfig({
+  clean: true,
+  dts: true,
+  entry: {
+    index: "src/index.ts",
+    "components/index": "src/components/index.ts",
+    "components/FadeIn/index": "src/components/FadeIn/index.ts",
+    "components/Reveal/index": "src/components/Reveal/index.ts",
+    "components/TextRotate/index": "src/components/TextRotate/index.ts",
+    "internal/fadein": "src/internal/fadein.ts",
+    "internal/guards": "src/internal/guards.ts",
+    "internal/textrotate": "src/internal/textrotate.ts",
+  },
+  external: ["astro", /\.astro$/],
+  format: ["esm"],
+  outDir: "dist",
+  onSuccess: "node ./scripts/copy-astro-files.mjs",
+  sourcemap: true,
+  splitting: false,
+  target: "es2021",
+  treeshake: true,
+});
