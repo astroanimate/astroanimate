@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **Alert**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **Alert**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -16,6 +16,18 @@ npm install @astroanimate/core
 - `npm run test` runs the unit and contract test suite
 
 ## Usage
+
+### AnimatedButton
+
+CSS-first button effects with no hydration and a visible no-JS baseline.
+
+```astro
+---
+import AnimatedButton from "@astroanimate/core/AnimatedButton";
+---
+
+<AnimatedButton variant="shimmer">Explore</AnimatedButton>
+```
 
 ### Alert
 
@@ -81,6 +93,7 @@ import Reveal from "@astroanimate/core/Reveal";
 
 | Import | Component |
 |--------|-----------|
+| `@astroanimate/core/AnimatedButton` | AnimatedButton.astro |
 | `@astroanimate/core/Alert` | Alert.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |

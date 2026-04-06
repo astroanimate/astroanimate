@@ -1,0 +1,222 @@
+---
+interface Props {
+  variant?: "shimmer" | "fill" | "border" | "none";
+  href?: string;
+  class?: string;
+  shimmerColor?: string;
+  [key: string]: unknown;
+}
+
+const {
+  variant = "none",
+  href,
+  class: className = "",
+  shimmerColor = "rgba(255, 255, 255, 0.4)",
+  ...rest
+} = Astro.props as Props;
+
+const Tag = href ? "a" : "button";
+
+const variantClasses = {
+  shimmer: "button-shimmer",
+  fill: "button-fill",
+  border: "button-border",
+  none: "",
+} as const;
+
+const activeVariantClass = variantClasses[variant] ?? "";
+---
+
+<Tag
+  href={href}
+  class:list={["animated-button", activeVariantClass, className]}
+  data-astro-animated-button
+  data-variant={variant}
+  style={variant === "shimmer" ? `--shimmer-color: ${shimmerColor};` : ""}
+  {...rest}
+>
+  <span class="button-content">
+    <slot />
+  </span>
+
+  {variant === "shimmer" && <span class="shimmer-effect" aria-hidden="true" />}
+  {variant === "fill" && <span class="fill-effect" aria-hidden="true" />}
+  {
+    variant === "border" && (
+      <>
+        <span class="border-line border-line-top" aria-hidden="true" />
+        <span class="border-line border-line-right" aria-hidden="true" />
+        <span class="border-line border-line-bottom" aria-hidden="true" />
+        <span class="border-line border-line-left" aria-hidden="true" />
+      </>
+    )
+  }
+</Tag>
+
+<style>
+  [data-astro-animated-button] {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    background: none;
+    font: inherit;
+    transition: all 0.3s ease;
+    z-index: 0;
+    padding: 1rem;
+    border-radius: 0.5em;
+  }
+
+  .button-content {
+    position: relative;
+    z-index: 10;
+  }
+
+  .button-shimmer {
+    background: #111;
+    color: #fff;
+  }
+
+  .shimmer-effect {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--shimmer-color, rgba(255, 255, 255, 0.4)),
+      transparent
+    );
+    transform: translateX(-100%);
+    pointer-events: none;
+  }
+
+  .button-shimmer:hover .shimmer-effect {
+    animation: shimmer 1.5s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .button-fill {
+    border: 1px solid currentColor;
+    color: #111;
+    background: transparent;
+  }
+
+  .fill-effect {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  .button-fill:hover .fill-effect {
+    transform: scaleX(1);
+  }
+
+  .button-fill:hover .button-content {
+    color: #fff;
+    mix-blend-mode: difference;
+    transition: color 0.4s ease;
+  }
+
+  .button-border {
+    padding: 0.5rem 1rem;
+    color: #fff;
+    background: #111;
+  }
+
+  .border-line {
+    position: absolute;
+    background: #fff;
+    z-index: 5;
+    transition: transform 0.3s ease;
+  }
+
+  .border-line-top {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .border-line-right {
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: top;
+    transition-delay: 0.05s;
+  }
+
+  .border-line-bottom {
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition-delay: 0.1s;
+  }
+
+  .border-line-left {
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition-delay: 0.15s;
+  }
+
+  .button-border:hover .border-line-top {
+    transform: scaleX(1);
+  }
+
+  .button-border:hover .border-line-right {
+    transform: scaleY(1);
+  }
+
+  .button-border:hover .border-line-bottom {
+    transform: scaleX(1);
+  }
+
+  .button-border:hover .border-line-left {
+    transform: scaleY(1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-astro-animated-button],
+    .shimmer-effect,
+    .fill-effect,
+    .border-line,
+    .button-content {
+      transition: none !important;
+      animation: none !important;
+      transform: none !important;
+    }
+
+    .button-fill:hover {
+      background: #111;
+      color: #fff;
+    }
+  }
+</style>

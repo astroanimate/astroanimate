@@ -1,3 +1,4 @@
+export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";
 export { default as Alert } from "./Alert/Alert.astro";
 export { default as FadeIn } from "./FadeIn/FadeIn.astro";
 export { default as Reveal } from "./Reveal/Reveal.astro";

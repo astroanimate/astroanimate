@@ -3,6 +3,7 @@
  * @see https://github.com/astroanimate/astroanimate
  */
 
+export { default as AnimatedButton } from "./components/AnimatedButton/AnimatedButton.astro";
 export { default as Alert } from "./components/Alert/Alert.astro";
 export { default as FadeIn } from "./components/FadeIn/FadeIn.astro";
 export { default as Reveal } from "./components/Reveal/Reveal.astro";

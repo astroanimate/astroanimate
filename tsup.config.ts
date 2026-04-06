@@ -6,6 +6,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     "components/index": "src/components/index.ts",
+    "components/AnimatedButton/index": "src/components/AnimatedButton/index.ts",
     "components/Alert/index": "src/components/Alert/index.ts",
     "components/FadeIn/index": "src/components/FadeIn/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",
