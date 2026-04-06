@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **Alert**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -16,6 +16,20 @@ npm install @astroanimate/core
 - `npm run test` runs the unit and contract test suite
 
 ## Usage
+
+### Alert
+
+Dismissible alert with a visible no-JS baseline and optional JS enhancement.
+
+```astro
+---
+import Alert from "@astroanimate/core/Alert";
+---
+
+<Alert variant="success" dismissible>
+  Profile updated successfully.
+</Alert>
+```
 
 ### TextRotate
 
@@ -67,6 +81,7 @@ import Reveal from "@astroanimate/core/Reveal";
 
 | Import | Component |
 |--------|-----------|
+| `@astroanimate/core/Alert` | Alert.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |
 | `@astroanimate/core/Reveal` | Reveal.astro |
