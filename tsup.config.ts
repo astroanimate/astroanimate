@@ -8,6 +8,7 @@ export default defineConfig({
     "components/index": "src/components/index.ts",
     "components/AnimatedButton/index": "src/components/AnimatedButton/index.ts",
     "components/Alert/index": "src/components/Alert/index.ts",
+    "components/AuraTrail/index": "src/components/AuraTrail/index.ts",
     "components/FadeIn/index": "src/components/FadeIn/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",
     "components/TextRotate/index": "src/components/TextRotate/index.ts",

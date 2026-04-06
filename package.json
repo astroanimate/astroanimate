@@ -23,6 +23,11 @@
       "import": "./dist/components/Alert/index.js",
       "default": "./dist/components/Alert/index.js"
     },
+    "./AuraTrail": {
+      "types": "./dist/components/AuraTrail/index.d.ts",
+      "import": "./dist/components/AuraTrail/index.js",
+      "default": "./dist/components/AuraTrail/index.js"
+    },
     "./FadeIn": {
       "types": "./dist/components/FadeIn/index.d.ts",
       "import": "./dist/components/FadeIn/index.js",

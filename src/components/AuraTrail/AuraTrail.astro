@@ -1,0 +1,124 @@
+---
+type AuraTrailTag = "div" | "p" | "span" | "h1" | "h2" | "h3";
+
+interface Props {
+  text: string;
+  class?: string;
+  mainClassName?: string;
+  as?: AuraTrailTag;
+  fontSize?: string;
+}
+
+const {
+  text,
+  class: className = "",
+  mainClassName = "",
+  as: Tag = "div",
+  fontSize,
+} = Astro.props as Props;
+---
+
+<Tag
+  class:list={["astro-aura-trail", className, mainClassName]}
+  style={fontSize ? `font-size: ${fontSize};` : undefined}
+>
+  <span class="astro-aura-trail__inner">
+    <span class="astro-aura-trail__main">{text}</span>
+    <span class="astro-aura-trail__layer astro-aura-trail__layer--1" aria-hidden="true">{text}</span>
+    <span class="astro-aura-trail__layer astro-aura-trail__layer--2" aria-hidden="true">{text}</span>
+    <span class="astro-aura-trail__layer astro-aura-trail__layer--3" aria-hidden="true">{text}</span>
+  </span>
+</Tag>
+
+<style>
+  [class~="astro-aura-trail"] {
+    display: inline-block;
+    margin: 0;
+    color: #fff;
+    cursor: default;
+    font-family: "JetBrains Mono", monospace;
+    font-weight: 900;
+    letter-spacing: -0.08em;
+    text-shadow: 0 0 24px rgba(94, 234, 212, 0.08);
+  }
+
+  .astro-aura-trail__inner {
+    position: relative;
+    display: inline-block;
+  }
+
+  .astro-aura-trail__main {
+    position: relative;
+    z-index: 1;
+    display: inline-block;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .astro-aura-trail__layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(8px);
+    mix-blend-mode: screen;
+    transition:
+      transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+      opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1),
+      filter 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .astro-aura-trail__layer--1 {
+    color: #5eead4;
+    transition-delay: 0.05s;
+  }
+
+  .astro-aura-trail__layer--2 {
+    color: #f472b6;
+    transition-delay: 0.1s;
+  }
+
+  .astro-aura-trail__layer--3 {
+    color: #6366f1;
+    transition-delay: 0.15s;
+  }
+
+  [class~="astro-aura-trail"]:hover .astro-aura-trail__main,
+  [class~="astro-aura-trail"]:focus-visible .astro-aura-trail__main {
+    transform: translateY(-8px) scale(1.05);
+  }
+
+  [class~="astro-aura-trail"]:hover .astro-aura-trail__layer,
+  [class~="astro-aura-trail"]:focus-visible .astro-aura-trail__layer {
+    opacity: 0.7;
+  }
+
+  [class~="astro-aura-trail"]:hover .astro-aura-trail__layer--1,
+  [class~="astro-aura-trail"]:focus-visible .astro-aura-trail__layer--1 {
+    transform: translateY(-12px) scale(1.1);
+    filter: blur(4px);
+  }
+
+  [class~="astro-aura-trail"]:hover .astro-aura-trail__layer--2,
+  [class~="astro-aura-trail"]:focus-visible .astro-aura-trail__layer--2 {
+    transform: translateY(-20px) scale(1.2);
+    filter: blur(8px);
+  }
+
+  [class~="astro-aura-trail"]:hover .astro-aura-trail__layer--3,
+  [class~="astro-aura-trail"]:focus-visible .astro-aura-trail__layer--3 {
+    transform: translateY(-30px) scale(1.3);
+    filter: blur(12px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .astro-aura-trail__main,
+    .astro-aura-trail__layer {
+      transition: none !important;
+      transform: none !important;
+    }
+
+    .astro-aura-trail__layer {
+      opacity: 0.3;
+    }
+  }
+</style>
