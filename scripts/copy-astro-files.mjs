@@ -5,6 +5,7 @@ const filesToCopy = [
   "src/components/AnimatedButton/AnimatedButton.astro",
   "src/components/Alert/Alert.astro",
   "src/components/AuraTrail/AuraTrail.astro",
+  "src/components/AxisCarousel3D/AxisCarousel3D.astro",
   "src/components/Avatar/Avatar.astro",
   "src/components/AvatarStack/AvatarStack.astro",
   "src/components/AvatarTooltip/AvatarTooltip.astro",

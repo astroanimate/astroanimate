@@ -28,6 +28,11 @@
       "import": "./dist/components/AuraTrail/index.js",
       "default": "./dist/components/AuraTrail/index.js"
     },
+    "./AxisCarousel3D": {
+      "types": "./dist/components/AxisCarousel3D/index.d.ts",
+      "import": "./dist/components/AxisCarousel3D/index.js",
+      "default": "./dist/components/AxisCarousel3D/index.js"
+    },
     "./Avatar": {
       "types": "./dist/components/Avatar/index.d.ts",
       "import": "./dist/components/Avatar/index.js",

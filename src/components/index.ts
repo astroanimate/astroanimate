@@ -1,6 +1,7 @@
 export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";
 export { default as Alert } from "./Alert/Alert.astro";
 export { default as AuraTrail } from "./AuraTrail/AuraTrail.astro";
+export { default as AxisCarousel3D } from "./AxisCarousel3D/AxisCarousel3D.astro";
 export { default as Avatar } from "./Avatar/Avatar.astro";
 export { default as AvatarStack } from "./AvatarStack/AvatarStack.astro";
 export { default as AvatarTooltip } from "./AvatarTooltip/AvatarTooltip.astro";

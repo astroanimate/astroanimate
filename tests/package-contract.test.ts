@@ -18,6 +18,7 @@ describe("package contract", () => {
     const animatedButtonExport = packageJson.exports["./AnimatedButton"];
     const alertExport = packageJson.exports["./Alert"];
     const auraTrailExport = packageJson.exports["./AuraTrail"];
+    const axisCarousel3DExport = packageJson.exports["./AxisCarousel3D"];
     const avatarExport = packageJson.exports["./Avatar"];
     const avatarStackExport = packageJson.exports["./AvatarStack"];
     const avatarTooltipExport = packageJson.exports["./AvatarTooltip"];
@@ -32,6 +33,8 @@ describe("package contract", () => {
     expect(alertExport?.import).toBe("./dist/components/Alert/index.js");
     expect(auraTrailExport).toBeDefined();
     expect(auraTrailExport?.import).toBe("./dist/components/AuraTrail/index.js");
+    expect(axisCarousel3DExport).toBeDefined();
+    expect(axisCarousel3DExport?.import).toBe("./dist/components/AxisCarousel3D/index.js");
     expect(avatarExport).toBeDefined();
     expect(avatarExport?.import).toBe("./dist/components/Avatar/index.js");
     expect(avatarStackExport).toBeDefined();
@@ -54,6 +57,7 @@ describe("package contract", () => {
     const animatedButton = read("src/components/AnimatedButton/AnimatedButton.astro");
     const alert = read("src/components/Alert/Alert.astro");
     const auraTrail = read("src/components/AuraTrail/AuraTrail.astro");
+    const axisCarousel3D = read("src/components/AxisCarousel3D/AxisCarousel3D.astro");
     const avatar = read("src/components/Avatar/Avatar.astro");
     const avatarStack = read("src/components/AvatarStack/AvatarStack.astro");
     const avatarTooltip = read("src/components/AvatarTooltip/AvatarTooltip.astro");
@@ -64,6 +68,7 @@ describe("package contract", () => {
     expect(animatedButton).not.toContain("<script");
     expect(alert).toContain("<script is:inline>");
     expect(auraTrail).not.toContain("<script");
+    expect(axisCarousel3D).toContain("<script is:inline>");
     expect(avatar).not.toContain("<script");
     expect(avatarStack).toContain("<script is:inline>");
     expect(avatarTooltip).not.toContain("<script");
@@ -75,6 +80,7 @@ describe("package contract", () => {
     expect(animatedButton).not.toContain("client:");
     expect(alert).not.toContain("astro:page-load");
     expect(auraTrail).not.toContain("astro:page-load");
+    expect(axisCarousel3D).not.toContain("astro:page-load");
     expect(avatar).not.toContain("astro:page-load");
     expect(avatarStack).not.toContain("astro:page-load");
     expect(avatarTooltip).not.toContain("astro:page-load");
@@ -82,6 +88,7 @@ describe("package contract", () => {
     expect(reveal).not.toContain("astro:page-load");
     expect(alert).not.toContain("client:");
     expect(auraTrail).not.toContain("client:");
+    expect(axisCarousel3D).not.toContain("client:");
     expect(avatar).not.toContain("client:");
     expect(avatarStack).not.toContain("client:");
     expect(avatarTooltip).not.toContain("client:");
@@ -92,6 +99,7 @@ describe("package contract", () => {
     expect(existsSync(resolve(process.cwd(), "dist/components/AnimatedButton/AnimatedButton.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Alert/Alert.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/AuraTrail/AuraTrail.astro"))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), "dist/components/AxisCarousel3D/AxisCarousel3D.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Avatar/Avatar.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/AvatarStack/AvatarStack.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/AvatarTooltip/AvatarTooltip.astro"))).toBe(true);
