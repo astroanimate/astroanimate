@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -73,6 +73,18 @@ import AuraTrail from "@astroanimate/core/AuraTrail";
 <AuraTrail text="AuraTrail" as="h2" fontSize="clamp(2rem, 8vw, 5rem)" />
 ```
 
+### Avatar
+
+CSS-first avatar and avatar-group patterns with a visible no-JS baseline.
+
+```astro
+---
+import Avatar from "@astroanimate/core/Avatar";
+---
+
+<Avatar src="/team/ada.jpg" alt="Ada Lovelace" tooltip="Ada Lovelace" />
+```
+
 ### FadeIn
 
 Scroll-triggered fade-in (opt-in enhancement).
@@ -108,6 +120,7 @@ import Reveal from "@astroanimate/core/Reveal";
 | `@astroanimate/core/AnimatedButton` | AnimatedButton.astro |
 | `@astroanimate/core/Alert` | Alert.astro |
 | `@astroanimate/core/AuraTrail` | AuraTrail.astro |
+| `@astroanimate/core/Avatar` | Avatar.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |
 | `@astroanimate/core/Reveal` | Reveal.astro |

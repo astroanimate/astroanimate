@@ -18,6 +18,7 @@ describe("package contract", () => {
     const animatedButtonExport = packageJson.exports["./AnimatedButton"];
     const alertExport = packageJson.exports["./Alert"];
     const auraTrailExport = packageJson.exports["./AuraTrail"];
+    const avatarExport = packageJson.exports["./Avatar"];
     const fadeInExport = packageJson.exports["./FadeIn"];
 
     expect(packageJson.main).toBe("./dist/index.js");
@@ -29,6 +30,8 @@ describe("package contract", () => {
     expect(alertExport?.import).toBe("./dist/components/Alert/index.js");
     expect(auraTrailExport).toBeDefined();
     expect(auraTrailExport?.import).toBe("./dist/components/AuraTrail/index.js");
+    expect(avatarExport).toBeDefined();
+    expect(avatarExport?.import).toBe("./dist/components/Avatar/index.js");
     expect(fadeInExport).toBeDefined();
     expect(fadeInExport?.import).toBe("./dist/components/FadeIn/index.js");
   });
@@ -45,6 +48,7 @@ describe("package contract", () => {
     const animatedButton = read("src/components/AnimatedButton/AnimatedButton.astro");
     const alert = read("src/components/Alert/Alert.astro");
     const auraTrail = read("src/components/AuraTrail/AuraTrail.astro");
+    const avatar = read("src/components/Avatar/Avatar.astro");
     const fadeIn = read("src/components/FadeIn/FadeIn.astro");
     const reveal = read("src/components/Reveal/Reveal.astro");
     const textRotate = read("src/components/TextRotate/TextRotate.astro");
@@ -52,6 +56,7 @@ describe("package contract", () => {
     expect(animatedButton).not.toContain("<script");
     expect(alert).toContain("<script is:inline>");
     expect(auraTrail).not.toContain("<script");
+    expect(avatar).not.toContain("<script");
     expect(fadeIn).toContain("<script is:inline>");
     expect(reveal).toContain("<script is:inline>");
     expect(textRotate).toContain("<script is:inline>");
@@ -60,10 +65,12 @@ describe("package contract", () => {
     expect(animatedButton).not.toContain("client:");
     expect(alert).not.toContain("astro:page-load");
     expect(auraTrail).not.toContain("astro:page-load");
+    expect(avatar).not.toContain("astro:page-load");
     expect(fadeIn).not.toContain("astro:page-load");
     expect(reveal).not.toContain("astro:page-load");
     expect(alert).not.toContain("client:");
     expect(auraTrail).not.toContain("client:");
+    expect(avatar).not.toContain("client:");
     expect(textRotate).not.toContain("client:");
   });
 
@@ -71,6 +78,7 @@ describe("package contract", () => {
     expect(existsSync(resolve(process.cwd(), "dist/components/AnimatedButton/AnimatedButton.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Alert/Alert.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/AuraTrail/AuraTrail.astro"))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), "dist/components/Avatar/Avatar.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/FadeIn/FadeIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Reveal/Reveal.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/TextRotate/TextRotate.astro"))).toBe(true);
