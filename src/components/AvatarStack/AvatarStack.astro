@@ -1,0 +1,384 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface AvatarStackItem {
+  src: string;
+  name: string;
+}
+
+interface Props extends HTMLAttributes<"div"> {
+  avatars: AvatarStackItem[];
+  size?: number;
+  enhance?: boolean;
+}
+
+const {
+  avatars = [],
+  size = 48,
+  enhance = false,
+  class: className = "",
+  style: styleProp,
+  ...rest
+} = Astro.props as Props;
+
+const tooltipId = `astro-avatar-stack-tooltip-${Math.random().toString(36).slice(2)}`;
+const rootStyles = [
+  `--avatar-stack-size: ${size}px;`,
+  typeof styleProp === "string" ? styleProp : "",
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<style>
+  [data-astro-avatar-stack] {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    padding-top: calc(var(--avatar-stack-size) + 12px);
+    padding-bottom: 20px;
+  }
+
+  .astro-avatar-stack__row {
+    display: flex;
+    align-items: center;
+    margin-left: 0;
+  }
+
+  .astro-avatar-stack__item {
+    position: relative;
+    width: var(--avatar-stack-size);
+    height: var(--avatar-stack-size);
+    margin-left: calc(var(--avatar-stack-size) * -0.35);
+    padding: 0;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    background: #e2e8f0;
+    overflow: hidden;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition:
+      margin 0.3s ease,
+      transform 0.3s ease;
+    will-change: transform;
+  }
+
+  .astro-avatar-stack__item:first-child {
+    margin-left: 0;
+  }
+
+  .astro-avatar-stack__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .astro-avatar-stack__tooltip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(0) translateY(0);
+    transition: opacity 0.2s ease;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  [data-astro-avatar-stack][data-tooltip-visible="true"] .astro-avatar-stack__tooltip {
+    opacity: 1;
+  }
+
+  .astro-avatar-stack__tooltip-content {
+    background: #000;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .astro-avatar-stack__tooltip-arrow {
+    width: 0;
+    height: 0;
+    margin-top: -1px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid #000;
+  }
+
+  [data-astro-avatar-stack]:not([data-ready]) .astro-avatar-stack__item:hover,
+  [data-astro-avatar-stack]:not([data-ready]) .astro-avatar-stack__item:focus-visible {
+    z-index: 20;
+    margin: 0 10px;
+    transform: scale(1.08);
+  }
+
+  .astro-avatar-stack__item:focus-visible {
+    outline: 3px solid #0ea5e9;
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .astro-avatar-stack__item,
+    .astro-avatar-stack__tooltip {
+      transition: none !important;
+      transform: none !important;
+    }
+
+    [data-astro-avatar-stack]:not([data-ready]) .astro-avatar-stack__item:hover,
+    [data-astro-avatar-stack]:not([data-ready]) .astro-avatar-stack__item:focus-visible {
+      margin: 0 0 0 calc(var(--avatar-stack-size) * -0.35);
+      transform: none !important;
+    }
+
+    .astro-avatar-stack__item:first-child {
+      margin-left: 0;
+    }
+  }
+</style>
+
+<div
+  class:list={["astro-avatar-stack", className]}
+  data-astro-avatar-stack
+  data-enhance={enhance ? "true" : "false"}
+  data-tooltip-visible="false"
+  style={rootStyles}
+  {...rest}
+>
+  <div
+    class="astro-avatar-stack__tooltip"
+    id={tooltipId}
+    role="tooltip"
+    aria-hidden="true"
+  >
+    <div class="astro-avatar-stack__tooltip-content">Name</div>
+    <div class="astro-avatar-stack__tooltip-arrow"></div>
+  </div>
+
+  <div class="astro-avatar-stack__row">
+    {avatars.map((avatar) => (
+      <button
+        class="astro-avatar-stack__item"
+        type="button"
+        data-name={avatar.name}
+        aria-label={avatar.name}
+        aria-describedby={tooltipId}
+        title={avatar.name}
+      >
+        <img src={avatar.src} alt={avatar.name} class="astro-avatar-stack__image" />
+      </button>
+    ))}
+  </div>
+</div>
+
+{enhance && (
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var initialized = new WeakMap();
+
+      function enhanceAvatarStack(root) {
+        if (!(root instanceof HTMLElement)) return;
+        if (initialized.has(root)) return;
+
+        var avatars = Array.from(
+          root.querySelectorAll(".astro-avatar-stack__item")
+        );
+        var tooltip = root.querySelector(".astro-avatar-stack__tooltip");
+        var tooltipText = tooltip
+          ? tooltip.querySelector(".astro-avatar-stack__tooltip-content")
+          : null;
+
+        if (!avatars.length || !(tooltip instanceof HTMLElement)) return;
+
+        root.dataset.ready = "true";
+
+        var states = avatars.map(function () {
+          return {
+            scale: 1,
+            targetScale: 1,
+            x: 0,
+            targetX: 0,
+            velocityScale: 0,
+            velocityX: 0,
+          };
+        });
+
+        var stiffness = 0.15;
+        var damping = 0.75;
+        var hoverScale = 1.35;
+        var spreadDistance = 25;
+        var activeIndex = -1;
+        var rafId = 0;
+
+        function setTooltipVisible(visible) {
+          root.dataset.tooltipVisible = visible ? "true" : "false";
+          tooltip.setAttribute("aria-hidden", visible ? "false" : "true");
+        }
+
+        function updateTooltip(activeAvatar) {
+          if (!(activeAvatar instanceof HTMLElement)) return;
+
+          var activeRect = activeAvatar.getBoundingClientRect();
+          var rootRect = root.getBoundingClientRect();
+          var offsetX = activeRect.left - rootRect.left + activeRect.width / 2;
+          tooltip.style.transform =
+            "translateX(" + offsetX + "px) translateY(-10px)";
+        }
+
+        function setActiveIndex(nextIndex) {
+          activeIndex = nextIndex;
+
+          if (activeIndex !== -1) {
+            var activeAvatar = avatars[activeIndex];
+            var name = activeAvatar.dataset.name || "";
+
+            if (tooltipText) {
+              tooltipText.textContent = name;
+            }
+
+            updateTooltip(activeAvatar);
+            setTooltipVisible(true);
+
+            states.forEach(function (state, index) {
+              if (index === activeIndex) {
+                state.targetScale = hoverScale;
+                state.targetX = 0;
+                return;
+              }
+
+              state.targetScale = 1;
+              var direction = index < activeIndex ? -1 : 1;
+              var distanceFromActive = Math.abs(index - activeIndex);
+              state.targetX = direction * spreadDistance * (1 / distanceFromActive);
+            });
+
+            return;
+          }
+
+          setTooltipVisible(false);
+          tooltip.style.transform = "translateX(0) translateY(0)";
+          states.forEach(function (state) {
+            state.targetScale = 1;
+            state.targetX = 0;
+          });
+        }
+
+        function handleMove(event) {
+          var rect = root.getBoundingClientRect();
+          var mouseX = event.clientX - rect.left;
+          var nextIndex = -1;
+          var minimumDistance = Number.POSITIVE_INFINITY;
+
+          avatars.forEach(function (avatar, index) {
+            var avatarRect = avatar.getBoundingClientRect();
+            var avatarCenter =
+              avatarRect.left - rect.left + avatarRect.width / 2;
+            var distance = Math.abs(mouseX - avatarCenter);
+
+            if (distance < avatarRect.width * 0.8 && distance < minimumDistance) {
+              minimumDistance = distance;
+              nextIndex = index;
+            }
+          });
+
+          if (nextIndex !== activeIndex) {
+            setActiveIndex(nextIndex);
+          }
+        }
+
+        function handleLeave() {
+          setActiveIndex(-1);
+        }
+
+        function handleFocusIn(event) {
+          var target = event.target;
+          if (!(target instanceof HTMLElement)) return;
+          var nextIndex = avatars.indexOf(target);
+          if (nextIndex !== -1) {
+            setActiveIndex(nextIndex);
+          }
+        }
+
+        function handleFocusOut() {
+          var activeElement = document.activeElement;
+          if (activeElement instanceof HTMLElement && root.contains(activeElement)) {
+            return;
+          }
+
+          setActiveIndex(-1);
+        }
+
+        function render() {
+          states.forEach(function (state, index) {
+            var scaleForce = (state.targetScale - state.scale) * stiffness;
+            state.velocityScale += scaleForce;
+            state.velocityScale *= damping;
+            state.scale += state.velocityScale;
+
+            var xForce = (state.targetX - state.x) * stiffness;
+            state.velocityX += xForce;
+            state.velocityX *= damping;
+            state.x += state.velocityX;
+
+            var element = avatars[index];
+            element.style.transform =
+              "translateX(" + state.x + "px) scale(" + state.scale + ")";
+            element.style.zIndex = state.targetScale > 1 ? "20" : "10";
+          });
+
+          rafId = window.requestAnimationFrame(render);
+        }
+
+        function destroy() {
+          window.cancelAnimationFrame(rafId);
+          root.removeEventListener("pointermove", handleMove);
+          root.removeEventListener("pointerleave", handleLeave);
+          root.removeEventListener("focusin", handleFocusIn);
+          root.removeEventListener("focusout", handleFocusOut);
+          cleanupObserver.disconnect();
+          initialized.delete(root);
+        }
+
+        root.addEventListener("pointermove", handleMove);
+        root.addEventListener("pointerleave", handleLeave);
+        root.addEventListener("focusin", handleFocusIn);
+        root.addEventListener("focusout", handleFocusOut);
+
+        render();
+        initialized.set(root, true);
+
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            destroy();
+          }
+        });
+
+        cleanupObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+
+      document
+        .querySelectorAll(
+          '[data-astro-avatar-stack][data-enhance="true"]:not([data-ready])'
+        )
+        .forEach(function (element) {
+          enhanceAvatarStack(element);
+        });
+    })();
+  </script>
+)}

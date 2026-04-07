@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -85,6 +85,23 @@ import Avatar from "@astroanimate/core/Avatar";
 <Avatar src="/team/ada.jpg" alt="Ada Lovelace" tooltip="Ada Lovelace" />
 ```
 
+### AvatarStack
+
+```astro
+---
+import AvatarStack from "@astroanimate/core/AvatarStack";
+---
+
+<AvatarStack
+  enhance
+  avatars={[
+    { src: "/team/ada.jpg", name: "Ada Lovelace" },
+    { src: "/team/grace.jpg", name: "Grace Hopper" },
+    { src: "/team/margaret.jpg", name: "Margaret Hamilton" },
+  ]}
+/>
+```
+
 ### FadeIn
 
 Scroll-triggered fade-in (opt-in enhancement).
@@ -121,6 +138,7 @@ import Reveal from "@astroanimate/core/Reveal";
 | `@astroanimate/core/Alert` | Alert.astro |
 | `@astroanimate/core/AuraTrail` | AuraTrail.astro |
 | `@astroanimate/core/Avatar` | Avatar.astro |
+| `@astroanimate/core/AvatarStack` | AvatarStack.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |
 | `@astroanimate/core/Reveal` | Reveal.astro |

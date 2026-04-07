@@ -33,6 +33,11 @@
       "import": "./dist/components/Avatar/index.js",
       "default": "./dist/components/Avatar/index.js"
     },
+    "./AvatarStack": {
+      "types": "./dist/components/AvatarStack/index.d.ts",
+      "import": "./dist/components/AvatarStack/index.js",
+      "default": "./dist/components/AvatarStack/index.js"
+    },
     "./FadeIn": {
       "types": "./dist/components/FadeIn/index.d.ts",
       "import": "./dist/components/FadeIn/index.js",
