@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **Badge**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -120,6 +120,20 @@ import AvatarTooltip from "@astroanimate/core/AvatarTooltip";
 />
 ```
 
+### Badge
+
+CSS-first badge styles with an always-visible no-JS baseline.
+
+```astro
+---
+import Badge from "@astroanimate/core/Badge";
+---
+
+<Badge variant="glow" color="success" animation="shine">
+  New
+</Badge>
+```
+
 ### FadeIn
 
 Scroll-triggered fade-in (opt-in enhancement).
@@ -158,6 +172,7 @@ import Reveal from "@astroanimate/core/Reveal";
 | `@astroanimate/core/Avatar` | Avatar.astro |
 | `@astroanimate/core/AvatarStack` | AvatarStack.astro |
 | `@astroanimate/core/AvatarTooltip` | AvatarTooltip.astro |
+| `@astroanimate/core/Badge` | Badge.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |
 | `@astroanimate/core/Reveal` | Reveal.astro |

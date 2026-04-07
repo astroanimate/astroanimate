@@ -10,6 +10,7 @@ export { default as AxisCarousel3D } from "./components/AxisCarousel3D/AxisCarou
 export { default as Avatar } from "./components/Avatar/Avatar.astro";
 export { default as AvatarStack } from "./components/AvatarStack/AvatarStack.astro";
 export { default as AvatarTooltip } from "./components/AvatarTooltip/AvatarTooltip.astro";
+export { default as Badge } from "./components/Badge/Badge.astro";
 export { default as FadeIn } from "./components/FadeIn/FadeIn.astro";
 export { default as Reveal } from "./components/Reveal/Reveal.astro";
 export { default as TextRotate } from "./components/TextRotate/TextRotate.astro";

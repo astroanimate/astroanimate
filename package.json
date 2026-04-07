@@ -48,6 +48,11 @@
       "import": "./dist/components/AvatarTooltip/index.js",
       "default": "./dist/components/AvatarTooltip/index.js"
     },
+    "./Badge": {
+      "types": "./dist/components/Badge/index.d.ts",
+      "import": "./dist/components/Badge/index.js",
+      "default": "./dist/components/Badge/index.js"
+    },
     "./FadeIn": {
       "types": "./dist/components/FadeIn/index.d.ts",
       "import": "./dist/components/FadeIn/index.js",

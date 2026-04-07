@@ -13,6 +13,7 @@ export default defineConfig({
     "components/Avatar/index": "src/components/Avatar/index.ts",
     "components/AvatarStack/index": "src/components/AvatarStack/index.ts",
     "components/AvatarTooltip/index": "src/components/AvatarTooltip/index.ts",
+    "components/Badge/index": "src/components/Badge/index.ts",
     "components/FadeIn/index": "src/components/FadeIn/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",
     "components/TextRotate/index": "src/components/TextRotate/index.ts",
