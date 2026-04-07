@@ -1,0 +1,65 @@
+---
+interface Props {
+  text: string;
+  duration?: number;
+  delay?: number;
+  class?: string;
+  mainClassName?: string;
+}
+
+const {
+  text,
+  duration = 1.2,
+  delay = 0,
+  class: className = "",
+  mainClassName = "",
+} = Astro.props as Props;
+---
+
+<div
+  class:list={["astro-blur-fade-in", className || mainClassName]}
+  data-astro-blur-fade-in
+  style={`--blur-fade-duration: ${duration}s; --blur-fade-delay: ${delay}s;`}
+>
+  {text}
+</div>
+
+<style>
+  [data-astro-blur-fade-in] {
+    display: inline-block;
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    [data-astro-blur-fade-in] {
+      animation: astro-blur-fade-in var(--blur-fade-duration)
+        cubic-bezier(0.2, 0, 0.2, 1) both;
+      animation-delay: var(--blur-fade-delay);
+    }
+  }
+
+  @keyframes astro-blur-fade-in {
+    from {
+      opacity: 0;
+      filter: blur(12px);
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-astro-blur-fade-in] {
+      animation: none !important;
+      opacity: 1 !important;
+      filter: none !important;
+      transform: none !important;
+    }
+  }
+</style>

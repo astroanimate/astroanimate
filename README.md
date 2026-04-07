@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **Badge**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **Badge**, **BlurFadeIn**, **TextRotate**, **FadeIn**, and **Reveal**.
 
 ## Install
 
@@ -134,6 +134,18 @@ import Badge from "@astroanimate/core/Badge";
 </Badge>
 ```
 
+### BlurFadeIn
+
+CSS-only blur-and-rise text entry with an always-visible no-JS baseline.
+
+```astro
+---
+import BlurFadeIn from "@astroanimate/core/BlurFadeIn";
+---
+
+<BlurFadeIn text="Hello from AstroAnimate" duration={1.2} delay={0.1} />
+```
+
 ### FadeIn
 
 Scroll-triggered fade-in (opt-in enhancement).
@@ -173,6 +185,7 @@ import Reveal from "@astroanimate/core/Reveal";
 | `@astroanimate/core/AvatarStack` | AvatarStack.astro |
 | `@astroanimate/core/AvatarTooltip` | AvatarTooltip.astro |
 | `@astroanimate/core/Badge` | Badge.astro |
+| `@astroanimate/core/BlurFadeIn` | BlurFadeIn.astro |
 | `@astroanimate/core/TextRotate` | TextRotate.astro |
 | `@astroanimate/core/FadeIn` | FadeIn.astro |
 | `@astroanimate/core/Reveal` | Reveal.astro |

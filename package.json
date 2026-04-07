@@ -53,6 +53,11 @@
       "import": "./dist/components/Badge/index.js",
       "default": "./dist/components/Badge/index.js"
     },
+    "./BlurFadeIn": {
+      "types": "./dist/components/BlurFadeIn/index.d.ts",
+      "import": "./dist/components/BlurFadeIn/index.js",
+      "default": "./dist/components/BlurFadeIn/index.js"
+    },
     "./FadeIn": {
       "types": "./dist/components/FadeIn/index.d.ts",
       "import": "./dist/components/FadeIn/index.js",
