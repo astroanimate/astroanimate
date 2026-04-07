@@ -1,0 +1,216 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface AvatarTooltipItem {
+  src: string;
+  name: string;
+  role: string;
+  alt?: string;
+}
+
+interface Props extends HTMLAttributes<"div"> {
+  avatars?: AvatarTooltipItem[];
+  size?: number | string;
+}
+
+const {
+  avatars = [
+    {
+      src: "https://images.unsplash.com/photo-1599566150163-29194dcaad36?w=200",
+      name: "John Doe",
+      role: "Software Engineer",
+      alt: "John Doe avatar",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=200",
+      name: "Robert Johnson",
+      role: "Product Manager",
+      alt: "Robert Johnson avatar",
+    },
+    {
+      src: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200",
+      name: "Emily Davis",
+      role: "UX Designer",
+      alt: "Emily Davis avatar",
+    },
+  ],
+  size = 56,
+  class: className = "",
+  style: styleProp,
+  ...rest
+} = Astro.props as Props;
+
+const instanceId = `astro-avatar-tooltip-${Math.random().toString(36).slice(2)}`;
+const rootStyles = [
+  `--avatar-tooltip-size: ${typeof size === "number" ? `${size}px` : size};`,
+  typeof styleProp === "string" ? styleProp : "",
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<div
+  class:list={["astro-avatar-tooltip", className]}
+  data-astro-avatar-tooltip
+  style={rootStyles}
+  {...rest}
+>
+  {avatars.map((avatar, index) => {
+    const tooltipId = `${instanceId}-${index}`;
+
+    return (
+      <button
+        class="astro-avatar-tooltip__item"
+        type="button"
+        aria-describedby={tooltipId}
+        aria-label={`${avatar.name}, ${avatar.role}`}
+        title={`${avatar.name} - ${avatar.role}`}
+      >
+        <span class="astro-avatar-tooltip__bubble" id={tooltipId} role="tooltip">
+          <span class="astro-avatar-tooltip__name">{avatar.name}</span>
+          <span class="astro-avatar-tooltip__role">{avatar.role}</span>
+        </span>
+
+        <img
+          class="astro-avatar-tooltip__image"
+          src={avatar.src}
+          alt={avatar.alt || `${avatar.name} avatar`}
+          loading="lazy"
+        />
+      </button>
+    );
+  })}
+</div>
+
+<style>
+  [data-astro-avatar-tooltip] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 20px 24px;
+    isolation: isolate;
+  }
+
+  .astro-avatar-tooltip__item {
+    position: relative;
+    margin: 0;
+    margin-left: calc(var(--avatar-tooltip-size) * -0.27);
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    appearance: none;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+
+  .astro-avatar-tooltip__item:first-child {
+    margin-left: 0;
+  }
+
+  .astro-avatar-tooltip__item:hover,
+  .astro-avatar-tooltip__item:focus-visible {
+    z-index: 20;
+  }
+
+  .astro-avatar-tooltip__item:focus-visible {
+    outline: 3px solid #0ea5e9;
+    outline-offset: 4px;
+  }
+
+  .astro-avatar-tooltip__bubble {
+    position: absolute;
+    top: calc(var(--avatar-tooltip-size) * -1.35);
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    min-width: max-content;
+    padding: 10px 18px;
+    border: 1px solid #333;
+    border-radius: 10px;
+    background: #000;
+    color: #fff;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(15px) rotate(-8deg);
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      visibility 0.3s ease;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+    z-index: 30;
+  }
+
+  .astro-avatar-tooltip__bubble::after {
+    content: "";
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    border-right: 1px solid #333;
+    border-bottom: 1px solid #333;
+    background: #000;
+    transform: translateX(-50%) rotate(45deg);
+  }
+
+  .astro-avatar-tooltip__name {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .astro-avatar-tooltip__role {
+    display: block;
+    font-size: 11px;
+    color: #a1a1aa;
+    text-align: center;
+  }
+
+  .astro-avatar-tooltip__image {
+    display: block;
+    width: var(--avatar-tooltip-size);
+    height: var(--avatar-tooltip-size);
+    border: 2px solid #fff;
+    border-radius: 999px;
+    object-fit: cover;
+    background: #d4d4d8;
+    transition: transform 0.3s ease;
+  }
+
+  .astro-avatar-tooltip__item:hover .astro-avatar-tooltip__bubble,
+  .astro-avatar-tooltip__item:focus-visible .astro-avatar-tooltip__bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0) rotate(-5deg);
+  }
+
+  .astro-avatar-tooltip__item:hover .astro-avatar-tooltip__image,
+  .astro-avatar-tooltip__item:focus-visible .astro-avatar-tooltip__image {
+    transform: scale(1.1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .astro-avatar-tooltip__item,
+    .astro-avatar-tooltip__bubble,
+    .astro-avatar-tooltip__image {
+      transition: none !important;
+    }
+
+    .astro-avatar-tooltip__item:hover .astro-avatar-tooltip__bubble,
+    .astro-avatar-tooltip__item:focus-visible .astro-avatar-tooltip__bubble {
+      transform: translateX(-50%);
+    }
+
+    .astro-avatar-tooltip__item:hover .astro-avatar-tooltip__image,
+    .astro-avatar-tooltip__item:focus-visible .astro-avatar-tooltip__image {
+      transform: none;
+    }
+  }
+</style>

@@ -38,6 +38,11 @@
       "import": "./dist/components/AvatarStack/index.js",
       "default": "./dist/components/AvatarStack/index.js"
     },
+    "./AvatarTooltip": {
+      "types": "./dist/components/AvatarTooltip/index.d.ts",
+      "import": "./dist/components/AvatarTooltip/index.js",
+      "default": "./dist/components/AvatarTooltip/index.js"
+    },
     "./FadeIn": {
       "types": "./dist/components/FadeIn/index.d.ts",
       "import": "./dist/components/FadeIn/index.js",
