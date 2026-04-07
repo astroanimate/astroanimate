@@ -23,6 +23,7 @@ describe("package contract", () => {
     const avatarStackExport = packageJson.exports["./AvatarStack"];
     const avatarTooltipExport = packageJson.exports["./AvatarTooltip"];
     const badgeExport = packageJson.exports["./Badge"];
+    const breathingTextExport = packageJson.exports["./BreathingText"];
     const blurFadeInExport = packageJson.exports["./BlurFadeIn"];
     const fadeInExport = packageJson.exports["./FadeIn"];
 
@@ -45,6 +46,8 @@ describe("package contract", () => {
     expect(avatarTooltipExport?.import).toBe("./dist/components/AvatarTooltip/index.js");
     expect(badgeExport).toBeDefined();
     expect(badgeExport?.import).toBe("./dist/components/Badge/index.js");
+    expect(breathingTextExport).toBeDefined();
+    expect(breathingTextExport?.import).toBe("./dist/components/BreathingText/index.js");
     expect(blurFadeInExport).toBeDefined();
     expect(blurFadeInExport?.import).toBe("./dist/components/BlurFadeIn/index.js");
     expect(fadeInExport).toBeDefined();
@@ -68,6 +71,7 @@ describe("package contract", () => {
     const avatarStack = read("src/components/AvatarStack/AvatarStack.astro");
     const avatarTooltip = read("src/components/AvatarTooltip/AvatarTooltip.astro");
     const badge = read("src/components/Badge/Badge.astro");
+    const breathingText = read("src/components/BreathingText/BreathingText.astro");
     const blurFadeIn = read("src/components/BlurFadeIn/BlurFadeIn.astro");
     const fadeIn = read("src/components/FadeIn/FadeIn.astro");
     const reveal = read("src/components/Reveal/Reveal.astro");
@@ -81,6 +85,7 @@ describe("package contract", () => {
     expect(avatarStack).toContain("<script is:inline>");
     expect(avatarTooltip).not.toContain("<script");
     expect(badge).not.toContain("<script");
+    expect(breathingText).not.toContain("<script");
     expect(blurFadeIn).not.toContain("<script");
     expect(fadeIn).toContain("<script is:inline>");
     expect(reveal).toContain("<script is:inline>");
@@ -95,6 +100,7 @@ describe("package contract", () => {
     expect(avatarStack).not.toContain("astro:page-load");
     expect(avatarTooltip).not.toContain("astro:page-load");
     expect(badge).not.toContain("astro:page-load");
+    expect(breathingText).not.toContain("astro:page-load");
     expect(blurFadeIn).not.toContain("astro:page-load");
     expect(fadeIn).not.toContain("astro:page-load");
     expect(reveal).not.toContain("astro:page-load");
@@ -105,6 +111,7 @@ describe("package contract", () => {
     expect(avatarStack).not.toContain("client:");
     expect(avatarTooltip).not.toContain("client:");
     expect(badge).not.toContain("client:");
+    expect(breathingText).not.toContain("client:");
     expect(blurFadeIn).not.toContain("client:");
     expect(textRotate).not.toContain("client:");
   });
@@ -118,6 +125,7 @@ describe("package contract", () => {
     expect(existsSync(resolve(process.cwd(), "dist/components/AvatarStack/AvatarStack.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/AvatarTooltip/AvatarTooltip.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Badge/Badge.astro"))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), "dist/components/BreathingText/BreathingText.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/BlurFadeIn/BlurFadeIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/FadeIn/FadeIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Reveal/Reveal.astro"))).toBe(true);

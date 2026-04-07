@@ -6,6 +6,7 @@ export { default as Avatar } from "./Avatar/Avatar.astro";
 export { default as AvatarStack } from "./AvatarStack/AvatarStack.astro";
 export { default as AvatarTooltip } from "./AvatarTooltip/AvatarTooltip.astro";
 export { default as Badge } from "./Badge/Badge.astro";
+export { default as BreathingText } from "./BreathingText/BreathingText.astro";
 export { default as BlurFadeIn } from "./BlurFadeIn/BlurFadeIn.astro";
 export { default as FadeIn } from "./FadeIn/FadeIn.astro";
 export { default as Reveal } from "./Reveal/Reveal.astro";

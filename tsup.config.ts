@@ -14,6 +14,7 @@ export default defineConfig({
     "components/AvatarStack/index": "src/components/AvatarStack/index.ts",
     "components/AvatarTooltip/index": "src/components/AvatarTooltip/index.ts",
     "components/Badge/index": "src/components/Badge/index.ts",
+    "components/BreathingText/index": "src/components/BreathingText/index.ts",
     "components/BlurFadeIn/index": "src/components/BlurFadeIn/index.ts",
     "components/FadeIn/index": "src/components/FadeIn/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",

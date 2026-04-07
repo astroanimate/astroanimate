@@ -10,6 +10,7 @@ const filesToCopy = [
   "src/components/AvatarStack/AvatarStack.astro",
   "src/components/AvatarTooltip/AvatarTooltip.astro",
   "src/components/Badge/Badge.astro",
+  "src/components/BreathingText/BreathingText.astro",
   "src/components/BlurFadeIn/BlurFadeIn.astro",
   "src/components/FadeIn/FadeIn.astro",
   "src/components/Reveal/Reveal.astro",

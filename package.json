@@ -53,6 +53,11 @@
       "import": "./dist/components/Badge/index.js",
       "default": "./dist/components/Badge/index.js"
     },
+    "./BreathingText": {
+      "types": "./dist/components/BreathingText/index.d.ts",
+      "import": "./dist/components/BreathingText/index.js",
+      "default": "./dist/components/BreathingText/index.js"
+    },
     "./BlurFadeIn": {
       "types": "./dist/components/BlurFadeIn/index.d.ts",
       "import": "./dist/components/BlurFadeIn/index.js",
