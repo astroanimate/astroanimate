@@ -1,0 +1,273 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type SlideInTag =
+  | "div"
+  | "section"
+  | "article"
+  | "aside"
+  | "main"
+  | "header"
+  | "footer"
+  | "nav"
+  | "span"
+  | "p"
+  | "h1"
+  | "h2"
+  | "h3"
+  | "h4"
+  | "h5"
+  | "h6"
+  | "li"
+  | "ul"
+  | "ol"
+  | "a"
+  | "button";
+
+interface Props extends HTMLAttributes<"div"> {
+  enhance?: boolean;
+  direction?: "up" | "down" | "left" | "right";
+  distance?: number;
+  duration?: number;
+  delay?: number;
+  easing?: string;
+  once?: boolean;
+  class?: string;
+  style?: string;
+  as?: SlideInTag;
+  threshold?: number;
+  rootMargin?: string;
+  margin?: string;
+}
+
+const {
+  enhance = false,
+  direction = "up",
+  distance = 30,
+  duration = 700,
+  delay = 0,
+  easing = "cubic-bezier(0.2, 0.8, 0.2, 1)",
+  once = true,
+  class: className = "",
+  style: styleProp,
+  as: Tag = "div",
+  threshold = 0.1,
+  rootMargin,
+  margin = "0px 0px -10% 0px",
+  ...rest
+} = Astro.props as Props;
+
+const clamp = (value: number, min: number, max: number) =>
+  Math.min(Math.max(value, min), max);
+
+const safeDistance = Number.isFinite(distance) ? Math.max(0, distance) : 30;
+const safeDuration = Number.isFinite(duration) ? Math.max(0, duration) : 700;
+const safeDelay = Number.isFinite(delay) ? Math.max(0, delay) : 0;
+const safeThreshold = Number.isFinite(threshold) ? clamp(threshold, 0, 1) : 0.1;
+const safeRootMargin = (rootMargin ?? margin).trim() || "0px 0px -10% 0px";
+
+const getTransform = () => {
+  switch (direction) {
+    case "up":
+      return `translateY(${safeDistance}px)`;
+    case "down":
+      return `translateY(-${safeDistance}px)`;
+    case "left":
+      return `translateX(${safeDistance}px)`;
+    case "right":
+      return `translateX(-${safeDistance}px)`;
+    default:
+      return "none";
+  }
+};
+
+const initialTransform = getTransform();
+const mergedStyles = [
+  `--slide-duration: ${safeDuration}ms;`,
+  `--slide-delay: ${safeDelay}ms;`,
+  `--slide-easing: ${easing};`,
+  `--slide-transform: ${initialTransform};`,
+  typeof styleProp === "string" ? styleProp : "",
+]
+  .filter(Boolean)
+  .join(" ");
+---
+
+<style>
+  [data-astro-slide-in] {
+    opacity: 1;
+    transform: none;
+  }
+
+  [data-astro-slide-in][data-ready="true"] {
+    transition:
+      opacity var(--slide-duration) var(--slide-easing) var(--slide-delay),
+      transform var(--slide-duration) var(--slide-easing) var(--slide-delay);
+    will-change: opacity, transform;
+  }
+
+  [data-astro-slide-in][data-ready="true"][data-state="hidden"] {
+    opacity: 0;
+    transform: var(--slide-transform);
+  }
+
+  [data-astro-slide-in][data-ready="true"][data-state="visible"] {
+    opacity: 1;
+    transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-astro-slide-in] {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<Tag
+  class:list={["astro-slide-in", className]}
+  data-astro-slide-in
+  data-enhance={enhance ? "true" : "false"}
+  data-once={once ? "true" : "false"}
+  data-threshold={String(safeThreshold)}
+  data-root-margin={safeRootMargin}
+  style={mergedStyles}
+  {...rest}
+>
+  <slot />
+</Tag>
+
+{enhance && (
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var initialized = new WeakMap();
+      var selector = '[data-astro-slide-in][data-enhance="true"]:not([data-ready])';
+      var bootstrapObserver = null;
+      var managedRoots = 0;
+
+      function parseThreshold(value) {
+        var parsed = Number(value);
+        if (!Number.isFinite(parsed)) return 0.1;
+        return Math.min(Math.max(parsed, 0), 1);
+      }
+
+      function emitSlideInEvent(root, state) {
+        root.dispatchEvent(
+          new CustomEvent("astro:slidein:" + state, {
+            bubbles: true,
+            detail: {
+              once: root.dataset.once === "true",
+              enhance: root.dataset.enhance === "true",
+            },
+          })
+        );
+      }
+
+      function maybeDisconnectBootstrapObserver() {
+        if (managedRoots > 0 || !bootstrapObserver) return;
+        bootstrapObserver.disconnect();
+        bootstrapObserver = null;
+      }
+
+      function cleanupRoot(root, observer, cleanupObserver) {
+        observer.disconnect();
+        cleanupObserver.disconnect();
+        initialized.delete(root);
+        managedRoots = Math.max(0, managedRoots - 1);
+        maybeDisconnectBootstrapObserver();
+      }
+
+      function enhanceSlideIn(root) {
+        if (!(root instanceof HTMLElement)) return;
+        if (initialized.has(root)) return;
+
+        root.dataset.state = "hidden";
+        managedRoots += 1;
+        emitSlideInEvent(root, "init");
+
+        var isOnce = root.dataset.once === "true";
+        var threshold = parseThreshold(root.dataset.threshold);
+        var rootMargin = (root.dataset.rootMargin || "").trim() || "0px 0px -10% 0px";
+        var isCleanedUp = false;
+
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.target !== root) return;
+
+              if (entry.isIntersecting) {
+                root.dataset.state = "visible";
+                emitSlideInEvent(root, "visible");
+                if (isOnce) {
+                  cleanup();
+                }
+              } else if (!isOnce) {
+                root.dataset.state = "hidden";
+                emitSlideInEvent(root, "hidden");
+              }
+            });
+          },
+          {
+            threshold: threshold,
+            rootMargin: rootMargin,
+          }
+        );
+
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) cleanup();
+        });
+
+        function cleanup() {
+          if (isCleanedUp) return;
+          isCleanedUp = true;
+          cleanupRoot(root, observer, cleanupObserver);
+        }
+
+        observer.observe(root);
+        cleanupObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+
+        initialized.set(root, cleanup);
+      }
+
+      function initElement(element) {
+        if (!(element instanceof HTMLElement)) return;
+        if (element.dataset.ready === "true") return;
+        element.dataset.ready = "true";
+        enhanceSlideIn(element);
+      }
+
+      function initSlideIns(root) {
+        root.querySelectorAll(selector).forEach(initElement);
+      }
+
+      function ensureBootstrapObserver() {
+        if (bootstrapObserver || typeof document === "undefined") return;
+
+        bootstrapObserver = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+              if (!(node instanceof Element)) return;
+              if (node.matches(selector)) initElement(node);
+              initSlideIns(node);
+            });
+          });
+        });
+
+        bootstrapObserver.observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      }
+
+      ensureBootstrapObserver();
+      initSlideIns(document);
+    })();
+  </script>
+)}

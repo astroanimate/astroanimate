@@ -14,6 +14,7 @@ const filesToCopy = [
   "src/components/BlurFadeIn/BlurFadeIn.astro",
   "src/components/FadeIn/FadeIn.astro",
   "src/components/Reveal/Reveal.astro",
+  "src/components/SlideIn/SlideIn.astro",
   "src/components/TextRotate/TextRotate.astro",
 ];
 

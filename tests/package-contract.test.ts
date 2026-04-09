@@ -26,6 +26,7 @@ describe("package contract", () => {
     const breathingTextExport = packageJson.exports["./BreathingText"];
     const blurFadeInExport = packageJson.exports["./BlurFadeIn"];
     const fadeInExport = packageJson.exports["./FadeIn"];
+    const slideInExport = packageJson.exports["./SlideIn"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -52,6 +53,8 @@ describe("package contract", () => {
     expect(blurFadeInExport?.import).toBe("./dist/components/BlurFadeIn/index.js");
     expect(fadeInExport).toBeDefined();
     expect(fadeInExport?.import).toBe("./dist/components/FadeIn/index.js");
+    expect(slideInExport).toBeDefined();
+    expect(slideInExport?.import).toBe("./dist/components/SlideIn/index.js");
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -75,6 +78,7 @@ describe("package contract", () => {
     const blurFadeIn = read("src/components/BlurFadeIn/BlurFadeIn.astro");
     const fadeIn = read("src/components/FadeIn/FadeIn.astro");
     const reveal = read("src/components/Reveal/Reveal.astro");
+    const slideIn = read("src/components/SlideIn/SlideIn.astro");
     const textRotate = read("src/components/TextRotate/TextRotate.astro");
 
     expect(animatedButton).not.toContain("<script");
@@ -89,6 +93,7 @@ describe("package contract", () => {
     expect(blurFadeIn).not.toContain("<script");
     expect(fadeIn).toContain("<script is:inline>");
     expect(reveal).toContain("<script is:inline>");
+    expect(slideIn).toContain("<script is:inline>");
     expect(textRotate).toContain("<script is:inline>");
 
     expect(animatedButton).not.toContain("astro:page-load");
@@ -104,6 +109,7 @@ describe("package contract", () => {
     expect(blurFadeIn).not.toContain("astro:page-load");
     expect(fadeIn).not.toContain("astro:page-load");
     expect(reveal).not.toContain("astro:page-load");
+    expect(slideIn).not.toContain("astro:page-load");
     expect(alert).not.toContain("client:");
     expect(auraTrail).not.toContain("client:");
     expect(axisCarousel3D).not.toContain("client:");
@@ -113,6 +119,7 @@ describe("package contract", () => {
     expect(badge).not.toContain("client:");
     expect(breathingText).not.toContain("client:");
     expect(blurFadeIn).not.toContain("client:");
+    expect(slideIn).not.toContain("client:");
     expect(textRotate).not.toContain("client:");
   });
 
@@ -129,6 +136,7 @@ describe("package contract", () => {
     expect(existsSync(resolve(process.cwd(), "dist/components/BlurFadeIn/BlurFadeIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/FadeIn/FadeIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/Reveal/Reveal.astro"))).toBe(true);
+    expect(existsSync(resolve(process.cwd(), "dist/components/SlideIn/SlideIn.astro"))).toBe(true);
     expect(existsSync(resolve(process.cwd(), "dist/components/TextRotate/TextRotate.astro"))).toBe(true);
   });
 });

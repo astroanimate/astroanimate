@@ -73,6 +73,11 @@
       "import": "./dist/components/Reveal/index.js",
       "default": "./dist/components/Reveal/index.js"
     },
+    "./SlideIn": {
+      "types": "./dist/components/SlideIn/index.d.ts",
+      "import": "./dist/components/SlideIn/index.js",
+      "default": "./dist/components/SlideIn/index.js"
+    },
     "./TextRotate": {
       "types": "./dist/components/TextRotate/index.d.ts",
       "import": "./dist/components/TextRotate/index.js",
