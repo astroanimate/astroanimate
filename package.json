@@ -18,6 +18,11 @@
       "import": "./dist/components/AnimatedButton/index.js",
       "default": "./dist/components/AnimatedButton/index.js"
     },
+    "./AnimatedCard": {
+      "types": "./dist/components/AnimatedCard/index.d.ts",
+      "import": "./dist/components/AnimatedCard/index.js",
+      "default": "./dist/components/AnimatedCard/index.js"
+    },
     "./Alert": {
       "types": "./dist/components/Alert/index.d.ts",
       "import": "./dist/components/Alert/index.js",

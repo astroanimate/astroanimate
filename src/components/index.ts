@@ -1,4 +1,5 @@
 export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";
+export { default as AnimatedCard } from "./AnimatedCard/AnimatedCard.astro";
 export { default as Alert } from "./Alert/Alert.astro";
 export { default as AuraTrail } from "./AuraTrail/AuraTrail.astro";
 export { default as AxisCarousel3D } from "./AxisCarousel3D/AxisCarousel3D.astro";

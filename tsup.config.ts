@@ -7,6 +7,7 @@ export default defineConfig({
     index: "src/index.ts",
     "components/index": "src/components/index.ts",
     "components/AnimatedButton/index": "src/components/AnimatedButton/index.ts",
+    "components/AnimatedCard/index": "src/components/AnimatedCard/index.ts",
     "components/Alert/index": "src/components/Alert/index.ts",
     "components/AuraTrail/index": "src/components/AuraTrail/index.ts",
     "components/AxisCarousel3D/index": "src/components/AxisCarousel3D/index.ts",

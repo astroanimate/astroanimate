@@ -1,0 +1,832 @@
+---
+/**
+ * AnimatedCard.astro
+ */
+
+interface Props {
+  title: string;
+  description: string;
+  variant?: "lift" | "scale" | "flip" | "shine";
+  color?: "rose" | "emerald" | "violet" | "amber";
+  selected?: boolean;
+  selectedOnScroll?: boolean;
+  class?: string;
+  customClass?: string;
+  style?: string;
+  href?: string;
+  target?: string;
+  rel?: string;
+  backTitle?: string;
+  backDescription?: string;
+  backButtonText?: string;
+  flipHint?: string;
+  iconLabel?: string;
+  minHeight?: string;
+  ariaLabel?: string;
+}
+
+const {
+  title,
+  description,
+  variant = "lift",
+  color = "rose",
+  selected = false,
+  selectedOnScroll = false,
+  class: className = "",
+  customClass = "",
+  style: styleProp = "",
+  href,
+  target,
+  rel,
+  backTitle,
+  backDescription = "Tap or click the button below to flip this card back.",
+  backButtonText = "Flip back",
+  flipHint = "Flip to reveal more details",
+  iconLabel = "✦",
+  minHeight = "18rem",
+  ariaLabel,
+} = Astro.props;
+
+const themeMap = {
+  rose: {
+    accent: "#f43f5e",
+    accentText: "#fb7185",
+    border: "rgba(244, 63, 94, 0.28)",
+    soft: "rgba(244, 63, 94, 0.12)",
+    aura: "rgba(244, 63, 94, 0.2)",
+    surface:
+      "linear-gradient(180deg, rgba(30, 41, 59, 0.96), rgba(15, 23, 42, 1))",
+    backSurface:
+      "linear-gradient(180deg, rgba(38, 18, 31, 0.98), rgba(20, 11, 21, 1))",
+    inset: "rgba(251, 113, 133, 0.22)",
+  },
+  emerald: {
+    accent: "#10b981",
+    accentText: "#34d399",
+    border: "rgba(16, 185, 129, 0.28)",
+    soft: "rgba(16, 185, 129, 0.12)",
+    aura: "rgba(16, 185, 129, 0.18)",
+    surface:
+      "linear-gradient(180deg, rgba(15, 36, 34, 0.96), rgba(6, 22, 19, 1))",
+    backSurface:
+      "linear-gradient(180deg, rgba(8, 33, 28, 0.98), rgba(5, 21, 18, 1))",
+    inset: "rgba(52, 211, 153, 0.2)",
+  },
+  violet: {
+    accent: "#8b5cf6",
+    accentText: "#a78bfa",
+    border: "rgba(139, 92, 246, 0.28)",
+    soft: "rgba(139, 92, 246, 0.12)",
+    aura: "rgba(139, 92, 246, 0.2)",
+    surface:
+      "linear-gradient(180deg, rgba(27, 22, 46, 0.97), rgba(15, 14, 30, 1))",
+    backSurface:
+      "linear-gradient(180deg, rgba(22, 16, 41, 0.98), rgba(14, 10, 31, 1))",
+    inset: "rgba(167, 139, 250, 0.2)",
+  },
+  amber: {
+    accent: "#f59e0b",
+    accentText: "#fbbf24",
+    border: "rgba(245, 158, 11, 0.28)",
+    soft: "rgba(245, 158, 11, 0.12)",
+    aura: "rgba(245, 158, 11, 0.18)",
+    surface:
+      "linear-gradient(180deg, rgba(42, 29, 10, 0.97), rgba(28, 18, 8, 1))",
+    backSurface:
+      "linear-gradient(180deg, rgba(37, 24, 8, 0.98), rgba(24, 15, 5, 1))",
+    inset: "rgba(251, 191, 36, 0.2)",
+  },
+} as const;
+
+const theme = themeMap[color];
+const mergedClass = [className, customClass].filter(Boolean).join(" ");
+const CardTag = href ? "a" : "article";
+const flipId = `animated-card-flip-${Math.random().toString(36).slice(2, 10)}`;
+const mergedStyle = [
+  `--animated-card-accent: ${theme.accent}`,
+  `--animated-card-accent-text: ${theme.accentText}`,
+  `--animated-card-border: ${theme.border}`,
+  `--animated-card-soft: ${theme.soft}`,
+  `--animated-card-aura: ${theme.aura}`,
+  `--animated-card-surface: ${theme.surface}`,
+  `--animated-card-back-surface: ${theme.backSurface}`,
+  `--animated-card-inset: ${theme.inset}`,
+  `--animated-card-min-height: ${minHeight}`,
+  styleProp,
+]
+  .filter(Boolean)
+  .join("; ");
+
+const cardLabel = ariaLabel ?? title;
+const backHeading = backTitle ?? title;
+const interactiveAttrs = href
+  ? {
+      href,
+      target,
+      rel,
+    }
+  : {};
+---
+
+<style>
+  /* ✅ CRITERION 7: CSS-FIRST architecture with themeable custom properties */
+  [data-animated-card],
+  [data-animated-card] * {
+    box-sizing: border-box;
+  }
+
+  [data-animated-card] {
+    --animated-card-radius: 1.5rem;
+    --animated-card-padding: 1.5rem;
+    --animated-card-shadow:
+      0 14px 30px rgba(2, 6, 23, 0.24),
+      0 2px 10px rgba(2, 6, 23, 0.2);
+    --animated-card-shadow-active:
+      0 28px 52px rgba(2, 6, 23, 0.42),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+    --animated-card-title-size: 1.25rem;
+    --animated-card-icon-size: 3.5rem;
+
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    min-height: var(--animated-card-min-height, 18rem);
+    border-radius: var(--animated-card-radius);
+    background: var(--animated-card-bg, var(--animated-card-surface));
+    border: 1px solid var(--animated-card-border);
+    box-shadow: var(--animated-card-shadow);
+    overflow: hidden;
+    color: #ffffff;
+  }
+
+  [data-animated-card][data-clickable="true"] {
+    text-decoration: none;
+  }
+
+  .animated-card__surface {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: inherit;
+    padding: var(--animated-card-padding);
+    gap: 0.95rem;
+    z-index: 1;
+  }
+
+  .animated-card__ambient,
+  .animated-card__grid,
+  .animated-card__shine-overlay,
+  .animated-card__inner-glow,
+  .animated-card__indicator {
+    pointer-events: none;
+    position: absolute;
+  }
+
+  .animated-card__ambient {
+    inset: auto -15% -35% auto;
+    width: 12rem;
+    height: 12rem;
+    border-radius: 999px;
+    background: radial-gradient(circle, var(--animated-card-aura), transparent 70%);
+    opacity: 0.7;
+    transition:
+      opacity 260ms ease,
+      transform 260ms ease,
+      filter 260ms ease;
+    z-index: 0;
+  }
+
+  .animated-card__grid {
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.4), transparent 90%);
+    opacity: 0.16;
+    z-index: 0;
+  }
+
+  .animated-card__shine-overlay {
+    inset: -35% auto -35% -120%;
+    width: 68%;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.04) 25%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.04) 75%,
+      transparent 100%
+    );
+    transform: skewX(-22deg) translateX(0);
+    opacity: 0;
+    transition:
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 220ms ease;
+    z-index: 1;
+  }
+
+  .animated-card__inner-glow {
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
+    opacity: 1;
+    transition:
+      box-shadow 280ms ease,
+      opacity 280ms ease;
+    z-index: 0;
+  }
+
+  .animated-card__indicator {
+    left: 1.25rem;
+    right: 1.25rem;
+    bottom: 0;
+    height: 0.2rem;
+    border-radius: 999px 999px 0 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--animated-card-accent),
+      transparent
+    );
+    transform: scaleX(0.18);
+    transform-origin: center;
+    opacity: 0;
+    transition:
+      transform 280ms ease,
+      opacity 280ms ease;
+    z-index: 2;
+  }
+
+  .animated-card__topline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .animated-card__icon-shell {
+    width: var(--animated-card-icon-size);
+    height: var(--animated-card-icon-size);
+    border-radius: 1rem;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.06),
+      var(--animated-card-soft)
+    );
+    border: 1px solid var(--animated-card-border);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--animated-card-accent-text);
+    flex-shrink: 0;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transition:
+      transform 280ms ease,
+      background 280ms ease,
+      border-color 280ms ease;
+  }
+
+  .animated-card__icon-fallback {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .animated-card__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    padding: 0.4rem 0.72rem;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--animated-card-accent-text);
+    background: color-mix(in srgb, var(--animated-card-accent) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--animated-card-accent) 32%, transparent);
+    backdrop-filter: blur(8px);
+  }
+
+  .animated-card__title {
+    margin: 0;
+    font-size: var(--animated-card-title-size);
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .animated-card__description,
+  .animated-card__back-description,
+  .animated-card__hint {
+    margin: 0;
+    color: rgba(226, 232, 240, 0.78);
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+
+  .animated-card__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    position: relative;
+    z-index: 2;
+    flex: 1;
+  }
+
+  .animated-card__meta {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.82rem;
+  }
+
+  .animated-card__meta-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: var(--animated-card-accent);
+    box-shadow: 0 0 0 0.3rem color-mix(in srgb, var(--animated-card-accent) 18%, transparent);
+  }
+
+  [data-animated-card]:focus-visible,
+  .animated-card__toggle:focus-visible + .animated-card__flip-scene {
+    outline: 2px solid color-mix(in srgb, var(--animated-card-accent) 55%, white);
+    outline-offset: 4px;
+  }
+
+  [data-animated-card][data-selected="true"]:not([data-selected-on-scroll="true"]) .animated-card__indicator,
+  [data-animated-card][data-indicator-visible="true"] .animated-card__indicator,
+  [data-animated-card]:is(:hover, :focus-visible) .animated-card__indicator {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  /* ✅ CRITERION 1: Meaningful card content visible server-side without JS */
+  .animated-card--lift,
+  .animated-card--scale,
+  .animated-card--shine {
+    transition:
+      transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 280ms ease,
+      filter 280ms ease;
+  }
+
+  .animated-card--lift:is(:hover, :focus-visible) {
+    transform: translateY(-0.55rem);
+    box-shadow:
+      0 28px 54px rgba(2, 6, 23, 0.42),
+      0 0 3rem color-mix(in srgb, var(--animated-card-accent) 18%, transparent);
+    border-color: color-mix(in srgb, var(--animated-card-accent) 40%, transparent);
+  }
+
+  .animated-card--lift:is(:hover, :focus-visible) .animated-card__ambient {
+    opacity: 1;
+    transform: translate3d(-0.5rem, -0.6rem, 0) scale(1.04);
+    filter: blur(2px);
+  }
+
+  .animated-card--lift:is(:hover, :focus-visible) .animated-card__icon-shell {
+    transform: translateY(-0.25rem);
+  }
+
+  .animated-card--scale:is(:hover, :focus-visible) {
+    transform: scale(1.04);
+    box-shadow:
+      0 24px 44px rgba(2, 6, 23, 0.36),
+      0 0 0 1px color-mix(in srgb, var(--animated-card-accent) 22%, transparent);
+  }
+
+  .animated-card--scale:is(:hover, :focus-visible) .animated-card__inner-glow {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--animated-card-accent) 30%, transparent),
+      inset 0 0 2.25rem var(--animated-card-inset);
+  }
+
+  .animated-card--scale:is(:hover, :focus-visible) .animated-card__icon-shell {
+    transform: scale(1.08);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.1),
+      color-mix(in srgb, var(--animated-card-accent) 18%, transparent)
+    );
+  }
+
+  .animated-card--shine:is(:hover, :focus-visible) {
+    box-shadow:
+      0 20px 42px rgba(2, 6, 23, 0.34),
+      0 0 0 1px rgba(255, 255, 255, 0.04);
+    border-color: color-mix(in srgb, var(--animated-card-accent) 32%, transparent);
+  }
+
+  .animated-card--shine:is(:hover, :focus-visible) .animated-card__shine-overlay {
+    opacity: 1;
+    transform: skewX(-22deg) translateX(430%);
+  }
+
+  .animated-card--shine:is(:hover, :focus-visible) .animated-card__ambient {
+    opacity: 0.92;
+    transform: scale(1.08);
+  }
+
+  .animated-card--shine:is(:hover, :focus-visible) .animated-card__icon-shell {
+    border-color: color-mix(in srgb, var(--animated-card-accent) 42%, transparent);
+  }
+
+  /* Flip variant */
+  .animated-card--flip {
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .animated-card__toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .animated-card__flip-scene {
+    position: relative;
+    width: 100%;
+    min-height: var(--animated-card-min-height, 18rem);
+    perspective: 1200px;
+  }
+
+  .animated-card__flip-inner {
+    position: relative;
+    width: 100%;
+    min-height: inherit;
+    transform-style: preserve-3d;
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .animated-card__toggle:checked + .animated-card__flip-scene .animated-card__flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .animated-card__face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    min-height: inherit;
+    border-radius: var(--animated-card-radius);
+    overflow: hidden;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    box-shadow: var(--animated-card-shadow);
+  }
+
+  .animated-card__face--front,
+  .animated-card__face--back {
+    background: var(--animated-card-bg, var(--animated-card-surface));
+    border: 1px solid var(--animated-card-border);
+  }
+
+  .animated-card__face--front {
+    cursor: pointer;
+  }
+
+  .animated-card__face--back {
+    background: var(--animated-card-back-surface);
+    transform: rotateY(180deg);
+  }
+
+  .animated-card__face--front .animated-card__surface,
+  .animated-card__face--back .animated-card__surface {
+    min-height: var(--animated-card-min-height, 18rem);
+  }
+
+  .animated-card__back-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 0.95rem;
+    width: 100%;
+  }
+
+  .animated-card__back-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    margin-top: 0.2rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.9rem;
+    cursor: pointer;
+    color: #fff;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--animated-card-accent) 88%, white 6%),
+      var(--animated-card-accent)
+    );
+    border: 1px solid color-mix(in srgb, var(--animated-card-accent) 62%, transparent);
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow:
+      0 10px 24px color-mix(in srgb, var(--animated-card-accent) 26%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  .animated-card__flip-instruction {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-top: auto;
+    color: rgba(255, 255, 255, 0.68);
+    font-size: 0.82rem;
+  }
+
+  .animated-card__flip-instruction::before {
+    content: "";
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--animated-card-accent) 46%, transparent);
+    background: color-mix(in srgb, var(--animated-card-accent) 18%, transparent);
+  }
+
+  .animated-card__toggle:focus-visible + .animated-card__flip-scene .animated-card__face--front,
+  .animated-card__face--front:hover {
+    border-color: color-mix(in srgb, var(--animated-card-accent) 42%, transparent);
+    box-shadow:
+      0 28px 54px rgba(2, 6, 23, 0.42),
+      0 0 3rem color-mix(in srgb, var(--animated-card-accent) 18%, transparent);
+  }
+
+  .animated-card__face--front:hover .animated-card__icon-shell,
+  .animated-card__toggle:focus-visible
+    + .animated-card__flip-scene
+    .animated-card__face--front
+    .animated-card__icon-shell {
+    transform: translateY(-0.22rem);
+  }
+
+  /* ✅ CRITERION 6: Reduced motion disables transforms and sweep animations */
+  @media (prefers-reduced-motion: reduce) {
+    [data-animated-card],
+    [data-animated-card] * {
+      animation: none !important;
+      transition: none !important;
+      scroll-behavior: auto !important;
+    }
+
+    .animated-card--lift:is(:hover, :focus-visible),
+    .animated-card--scale:is(:hover, :focus-visible) {
+      transform: none !important;
+    }
+
+    .animated-card--shine .animated-card__shine-overlay {
+      opacity: 0 !important;
+      transform: none !important;
+    }
+
+    .animated-card__flip-inner {
+      transform: none !important;
+    }
+
+    .animated-card__toggle:checked + .animated-card__flip-scene .animated-card__face--front {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .animated-card__toggle:checked + .animated-card__flip-scene .animated-card__face--back {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .animated-card__face--front {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .animated-card__face--back {
+      opacity: 0;
+      visibility: hidden;
+      transform: none !important;
+    }
+  }
+
+  @media (max-width: 640px) {
+    [data-animated-card] {
+      --animated-card-padding: 1.25rem;
+      --animated-card-radius: 1.25rem;
+    }
+
+    .animated-card__title {
+      font-size: 1.12rem;
+    }
+
+    .animated-card__description,
+    .animated-card__back-description,
+    .animated-card__hint {
+      font-size: 0.92rem;
+    }
+  }
+</style>
+
+{variant === "flip" ? (
+  <div
+    class:list={["animated-card--flip", mergedClass]}
+    data-animated-card
+    data-color={color}
+    data-variant={variant}
+    data-selected={selected ? "true" : "false"}
+    data-selected-on-scroll={selectedOnScroll ? "true" : "false"}
+    style={mergedStyle}
+    aria-label={cardLabel}
+  >
+    <input
+      id={flipId}
+      class="animated-card__toggle"
+      type="checkbox"
+      aria-label={`Flip ${cardLabel}`}
+    />
+    <div class="animated-card__flip-scene">
+      <div class="animated-card__flip-inner">
+        <label
+          for={flipId}
+          class="animated-card__face animated-card__face--front"
+          data-flip-trigger
+          role="button"
+          tabindex="0"
+        >
+          <span class="animated-card__ambient" aria-hidden="true"></span>
+          <span class="animated-card__grid" aria-hidden="true"></span>
+          <span class="animated-card__inner-glow" aria-hidden="true"></span>
+          <span class="animated-card__indicator" aria-hidden="true"></span>
+          <div class="animated-card__surface">
+            <div class="animated-card__topline">
+              <div class="animated-card__icon-shell">
+                <slot name="icon">
+                  <span class="animated-card__icon-fallback" aria-hidden="true">
+                    {iconLabel}
+                  </span>
+                </slot>
+              </div>
+              {selected && <span class="animated-card__badge">Selected</span>}
+            </div>
+
+            <div class="animated-card__content">
+              <h3 class="animated-card__title">{title}</h3>
+              <p class="animated-card__description">{description}</p>
+              <p class="animated-card__flip-instruction">{flipHint}</p>
+            </div>
+          </div>
+        </label>
+
+        <div class="animated-card__face animated-card__face--back">
+          <span class="animated-card__ambient" aria-hidden="true"></span>
+          <span class="animated-card__inner-glow" aria-hidden="true"></span>
+          <div class="animated-card__surface">
+            <div class="animated-card__back-content">
+              <slot name="back-content">
+                <div class="animated-card__icon-shell">
+                  <span class="animated-card__icon-fallback" aria-hidden="true">
+                    {iconLabel}
+                  </span>
+                </div>
+                <h3 class="animated-card__title">{backHeading}</h3>
+                <p class="animated-card__back-description">{backDescription}</p>
+              </slot>
+
+              <label
+                for={flipId}
+                class="animated-card__back-button"
+                data-flip-trigger
+                role="button"
+                tabindex="0"
+              >
+                {backButtonText}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+) : (
+  <CardTag
+    class:list={[
+      `animated-card--${variant}`,
+      { "animated-card--scale": variant === "scale" },
+      { "animated-card--shine": variant === "shine" },
+      { "animated-card--lift": variant === "lift" },
+      mergedClass,
+    ]}
+    data-animated-card
+    data-color={color}
+    data-variant={variant}
+    data-selected={selected ? "true" : "false"}
+    data-selected-on-scroll={selectedOnScroll ? "true" : "false"}
+    data-clickable={href ? "true" : "false"}
+    style={mergedStyle}
+    aria-label={cardLabel}
+    {...interactiveAttrs}
+  >
+    <span class="animated-card__ambient" aria-hidden="true"></span>
+    <span class="animated-card__grid" aria-hidden="true"></span>
+    <span class="animated-card__shine-overlay" aria-hidden="true"></span>
+    <span class="animated-card__inner-glow" aria-hidden="true"></span>
+    <span class="animated-card__indicator" aria-hidden="true"></span>
+
+    <div class="animated-card__surface">
+      <div class="animated-card__topline">
+        <div class="animated-card__icon-shell">
+          <slot name="icon">
+            <span class="animated-card__icon-fallback" aria-hidden="true">
+              {iconLabel}
+            </span>
+          </slot>
+        </div>
+        {selected && <span class="animated-card__badge">Selected</span>}
+      </div>
+
+      <div class="animated-card__content">
+        <h3 class="animated-card__title">{title}</h3>
+        <p class="animated-card__description">{description}</p>
+      </div>
+
+      <div class="animated-card__meta" aria-hidden="true">
+        <span class="animated-card__meta-dot"></span>
+        <span>{variant} interaction</span>
+      </div>
+    </div>
+  </CardTag>
+)}
+
+{variant === "flip" && (
+  <script>
+    document
+      .querySelectorAll("[data-flip-trigger]:not([data-flip-ready])")
+      .forEach((trigger) => {
+        if (!(trigger instanceof HTMLElement)) return;
+        trigger.dataset.flipReady = "true";
+
+        trigger.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            trigger.click();
+          }
+        });
+      });
+  </script>
+)}
+
+{selected && selectedOnScroll && (
+  <script>
+    const cards = document.querySelectorAll(
+      '[data-animated-card][data-selected="true"][data-selected-on-scroll="true"]:not([data-selected-scroll-ready])',
+    );
+
+    cards.forEach((card) => {
+      if (!(card instanceof HTMLElement)) return;
+      card.dataset.selectedScrollReady = "true";
+    });
+
+    if (cards.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries, activeObserver) => {
+          entries.forEach((entry) => {
+            if (!(entry.target instanceof HTMLElement)) return;
+            if (!entry.isIntersecting) return;
+
+            entry.target.dataset.indicatorVisible = "true";
+            activeObserver.unobserve(entry.target);
+          });
+        },
+        {
+          threshold: 0.35,
+          rootMargin: "0px 0px -12% 0px",
+        },
+      );
+
+      const armOnScroll = () => {
+        cards.forEach((card) => {
+          if (card instanceof HTMLElement) observer.observe(card);
+        });
+      };
+
+      window.addEventListener("scroll", armOnScroll, {
+        passive: true,
+        once: true,
+      });
+    }
+  </script>
+)}

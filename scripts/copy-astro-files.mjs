@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 
 const filesToCopy = [
   "src/components/AnimatedButton/AnimatedButton.astro",
+  "src/components/AnimatedCard/AnimatedCard.astro",
   "src/components/Alert/Alert.astro",
   "src/components/AuraTrail/AuraTrail.astro",
   "src/components/AxisCarousel3D/AxisCarousel3D.astro",
