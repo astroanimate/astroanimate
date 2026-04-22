@@ -13,7 +13,7 @@ describe("FadeIn component contract", () => {
 
     expect(fadeIn).toContain("data-astro-fade-in");
     expect(fadeIn).toContain("data-threshold={String(safeThreshold)}");
-    expect(fadeIn).toContain("data-root-margin={safeRootMargin}");
+    expect(fadeIn).toContain("data-in-view-margin={safeInViewMargin}");
     expect(fadeIn).toContain("style={mergedStyles}");
     expect(fadeIn).toContain("{...rest}");
     expect(fadeIn).toContain("<script is:inline>");

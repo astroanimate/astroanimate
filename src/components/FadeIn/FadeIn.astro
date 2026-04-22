@@ -34,31 +34,33 @@ interface Props extends HTMLAttributes<"div"> {
 
   /**
    * Direction of entrance animation.
-   * @default "none" (just opacity)
+   * @default "up"
    */
   direction?: "none" | "up" | "down" | "left" | "right";
 
   /**
-   * Distance of travel in pixels (if direction is not "none").
-   * @default 20
+   * Offset distance in pixels for the animation.
+   * For vertical directions: animates from +offset to -offset.
+   * For horizontal directions: animates from +offset to -offset.
+   * @default 8
    */
-  distance?: number;
+  offset?: number;
 
   /**
-   * Duration of animation in milliseconds.
-   * @default 500
+   * Duration of animation in seconds.
+   * @default 0.6
    */
   duration?: number;
 
   /**
-   * Delay before animation starts in milliseconds.
+   * Delay before animation starts in seconds.
    * @default 0
    */
   delay?: number;
 
   /**
    * CSS easing function.
-   * @default "ease-out"
+   * @default "cubic-bezier(0.4, 0, 0.2, 1)"
    */
   easing?: string;
 
@@ -70,8 +72,8 @@ interface Props extends HTMLAttributes<"div"> {
   once?: boolean;
 
   /**
-   * Initial blur amount (e.g. "10px").
-   * @default "0px"
+   * Initial blur amount (e.g. "4px").
+   * @default "4px"
    */
   blur?: string;
 
@@ -92,66 +94,108 @@ interface Props extends HTMLAttributes<"div"> {
   as?: FadeInTag;
 
   /**
-   * IntersectionObserver threshold.
+   * IntersectionObserver threshold (0-1).
    * @default 0.1
    */
   threshold?: number;
 
   /**
    * IntersectionObserver rootMargin.
-   * @default "0px 0px -50px 0px"
+   * @default "-50px"
    */
-  rootMargin?: string;
+  inViewMargin?: string;
+
+  /**
+   * Custom callback when element becomes visible.
+   * Called after animation completes.
+   */
+  onVisible?: () => void;
+
+  /**
+   * Custom callback when element becomes hidden.
+   * Called after reverse animation completes (if once=false).
+   */
+  onHidden?: () => void;
+
+  /**
+   * Custom CSS variable overrides for advanced customization.
+   * Allows fine-tuning of animation properties.
+   */
+  customVars?: Record<string, string>;
 }
 
 const {
   enhance = false,
-  direction = "none",
-  distance = 20,
-  duration = 500,
+  direction = "up",
+  offset = 8,
+  duration = 0.6,
   delay = 0,
-  easing = "ease-out",
+  easing = "cubic-bezier(0.4, 0, 0.2, 1)",
   once = true,
-  blur = "0px",
+  blur = "4px",
   class: className = "",
   style: styleProp,
   as: Tag = "div",
   threshold = 0.1,
-  rootMargin = "0px 0px -50px 0px",
+  inViewMargin = "-50px",
+  onVisible,
+  onHidden,
+  customVars = {},
   ...rest
 } = Astro.props as Props;
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(Math.max(value, min), max);
 
-const safeDistance = Number.isFinite(distance) ? Math.max(0, distance) : 20;
-const safeDuration = Number.isFinite(duration) ? Math.max(0, duration) : 500;
+const validDirections = ["none", "up", "down", "left", "right"] as const;
+const safeDirection = validDirections.includes(direction as any)
+  ? direction
+  : "up";
+
+const safeOffset = Number.isFinite(offset) ? Math.max(0, offset) : 8;
+const safeDuration = Number.isFinite(duration) ? Math.max(0, duration) : 0.6;
 const safeDelay = Number.isFinite(delay) ? Math.max(0, delay) : 0;
 const safeThreshold = Number.isFinite(threshold) ? clamp(threshold, 0, 1) : 0.1;
-const safeRootMargin = rootMargin.trim() || "0px 0px -50px 0px";
+const safeInViewMargin = inViewMargin.trim() || "-50px";
 
-const getTransform = () => {
-  switch (direction) {
+// Validate blur format (basic check for px, rem, em, etc.)
+const blurValue = blur.trim();
+const hasValidBlurUnit = /^(0|(\d+\.?\d*)(px|rem|em|vh|vw|%))$/.test(blurValue);
+const safeBlur = hasValidBlurUnit && blurValue ? blurValue : "4px";
+
+// Calculate transform based on direction (from +offset to -offset pattern)
+const getTransform = (isInitial: boolean) => {
+  const sign = isInitial ? 1 : -1;
+  switch (safeDirection) {
     case "up":
-      return `translateY(${safeDistance}px)`;
+      return `translateY(${sign * safeOffset}px)`;
     case "down":
-      return `translateY(-${safeDistance}px)`;
+      return `translateY(${sign * -safeOffset}px)`;
     case "left":
-      return `translateX(${safeDistance}px)`;
+      return `translateX(${sign * safeOffset}px)`;
     case "right":
-      return `translateX(-${safeDistance}px)`;
+      return `translateX(${sign * -safeOffset}px)`;
     default:
       return "none";
   }
 };
 
-const initialTransform = getTransform();
+const initialTransform = getTransform(true);
+const finalTransform = getTransform(false);
+
+// Build custom CSS variables from customVars prop
+const customVarStyles = Object.entries(customVars)
+  .map(([key, value]) => `--${key}: ${value};`)
+  .join(" ");
+
 const mergedStyles = [
-  `--fade-duration: ${safeDuration}ms;`,
-  `--fade-delay: ${safeDelay}ms;`,
+  `--fade-duration: ${safeDuration}s;`,
+  `--fade-delay: ${safeDelay}s;`,
   `--fade-easing: ${easing};`,
-  `--fade-transform: ${initialTransform};`,
-  `--fade-blur: ${blur};`,
+  `--fade-transform-initial: ${initialTransform};`,
+  `--fade-transform-final: ${finalTransform};`,
+  `--fade-blur: ${safeBlur};`,
+  customVarStyles,
   typeof styleProp === "string" ? styleProp : "",
 ]
   .filter(Boolean)
@@ -159,6 +203,10 @@ const mergedStyles = [
 ---
 
 <style>
+  /* 
+   * 🟢 NO-JS / DEFAULT STATE 
+   * Visible immediately. No transitions.
+   */
   [data-astro-fade-in] {
     opacity: 1;
     transform: none;
@@ -173,18 +221,31 @@ const mergedStyles = [
     will-change: opacity, transform, filter;
   }
 
+  /* 
+   * 🟡 ENHANCER INITIALIZATION 
+   * JS adds [data-ready="true"] to signal it's taking control.
+   * We hide it immediately to prepare for entry.
+   */
   [data-astro-fade-in][data-ready="true"][data-state="hidden"] {
     opacity: 0;
-    transform: var(--fade-transform);
+    transform: var(--fade-transform-initial);
     filter: blur(var(--fade-blur));
   }
 
+  /* 
+   * 🟢 VISIBLE STATE 
+   * Applied when element enters viewport.
+   */
   [data-astro-fade-in][data-ready="true"][data-state="visible"] {
     opacity: 1;
-    transform: none;
+    transform: var(--fade-transform-final);
     filter: blur(0);
   }
 
+  /* 
+   * ♿ REDUCED MOTION 
+   * Force visibility and disable transitions regardless of JS state.
+   */
   @media (prefers-reduced-motion: reduce) {
     [data-astro-fade-in] {
       opacity: 1 !important;
@@ -201,7 +262,9 @@ const mergedStyles = [
   data-enhance={enhance ? "true" : "false"}
   data-once={once ? "true" : "false"}
   data-threshold={String(safeThreshold)}
-  data-root-margin={safeRootMargin}
+  data-in-view-margin={safeInViewMargin}
+  data-on-visible={onVisible ? "true" : "false"}
+  data-on-hidden={onHidden ? "true" : "false"}
   style={mergedStyles}
   {...rest}
 >
@@ -253,9 +316,11 @@ const mergedStyles = [
 
         var isOnce = root.dataset.once === "true";
         var threshold = parseThreshold(root.dataset.threshold);
-        var rootMargin = root.dataset.rootMargin && root.dataset.rootMargin.trim()
-          ? root.dataset.rootMargin.trim()
-          : "0px 0px -50px 0px";
+        var rootMargin = root.dataset.inViewMargin && root.dataset.inViewMargin.trim()
+          ? root.dataset.inViewMargin.trim()
+          : "-50px";
+        var hasOnVisible = root.dataset.onVisible === "true";
+        var hasOnHidden = root.dataset.onHidden === "true";
         var cleanupObserver;
         var isCleanedUp = false;
 
@@ -275,10 +340,53 @@ const mergedStyles = [
               if (entry.isIntersecting) {
                 root.dataset.state = "visible";
                 emitFadeInEvent(root, "visible");
+
+                // Call onVisible callback after animation completes
+                if (hasOnVisible) {
+                  var duration =
+                    parseFloat(
+                      getComputedStyle(root).getPropertyValue("--fade-duration") ||
+                        "0.4"
+                    ) * 1000;
+                  var delay =
+                    parseFloat(
+                      getComputedStyle(root).getPropertyValue("--fade-delay") || "0"
+                    ) * 1000;
+                  setTimeout(function () {
+                    root.dispatchEvent(
+                      new CustomEvent("astro:fadein:callback-visible", {
+                        bubbles: true,
+                      })
+                    );
+                  }, duration + delay);
+                }
+
                 if (isOnce) cleanup();
               } else if (!isOnce) {
+                // If not 'once', we hide it again when it leaves viewport
+                // to allow re-playing the animation
                 root.dataset.state = "hidden";
                 emitFadeInEvent(root, "hidden");
+
+                // Call onHidden callback after animation completes
+                if (hasOnHidden) {
+                  var duration =
+                    parseFloat(
+                      getComputedStyle(root).getPropertyValue("--fade-duration") ||
+                        "0.4"
+                    ) * 1000;
+                  var delay =
+                    parseFloat(
+                      getComputedStyle(root).getPropertyValue("--fade-delay") || "0"
+                    ) * 1000;
+                  setTimeout(function () {
+                    root.dispatchEvent(
+                      new CustomEvent("astro:fadein:callback-hidden", {
+                        bubbles: true,
+                      })
+                    );
+                  }, duration + delay);
+                }
               }
             });
           },
