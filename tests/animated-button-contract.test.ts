@@ -9,7 +9,9 @@ function read(relativePath: string): string {
 
 describe("AnimatedButton component contract", () => {
   it("stays CSS-first and package-safe", () => {
-    const animatedButton = read("src/components/AnimatedButton/AnimatedButton.astro");
+    const animatedButton = read(
+      "src/components/AnimatedButton/AnimatedButton.astro",
+    );
 
     expect(animatedButton).toContain("data-astro-animated-button");
     expect(animatedButton).toContain("prefers-reduced-motion: reduce");
@@ -19,9 +21,24 @@ describe("AnimatedButton component contract", () => {
     expect(animatedButton).not.toContain("astro:page-load");
   });
 
+  it("includes disabled prop and validation", () => {
+    const animatedButton = read(
+      "src/components/AnimatedButton/AnimatedButton.astro",
+    );
+
+    expect(animatedButton).toContain("disabled?: boolean");
+    expect(animatedButton).toContain('disabled && "disabled"');
+    expect(animatedButton).toContain(".animated-button.disabled");
+    expect(animatedButton).toContain("isValidColor");
+    expect(animatedButton).toContain("validatedVariant");
+  });
+
   it("exports AnimatedButton from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
@@ -32,10 +49,10 @@ describe("AnimatedButton component contract", () => {
       default: "./dist/components/AnimatedButton/index.js",
     });
     expect(componentsIndex).toContain(
-      'export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";'
+      'export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as AnimatedButton } from "./components/AnimatedButton/AnimatedButton.astro";'
+      'export { default as AnimatedButton } from "./components/AnimatedButton/AnimatedButton.astro";',
     );
   });
 });
