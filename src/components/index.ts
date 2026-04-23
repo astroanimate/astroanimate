@@ -10,6 +10,7 @@ export { default as Badge } from "./Badge/Badge.astro";
 export { default as BreathingText } from "./BreathingText/BreathingText.astro";
 export { default as BlurFadeIn } from "./BlurFadeIn/BlurFadeIn.astro";
 export { default as FadeInText } from "./FadeInText/FadeInText.astro";
+export { default as Loader } from "./Loader/Loader.astro";
 export { default as Reveal } from "./Reveal/Reveal.astro";
 export { default as SlideIn } from "./SlideIn/SlideIn.astro";
 export { default as TextRotate } from "./TextRotate/TextRotate.astro";

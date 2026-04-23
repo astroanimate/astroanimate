@@ -18,6 +18,7 @@ export default defineConfig({
     "components/BreathingText/index": "src/components/BreathingText/index.ts",
     "components/BlurFadeIn/index": "src/components/BlurFadeIn/index.ts",
     "components/FadeInText/index": "src/components/FadeInText/index.ts",
+    "components/Loader/index": "src/components/Loader/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",
     "components/SlideIn/index": "src/components/SlideIn/index.ts",
     "components/TextRotate/index": "src/components/TextRotate/index.ts",

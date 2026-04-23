@@ -73,6 +73,11 @@
       "import": "./dist/components/FadeInText/index.js",
       "default": "./dist/components/FadeInText/index.js"
     },
+    "./Loader": {
+      "types": "./dist/components/Loader/index.d.ts",
+      "import": "./dist/components/Loader/index.js",
+      "default": "./dist/components/Loader/index.js"
+    },
     "./Reveal": {
       "types": "./dist/components/Reveal/index.d.ts",
       "import": "./dist/components/Reveal/index.js",

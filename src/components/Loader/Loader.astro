@@ -1,0 +1,156 @@
+---
+interface Props {
+    /** Size in pixels (default: 40) */
+    size?: number;
+    /** Primary color (default: 'currentColor' or white) */
+    color?: string;
+    /** Animation speed in seconds (default: 1s) */
+    speed?: number;
+    /** Loader type variant */
+    type?: "spinner" | "dots" | "pulse";
+    mainClassName?: string;
+}
+
+const {
+    size = 40,
+    color = "#3b82f6",
+    speed = 1,
+    type = "spinner",
+    mainClassName = "",
+} = Astro.props;
+---
+
+<div
+    class:list={["loader-wrapper", mainClassName]}
+    style={`--loader-size: ${size}px; --loader-color: ${color}; --loader-speed: ${speed}s;`}
+    aria-label="Loading"
+    role="status"
+>
+    {
+        type === "spinner" && (
+            <svg class="loader-spinner" viewBox="0 0 50 50">
+                <circle
+                    class="path"
+                    cx="25"
+                    cy="25"
+                    r="20"
+                    fill="none"
+                    stroke-width="4"
+                />
+            </svg>
+        )
+    }
+
+    {
+        type === "dots" && (
+            <div class="loader-dots">
+                <div class="dot" />
+                <div class="dot" />
+                <div class="dot" />
+            </div>
+        )
+    }
+
+    {type === "pulse" && <div class="loader-pulse" />}
+</div>
+
+<style>
+    .loader-wrapper {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--loader-color);
+    }
+
+    /* SPINNER */
+    .loader-spinner {
+        width: var(--loader-size);
+        height: var(--loader-size);
+        animation: rotate var(--loader-speed) linear infinite;
+    }
+    .loader-spinner .path {
+        stroke: currentColor;
+        stroke-linecap: round;
+        animation: dash 1.5s ease-in-out infinite;
+    }
+
+    @keyframes rotate {
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes dash {
+        0% {
+            stroke-dasharray: 1, 150;
+            stroke-dashoffset: 0;
+        }
+        50% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -35;
+        }
+        100% {
+            stroke-dasharray: 90, 150;
+            stroke-dashoffset: -124;
+        }
+    }
+
+    /* DOTS */
+    .loader-dots {
+        display: flex;
+        gap: calc(var(--loader-size) * 0.2);
+    }
+    .dot {
+        width: calc(var(--loader-size) * 0.25);
+        height: calc(var(--loader-size) * 0.25);
+        background-color: currentColor;
+        border-radius: 50%;
+        animation: bounce 1.4s infinite ease-in-out both;
+    }
+    .dot:nth-child(1) {
+        animation-delay: -0.32s;
+    }
+    .dot:nth-child(2) {
+        animation-delay: -0.16s;
+    }
+
+    @keyframes bounce {
+        0%,
+        80%,
+        100% {
+            transform: scale(0);
+        }
+        40% {
+            transform: scale(1);
+        }
+    }
+
+    /* PULSE */
+    .loader-pulse {
+        width: var(--loader-size);
+        height: var(--loader-size);
+        background-color: currentColor;
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: pulse 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(0);
+            opacity: 0.8;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 0;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .loader-spinner,
+        .loader-spinner .path,
+        .dot,
+        .loader-pulse {
+            animation: none !important;
+        }
+    }
+</style>
