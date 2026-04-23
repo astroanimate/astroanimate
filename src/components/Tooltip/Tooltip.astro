@@ -1,0 +1,255 @@
+---
+interface Props {
+  /**
+   * Tooltip content text.
+   */
+  content: string;
+
+  /**
+   * Tooltip position.
+   * @default "top"
+   */
+  position?: "top" | "bottom" | "left" | "right";
+
+  /**
+   * Animation variant.
+   * "fade" - Simple fade and zoom
+   * "spring" - Bouncy pop entrance
+   * "float" - Gently floats up from below
+   * @default "spring"
+   */
+  variant?: "fade" | "spring" | "float";
+
+  /**
+   * Opt-in to advanced JS-enhanced transitions.
+   * @default false
+   */
+  enhance?: boolean;
+
+  /**
+   * Transition duration in ms.
+   * @default 200
+   */
+  duration?: number;
+
+  class?: string;
+}
+
+const {
+  content,
+  position = "top",
+  variant = "spring",
+  enhance = false,
+  duration = 200,
+  class: className = "",
+} = Astro.props;
+---
+
+<style>
+  .astro-tooltip-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+
+  .astro-tooltip {
+    position: absolute;
+    z-index: 50;
+    pointer-events: none;
+    
+    /* Aesthetics */
+    padding: 0.5rem 0.75rem;
+    background: rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    border-radius: 0.5rem;
+    box-shadow: 
+      0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    
+    /* Default Hidden State */
+    opacity: 0;
+    visibility: hidden;
+    transition: 
+      opacity var(--tooltip-duration) ease,
+      transform var(--tooltip-duration) var(--tooltip-easing);
+  }
+
+  /* Triangle Arrow */
+  .astro-tooltip::after {
+    content: "";
+    position: absolute;
+    border: 6px solid transparent;
+  }
+
+  /* Position Variations */
+  [data-position="top"] { 
+    bottom: 100%; left: 50%; 
+    transform: translate(-50%, 10px); 
+    margin-bottom: 0.75rem; 
+  }
+  [data-position="top"]::after { 
+    top: 100%; left: 50%; 
+    transform: translateX(-50%); 
+    border-top-color: rgba(15, 23, 42, 0.9); 
+  }
+
+  [data-position="bottom"] { 
+    top: 100%; left: 50%; 
+    transform: translate(-50%, -10px); 
+    margin-top: 0.75rem; 
+  }
+  [data-position="bottom"]::after { 
+    bottom: 100%; left: 50%; 
+    transform: translateX(-50%); 
+    border-bottom-color: rgba(15, 23, 42, 0.9); 
+  }
+
+  [data-position="left"] { 
+    right: 100%; top: 50%; 
+    transform: translate(10px, -50%); 
+    margin-right: 0.75rem; 
+  }
+  [data-position="left"]::after { 
+    left: 100%; top: 50%; 
+    transform: translateY(-50%); 
+    border-left-color: rgba(15, 23, 42, 0.9); 
+  }
+
+  [data-position="right"] { 
+    left: 100%; top: 50%; 
+    transform: translate(-10px, -50%); 
+    margin-left: 0.75rem; 
+  }
+  [data-position="right"]::after { 
+    right: 100%; top: 50%; 
+    transform: translateY(-50%); 
+    border-right-color: rgba(15, 23, 42, 0.9); 
+  }
+
+  /* Visibility on Hover (CSS Only) */
+  .astro-tooltip-wrapper:hover .astro-tooltip {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* NO-JS / NO-ENHANCE */
+  [data-variant="fade"] { --tooltip-easing: ease; }
+  [data-variant="spring"] { --tooltip-easing: cubic-bezier(0.34, 1.56, 0.64, 1); }
+  [data-variant="float"] { --tooltip-easing: cubic-bezier(0.23, 1, 0.32, 1); }
+
+  .astro-tooltip-wrapper:hover [data-position="top"] { transform: translate(-50%, 0); }
+  .astro-tooltip-wrapper:hover [data-position="bottom"] { transform: translate(-50%, 0); }
+  .astro-tooltip-wrapper:hover [data-position="left"] { transform: translate(0, -50%); }
+  .astro-tooltip-wrapper:hover [data-position="right"] { transform: translate(0, -50%); }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+    .astro-tooltip {
+      transition: opacity var(--tooltip-duration) ease !important;
+      transform: translate(-50%, 0) !important;
+    }
+  }
+</style>
+
+<div 
+  class:list={["astro-tooltip-wrapper", className]} 
+  data-astro-tooltip-wrapper
+  data-enhance={enhance ? "true" : "false"}
+  style={`--tooltip-duration: ${duration}ms;`}
+>
+  <slot />
+  <div 
+    class="astro-tooltip" 
+    data-astro-tooltip 
+    data-position={position}
+    data-variant={variant}
+    role="tooltip"
+  >
+    {content}
+  </div>
+</div>
+
+{enhance && (
+  <script is:inline>
+    (function () {
+      if (typeof window === "undefined") return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      var initialized = new WeakMap();
+
+      function canEnhance() {
+        if (typeof window === "undefined") return false;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return false;
+        }
+        return true;
+      }
+
+      function enhanceTooltip(root) {
+        if (!canEnhance()) return;
+        if (!(root instanceof HTMLElement)) return;
+        if (initialized.has(root)) return;
+
+        var tooltip = root.querySelector('[data-astro-tooltip]');
+        if (!tooltip || !(tooltip instanceof HTMLElement)) return;
+
+        var handleMouseMove = function (e) {
+          var rect = root.getBoundingClientRect();
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+
+          var centerX = rect.width / 2;
+          var centerY = rect.height / 2;
+          var moveX = (x - centerX) / 10;
+          var moveY = (y - centerY) / 10;
+
+          tooltip.style.setProperty("--js-offset-x", moveX + "px");
+          tooltip.style.setProperty("--js-offset-y", moveY + "px");
+
+          var position = tooltip.dataset.position;
+          var baseTransform = "";
+          if (position === "top" || position === "bottom") baseTransform = "translateX(-50%)";
+          if (position === "left" || position === "right") baseTransform = "translateY(-50%)";
+
+          tooltip.style.transform = baseTransform + " translate(" + moveX + "px, " + moveY + "px)";
+        };
+
+        var resetTooltip = function () {
+          var position = tooltip.dataset.position;
+          var baseTransform = "";
+          if (position === "top" || position === "bottom") baseTransform = "translateX(-50%)";
+          if (position === "left" || position === "right") baseTransform = "translateY(-50%)";
+
+          tooltip.style.transform = baseTransform;
+        };
+
+        root.addEventListener("mousemove", handleMouseMove);
+        root.addEventListener("mouseleave", resetTooltip);
+
+        initialized.set(root, true);
+
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            root.removeEventListener("mousemove", handleMouseMove);
+            root.removeEventListener("mouseleave", resetTooltip);
+            cleanupObserver.disconnect();
+            initialized.delete(root);
+          }
+        });
+
+        cleanupObserver.observe(document.body, { childList: true, subtree: true });
+      }
+
+      document
+        .querySelectorAll('[data-astro-tooltip-wrapper][data-enhance="true"]')
+        .forEach(function (element) {
+          enhanceTooltip(element);
+        });
+    })();
+  </script>
+)}

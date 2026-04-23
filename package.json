@@ -92,6 +92,11 @@
       "types": "./dist/components/TextRotate/index.d.ts",
       "import": "./dist/components/TextRotate/index.js",
       "default": "./dist/components/TextRotate/index.js"
+    },
+    "./Tooltip": {
+      "types": "./dist/components/Tooltip/index.d.ts",
+      "import": "./dist/components/Tooltip/index.js",
+      "default": "./dist/components/Tooltip/index.js"
     }
   },
   "files": [

@@ -19,3 +19,4 @@ export { default as Loader } from "./components/Loader/Loader.astro";
 export { default as Reveal } from "./components/Reveal/Reveal.astro";
 export { default as SlideIn } from "./components/SlideIn/SlideIn.astro";
 export { default as TextRotate } from "./components/TextRotate/TextRotate.astro";
+export { default as Tooltip } from "./components/Tooltip/Tooltip.astro";
