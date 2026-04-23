@@ -68,10 +68,10 @@
       "import": "./dist/components/BlurFadeIn/index.js",
       "default": "./dist/components/BlurFadeIn/index.js"
     },
-    "./FadeIn": {
-      "types": "./dist/components/FadeIn/index.d.ts",
-      "import": "./dist/components/FadeIn/index.js",
-      "default": "./dist/components/FadeIn/index.js"
+    "./FadeInText": {
+      "types": "./dist/components/FadeInText/index.d.ts",
+      "import": "./dist/components/FadeInText/index.js",
+      "default": "./dist/components/FadeInText/index.js"
     },
     "./Reveal": {
       "types": "./dist/components/Reveal/index.d.ts",

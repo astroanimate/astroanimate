@@ -17,7 +17,7 @@ export default defineConfig({
     "components/Badge/index": "src/components/Badge/index.ts",
     "components/BreathingText/index": "src/components/BreathingText/index.ts",
     "components/BlurFadeIn/index": "src/components/BlurFadeIn/index.ts",
-    "components/FadeIn/index": "src/components/FadeIn/index.ts",
+    "components/FadeInText/index": "src/components/FadeInText/index.ts",
     "components/Reveal/index": "src/components/Reveal/index.ts",
     "components/SlideIn/index": "src/components/SlideIn/index.ts",
     "components/TextRotate/index": "src/components/TextRotate/index.ts",

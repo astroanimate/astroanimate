@@ -14,7 +14,7 @@ export { default as AvatarTooltip } from "./components/AvatarTooltip/AvatarToolt
 export { default as Badge } from "./components/Badge/Badge.astro";
 export { default as BreathingText } from "./components/BreathingText/BreathingText.astro";
 export { default as BlurFadeIn } from "./components/BlurFadeIn/BlurFadeIn.astro";
-export { default as FadeIn } from "./components/FadeIn/FadeIn.astro";
+export { default as FadeInText } from "./components/FadeInText/FadeInText.astro";
 export { default as Reveal } from "./components/Reveal/Reveal.astro";
 export { default as SlideIn } from "./components/SlideIn/SlideIn.astro";
 export { default as TextRotate } from "./components/TextRotate/TextRotate.astro";
