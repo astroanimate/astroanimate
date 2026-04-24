@@ -23,21 +23,24 @@ describe("AxisCarousel3D component contract", () => {
 
   it("exports AxisCarousel3D from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./AxisCarousel3D"]).toEqual({
-      types: "./dist/components/AxisCarousel3D/index.d.ts",
-      import: "./dist/components/AxisCarousel3D/index.js",
-      default: "./dist/components/AxisCarousel3D/index.js",
+      types: "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+      import: "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+      default: "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as AxisCarousel3D } from "./AxisCarousel3D/AxisCarousel3D.astro";'
+      'export { default as AxisCarousel3D } from "./AxisCarousel3D/AxisCarousel3D.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as AxisCarousel3D } from "./components/AxisCarousel3D/AxisCarousel3D.astro";'
+      'export { default as AxisCarousel3D } from "./components/AxisCarousel3D/AxisCarousel3D.astro";',
     );
   });
 });

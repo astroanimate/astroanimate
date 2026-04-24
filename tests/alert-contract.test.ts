@@ -21,17 +21,24 @@ describe("Alert component contract", () => {
 
   it("exports Alert from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./Alert"]).toEqual({
-      types: "./dist/components/Alert/index.d.ts",
-      import: "./dist/components/Alert/index.js",
-      default: "./dist/components/Alert/index.js",
+      types: "./dist/components/Alert/Alert.astro",
+      import: "./dist/components/Alert/Alert.astro",
+      default: "./dist/components/Alert/Alert.astro",
     });
-    expect(componentsIndex).toContain('export { default as Alert } from "./Alert/Alert.astro";');
-    expect(rootIndex).toContain('export { default as Alert } from "./components/Alert/Alert.astro";');
+    expect(componentsIndex).toContain(
+      'export { default as Alert } from "./Alert/Alert.astro";',
+    );
+    expect(rootIndex).toContain(
+      'export { default as Alert } from "./components/Alert/Alert.astro";',
+    );
   });
 });

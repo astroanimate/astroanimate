@@ -24,21 +24,24 @@ describe("BlurFadeIn component contract", () => {
 
   it("exports BlurFadeIn from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./BlurFadeIn"]).toEqual({
-      types: "./dist/components/BlurFadeIn/index.d.ts",
-      import: "./dist/components/BlurFadeIn/index.js",
-      default: "./dist/components/BlurFadeIn/index.js",
+      types: "./dist/components/BlurFadeIn/BlurFadeIn.astro",
+      import: "./dist/components/BlurFadeIn/BlurFadeIn.astro",
+      default: "./dist/components/BlurFadeIn/BlurFadeIn.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as BlurFadeIn } from "./BlurFadeIn/BlurFadeIn.astro";'
+      'export { default as BlurFadeIn } from "./BlurFadeIn/BlurFadeIn.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as BlurFadeIn } from "./components/BlurFadeIn/BlurFadeIn.astro";'
+      'export { default as BlurFadeIn } from "./components/BlurFadeIn/BlurFadeIn.astro";',
     );
   });
 });

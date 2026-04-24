@@ -23,21 +23,24 @@ describe("AvatarTooltip component contract", () => {
 
   it("exports AvatarTooltip from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./AvatarTooltip"]).toEqual({
-      types: "./dist/components/AvatarTooltip/index.d.ts",
-      import: "./dist/components/AvatarTooltip/index.js",
-      default: "./dist/components/AvatarTooltip/index.js",
+      types: "./dist/components/AvatarTooltip/AvatarTooltip.astro",
+      import: "./dist/components/AvatarTooltip/AvatarTooltip.astro",
+      default: "./dist/components/AvatarTooltip/AvatarTooltip.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as AvatarTooltip } from "./AvatarTooltip/AvatarTooltip.astro";'
+      'export { default as AvatarTooltip } from "./AvatarTooltip/AvatarTooltip.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as AvatarTooltip } from "./components/AvatarTooltip/AvatarTooltip.astro";'
+      'export { default as AvatarTooltip } from "./components/AvatarTooltip/AvatarTooltip.astro";',
     );
   });
 });

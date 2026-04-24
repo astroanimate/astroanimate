@@ -22,21 +22,24 @@ describe("AvatarStack component contract", () => {
 
   it("exports AvatarStack from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./AvatarStack"]).toEqual({
-      types: "./dist/components/AvatarStack/index.d.ts",
-      import: "./dist/components/AvatarStack/index.js",
-      default: "./dist/components/AvatarStack/index.js",
+      types: "./dist/components/AvatarStack/AvatarStack.astro",
+      import: "./dist/components/AvatarStack/AvatarStack.astro",
+      default: "./dist/components/AvatarStack/AvatarStack.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as AvatarStack } from "./AvatarStack/AvatarStack.astro";'
+      'export { default as AvatarStack } from "./AvatarStack/AvatarStack.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as AvatarStack } from "./components/AvatarStack/AvatarStack.astro";'
+      'export { default as AvatarStack } from "./components/AvatarStack/AvatarStack.astro";',
     );
   });
 });

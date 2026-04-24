@@ -14,89 +14,89 @@
       "default": "./dist/index.js"
     },
     "./AnimatedButton": {
-      "types": "./dist/components/AnimatedButton/index.d.ts",
-      "import": "./dist/components/AnimatedButton/index.js",
-      "default": "./dist/components/AnimatedButton/index.js"
+      "types": "./dist/components/AnimatedButton/AnimatedButton.astro",
+      "import": "./dist/components/AnimatedButton/AnimatedButton.astro",
+      "default": "./dist/components/AnimatedButton/AnimatedButton.astro"
     },
     "./AnimatedCard": {
-      "types": "./dist/components/AnimatedCard/index.d.ts",
-      "import": "./dist/components/AnimatedCard/index.js",
-      "default": "./dist/components/AnimatedCard/index.js"
+      "types": "./dist/components/AnimatedCard/AnimatedCard.astro",
+      "import": "./dist/components/AnimatedCard/AnimatedCard.astro",
+      "default": "./dist/components/AnimatedCard/AnimatedCard.astro"
     },
     "./Alert": {
-      "types": "./dist/components/Alert/index.d.ts",
-      "import": "./dist/components/Alert/index.js",
-      "default": "./dist/components/Alert/index.js"
+      "types": "./dist/components/Alert/Alert.astro",
+      "import": "./dist/components/Alert/Alert.astro",
+      "default": "./dist/components/Alert/Alert.astro"
     },
     "./AuraTrail": {
-      "types": "./dist/components/AuraTrail/index.d.ts",
-      "import": "./dist/components/AuraTrail/index.js",
-      "default": "./dist/components/AuraTrail/index.js"
+      "types": "./dist/components/AuraTrail/AuraTrail.astro",
+      "import": "./dist/components/AuraTrail/AuraTrail.astro",
+      "default": "./dist/components/AuraTrail/AuraTrail.astro"
     },
     "./AxisCarousel3D": {
-      "types": "./dist/components/AxisCarousel3D/index.d.ts",
-      "import": "./dist/components/AxisCarousel3D/index.js",
-      "default": "./dist/components/AxisCarousel3D/index.js"
+      "types": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+      "import": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+      "default": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro"
     },
     "./Avatar": {
-      "types": "./dist/components/Avatar/index.d.ts",
-      "import": "./dist/components/Avatar/index.js",
-      "default": "./dist/components/Avatar/index.js"
+      "types": "./dist/components/Avatar/Avatar.astro",
+      "import": "./dist/components/Avatar/Avatar.astro",
+      "default": "./dist/components/Avatar/Avatar.astro"
     },
     "./AvatarStack": {
-      "types": "./dist/components/AvatarStack/index.d.ts",
-      "import": "./dist/components/AvatarStack/index.js",
-      "default": "./dist/components/AvatarStack/index.js"
+      "types": "./dist/components/AvatarStack/AvatarStack.astro",
+      "import": "./dist/components/AvatarStack/AvatarStack.astro",
+      "default": "./dist/components/AvatarStack/AvatarStack.astro"
     },
     "./AvatarTooltip": {
-      "types": "./dist/components/AvatarTooltip/index.d.ts",
-      "import": "./dist/components/AvatarTooltip/index.js",
-      "default": "./dist/components/AvatarTooltip/index.js"
+      "types": "./dist/components/AvatarTooltip/AvatarTooltip.astro",
+      "import": "./dist/components/AvatarTooltip/AvatarTooltip.astro",
+      "default": "./dist/components/AvatarTooltip/AvatarTooltip.astro"
     },
     "./Badge": {
-      "types": "./dist/components/Badge/index.d.ts",
-      "import": "./dist/components/Badge/index.js",
-      "default": "./dist/components/Badge/index.js"
+      "types": "./dist/components/Badge/Badge.astro",
+      "import": "./dist/components/Badge/Badge.astro",
+      "default": "./dist/components/Badge/Badge.astro"
     },
     "./BreathingText": {
-      "types": "./dist/components/BreathingText/index.d.ts",
-      "import": "./dist/components/BreathingText/index.js",
-      "default": "./dist/components/BreathingText/index.js"
+      "types": "./dist/components/BreathingText/BreathingText.astro",
+      "import": "./dist/components/BreathingText/BreathingText.astro",
+      "default": "./dist/components/BreathingText/BreathingText.astro"
     },
     "./BlurFadeIn": {
-      "types": "./dist/components/BlurFadeIn/index.d.ts",
-      "import": "./dist/components/BlurFadeIn/index.js",
-      "default": "./dist/components/BlurFadeIn/index.js"
+      "types": "./dist/components/BlurFadeIn/BlurFadeIn.astro",
+      "import": "./dist/components/BlurFadeIn/BlurFadeIn.astro",
+      "default": "./dist/components/BlurFadeIn/BlurFadeIn.astro"
     },
     "./FadeInText": {
-      "types": "./dist/components/FadeInText/index.d.ts",
-      "import": "./dist/components/FadeInText/index.js",
-      "default": "./dist/components/FadeInText/index.js"
+      "types": "./dist/components/FadeInText/FadeInText.astro",
+      "import": "./dist/components/FadeInText/FadeInText.astro",
+      "default": "./dist/components/FadeInText/FadeInText.astro"
     },
     "./Loader": {
-      "types": "./dist/components/Loader/index.d.ts",
-      "import": "./dist/components/Loader/index.js",
-      "default": "./dist/components/Loader/index.js"
+      "types": "./dist/components/Loader/Loader.astro",
+      "import": "./dist/components/Loader/Loader.astro",
+      "default": "./dist/components/Loader/Loader.astro"
     },
     "./Reveal": {
-      "types": "./dist/components/Reveal/index.d.ts",
-      "import": "./dist/components/Reveal/index.js",
-      "default": "./dist/components/Reveal/index.js"
+      "types": "./dist/components/Reveal/Reveal.astro",
+      "import": "./dist/components/Reveal/Reveal.astro",
+      "default": "./dist/components/Reveal/Reveal.astro"
     },
     "./SlideIn": {
-      "types": "./dist/components/SlideIn/index.d.ts",
-      "import": "./dist/components/SlideIn/index.js",
-      "default": "./dist/components/SlideIn/index.js"
+      "types": "./dist/components/SlideIn/SlideIn.astro",
+      "import": "./dist/components/SlideIn/SlideIn.astro",
+      "default": "./dist/components/SlideIn/SlideIn.astro"
     },
     "./TextRotate": {
-      "types": "./dist/components/TextRotate/index.d.ts",
-      "import": "./dist/components/TextRotate/index.js",
-      "default": "./dist/components/TextRotate/index.js"
+      "types": "./dist/components/TextRotate/TextRotate.astro",
+      "import": "./dist/components/TextRotate/TextRotate.astro",
+      "default": "./dist/components/TextRotate/TextRotate.astro"
     },
     "./Tooltip": {
-      "types": "./dist/components/Tooltip/index.d.ts",
-      "import": "./dist/components/Tooltip/index.js",
-      "default": "./dist/components/Tooltip/index.js"
+      "types": "./dist/components/Tooltip/Tooltip.astro",
+      "import": "./dist/components/Tooltip/Tooltip.astro",
+      "default": "./dist/components/Tooltip/Tooltip.astro"
     }
   },
   "files": [

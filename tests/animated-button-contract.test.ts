@@ -44,9 +44,9 @@ describe("AnimatedButton component contract", () => {
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./AnimatedButton"]).toEqual({
-      types: "./dist/components/AnimatedButton/index.d.ts",
-      import: "./dist/components/AnimatedButton/index.js",
-      default: "./dist/components/AnimatedButton/index.js",
+      types: "./dist/components/AnimatedButton/AnimatedButton.astro",
+      import: "./dist/components/AnimatedButton/AnimatedButton.astro",
+      default: "./dist/components/AnimatedButton/AnimatedButton.astro",
     });
     expect(componentsIndex).toContain(
       'export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";',

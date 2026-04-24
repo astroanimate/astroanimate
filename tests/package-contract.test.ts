@@ -32,40 +32,42 @@ describe("package contract", () => {
     expect(packageJson.types).toBe("./dist/index.d.ts");
     expect(animatedButtonExport).toBeDefined();
     expect(animatedButtonExport?.import).toBe(
-      "./dist/components/AnimatedButton/index.js",
+      "./dist/components/AnimatedButton/AnimatedButton.astro",
     );
     expect(alertExport).toBeDefined();
-    expect(alertExport?.import).toBe("./dist/components/Alert/index.js");
+    expect(alertExport?.import).toBe("./dist/components/Alert/Alert.astro");
     expect(auraTrailExport).toBeDefined();
     expect(auraTrailExport?.import).toBe(
-      "./dist/components/AuraTrail/index.js",
+      "./dist/components/AuraTrail/AuraTrail.astro",
     );
     expect(axisCarousel3DExport).toBeDefined();
     expect(axisCarousel3DExport?.import).toBe(
-      "./dist/components/AxisCarousel3D/index.js",
+      "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
     );
     expect(avatarExport).toBeDefined();
-    expect(avatarExport?.import).toBe("./dist/components/Avatar/index.js");
+    expect(avatarExport?.import).toBe("./dist/components/Avatar/Avatar.astro");
     expect(avatarStackExport).toBeDefined();
     expect(avatarStackExport?.import).toBe(
-      "./dist/components/AvatarStack/index.js",
+      "./dist/components/AvatarStack/AvatarStack.astro",
     );
     expect(avatarTooltipExport).toBeDefined();
     expect(avatarTooltipExport?.import).toBe(
-      "./dist/components/AvatarTooltip/index.js",
+      "./dist/components/AvatarTooltip/AvatarTooltip.astro",
     );
     expect(badgeExport).toBeDefined();
-    expect(badgeExport?.import).toBe("./dist/components/Badge/index.js");
+    expect(badgeExport?.import).toBe("./dist/components/Badge/Badge.astro");
     expect(breathingTextExport).toBeDefined();
     expect(breathingTextExport?.import).toBe(
-      "./dist/components/BreathingText/index.js",
+      "./dist/components/BreathingText/BreathingText.astro",
     );
     expect(blurFadeInExport).toBeDefined();
     expect(blurFadeInExport?.import).toBe(
-      "./dist/components/BlurFadeIn/index.js",
+      "./dist/components/BlurFadeIn/BlurFadeIn.astro",
     );
     expect(slideInExport).toBeDefined();
-    expect(slideInExport?.import).toBe("./dist/components/SlideIn/index.js");
+    expect(slideInExport?.import).toBe(
+      "./dist/components/SlideIn/SlideIn.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {

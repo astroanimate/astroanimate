@@ -20,17 +20,24 @@ describe("Loader component contract", () => {
 
   it("exports Loader from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./Loader"]).toEqual({
-      types: "./dist/components/Loader/index.d.ts",
-      import: "./dist/components/Loader/index.js",
-      default: "./dist/components/Loader/index.js",
+      types: "./dist/components/Loader/Loader.astro",
+      import: "./dist/components/Loader/Loader.astro",
+      default: "./dist/components/Loader/Loader.astro",
     });
-    expect(componentsIndex).toContain('export { default as Loader } from "./Loader/Loader.astro";');
-    expect(rootIndex).toContain('export { default as Loader } from "./components/Loader/Loader.astro";');
+    expect(componentsIndex).toContain(
+      'export { default as Loader } from "./Loader/Loader.astro";',
+    );
+    expect(rootIndex).toContain(
+      'export { default as Loader } from "./components/Loader/Loader.astro";',
+    );
   });
 });

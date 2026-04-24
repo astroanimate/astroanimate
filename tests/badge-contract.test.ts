@@ -21,21 +21,24 @@ describe("Badge component contract", () => {
 
   it("exports Badge from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./Badge"]).toEqual({
-      types: "./dist/components/Badge/index.d.ts",
-      import: "./dist/components/Badge/index.js",
-      default: "./dist/components/Badge/index.js",
+      types: "./dist/components/Badge/Badge.astro",
+      import: "./dist/components/Badge/Badge.astro",
+      default: "./dist/components/Badge/Badge.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as Badge } from "./Badge/Badge.astro";'
+      'export { default as Badge } from "./Badge/Badge.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as Badge } from "./components/Badge/Badge.astro";'
+      'export { default as Badge } from "./components/Badge/Badge.astro";',
     );
   });
 });

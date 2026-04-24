@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **Badge**, **BreathingText**, **BlurFadeIn**, **TextRotate**, **FadeIn**, and **Reveal**.
+Astro-native animation components: **AnimatedButton**, **AnimatedCard**, **Alert**, **AuraTrail**, **Avatar**, **AvatarStack**, **AvatarTooltip**, **Badge**, **BreathingText**, **BlurFadeIn**, **FadeInText**, **Loader**, **Reveal**, **SlideIn**, **TextRotate**, and **Tooltip**.
 
 ## Install
 
@@ -17,6 +17,8 @@ npm install @astroanimate/core
 
 ## Usage
 
+**Important:** Due to Astro's component resolution limitations, components must be imported via subpath exports. Named imports from the main barrel (e.g., `import { Tooltip } from "@astroanimate/core"`) will not work.
+
 ### AnimatedButton
 
 CSS-first button effects with no hydration and a visible no-JS baseline.
@@ -27,6 +29,23 @@ import AnimatedButton from "@astroanimate/core/AnimatedButton";
 ---
 
 <AnimatedButton variant="shimmer">Explore</AnimatedButton>
+```
+
+### AnimatedCard
+
+Interactive card with lift, scale, shine, and flip effects.
+
+```astro
+---
+import AnimatedCard from "@astroanimate/core/AnimatedCard";
+---
+
+<AnimatedCard
+  title="Lift Card"
+  description="Hover to see the lift effect with ambient glow"
+  variant="lift"
+  color="rose"
+/>
 ```
 
 ### Alert
@@ -158,18 +177,19 @@ import BreathingText from "@astroanimate/core/BreathingText";
 <BreathingText text="Steady signal" speed={4} />
 ```
 
-### FadeIn
+### FadeInText
 
-Scroll-triggered fade-in (opt-in enhancement).
+Scroll-triggered fade-in with blur effect (opt-in enhancement).
 
 ```astro
 ---
-import FadeIn from "@astroanimate/core/FadeIn";
+import FadeInText from "@astroanimate/core/FadeInText";
 ---
 
-<FadeIn enhance direction="up" distance={20} once>
-  <p>Content that fades in when scrolled into view.</p>
-</FadeIn>
+<FadeInText duration={0.6} delay={0} enhance={true}>
+  <h3>Fade In Text</h3>
+  <p>This text fades in with blur effect on page load.</p>
+</FadeInText>
 ```
 
 ### Reveal
@@ -186,22 +206,69 @@ import Reveal from "@astroanimate/core/Reveal";
 </Reveal>
 ```
 
+### SlideIn
+
+Slide-in animation with optional JS enhancement.
+
+```astro
+---
+import SlideIn from "@astroanimate/core/SlideIn";
+---
+
+<SlideIn enhance direction="left" distance={50} once>
+  <p>Slides in when scrolled into view.</p>
+</SlideIn>
+```
+
+### Loader
+
+CSS-only loading indicators with multiple variants.
+
+```astro
+---
+import Loader from "@astroanimate/core/Loader";
+---
+
+<Loader type="spinner" size={40} color="#3b82f6" />
+<Loader type="dots" size={40} color="#10b981" />
+<Loader type="pulse" size={40} color="#f59e0b" />
+```
+
+### Tooltip
+
+Hover-based tooltip with positioning options and optional enhancement.
+
+```astro
+---
+import Tooltip from "@astroanimate/core/Tooltip";
+---
+
+<Tooltip content="Tooltip on top" position="top">
+  <button>Hover me</button>
+</Tooltip>
+```
+
 ## Exports
 
-| Import | Component |
-|--------|-----------|
+| Import                              | Component            |
+| ----------------------------------- | -------------------- |
 | `@astroanimate/core/AnimatedButton` | AnimatedButton.astro |
-| `@astroanimate/core/Alert` | Alert.astro |
-| `@astroanimate/core/AuraTrail` | AuraTrail.astro |
-| `@astroanimate/core/Avatar` | Avatar.astro |
-| `@astroanimate/core/AvatarStack` | AvatarStack.astro |
-| `@astroanimate/core/AvatarTooltip` | AvatarTooltip.astro |
-| `@astroanimate/core/Badge` | Badge.astro |
-| `@astroanimate/core/BreathingText` | BreathingText.astro |
-| `@astroanimate/core/BlurFadeIn` | BlurFadeIn.astro |
-| `@astroanimate/core/TextRotate` | TextRotate.astro |
-| `@astroanimate/core/FadeIn` | FadeIn.astro |
-| `@astroanimate/core/Reveal` | Reveal.astro |
+| `@astroanimate/core/AnimatedCard`   | AnimatedCard.astro   |
+| `@astroanimate/core/Alert`          | Alert.astro          |
+| `@astroanimate/core/AuraTrail`      | AuraTrail.astro      |
+| `@astroanimate/core/Avatar`         | Avatar.astro         |
+| `@astroanimate/core/AvatarStack`    | AvatarStack.astro    |
+| `@astroanimate/core/AvatarTooltip`  | AvatarTooltip.astro  |
+| `@astroanimate/core/AxisCarousel3D` | AxisCarousel3D.astro |
+| `@astroanimate/core/Badge`          | Badge.astro          |
+| `@astroanimate/core/BreathingText`  | BreathingText.astro  |
+| `@astroanimate/core/BlurFadeIn`     | BlurFadeIn.astro     |
+| `@astroanimate/core/FadeInText`     | FadeInText.astro     |
+| `@astroanimate/core/Loader`         | Loader.astro         |
+| `@astroanimate/core/Reveal`         | Reveal.astro         |
+| `@astroanimate/core/SlideIn`        | SlideIn.astro        |
+| `@astroanimate/core/TextRotate`     | TextRotate.astro     |
+| `@astroanimate/core/Tooltip`        | Tooltip.astro        |
 
 ## Peer dependency
 

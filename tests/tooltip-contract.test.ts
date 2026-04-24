@@ -22,17 +22,24 @@ describe("Tooltip component contract", () => {
 
   it("exports Tooltip from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./Tooltip"]).toEqual({
-      types: "./dist/components/Tooltip/index.d.ts",
-      import: "./dist/components/Tooltip/index.js",
-      default: "./dist/components/Tooltip/index.js",
+      types: "./dist/components/Tooltip/Tooltip.astro",
+      import: "./dist/components/Tooltip/Tooltip.astro",
+      default: "./dist/components/Tooltip/Tooltip.astro",
     });
-    expect(componentsIndex).toContain('export { default as Tooltip } from "./Tooltip/Tooltip.astro";');
-    expect(rootIndex).toContain('export { default as Tooltip } from "./components/Tooltip/Tooltip.astro";');
+    expect(componentsIndex).toContain(
+      'export { default as Tooltip } from "./Tooltip/Tooltip.astro";',
+    );
+    expect(rootIndex).toContain(
+      'export { default as Tooltip } from "./components/Tooltip/Tooltip.astro";',
+    );
   });
 });

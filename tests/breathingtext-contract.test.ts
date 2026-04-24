@@ -9,7 +9,9 @@ function read(relativePath: string): string {
 
 describe("BreathingText component contract", () => {
   it("stays CSS-first, visible by default, and package-safe", () => {
-    const breathingText = read("src/components/BreathingText/BreathingText.astro");
+    const breathingText = read(
+      "src/components/BreathingText/BreathingText.astro",
+    );
 
     expect(breathingText).toContain("data-astro-breathing-text");
     expect(breathingText).toContain("prefers-reduced-motion: reduce");
@@ -24,21 +26,24 @@ describe("BreathingText component contract", () => {
 
   it("exports BreathingText from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./BreathingText"]).toEqual({
-      types: "./dist/components/BreathingText/index.d.ts",
-      import: "./dist/components/BreathingText/index.js",
-      default: "./dist/components/BreathingText/index.js",
+      types: "./dist/components/BreathingText/BreathingText.astro",
+      import: "./dist/components/BreathingText/BreathingText.astro",
+      default: "./dist/components/BreathingText/BreathingText.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as BreathingText } from "./BreathingText/BreathingText.astro";'
+      'export { default as BreathingText } from "./BreathingText/BreathingText.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as BreathingText } from "./components/BreathingText/BreathingText.astro";'
+      'export { default as BreathingText } from "./components/BreathingText/BreathingText.astro";',
     );
   });
 });

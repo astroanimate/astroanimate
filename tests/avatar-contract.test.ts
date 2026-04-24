@@ -22,21 +22,24 @@ describe("Avatar component contract", () => {
 
   it("exports Avatar from the public package surface", () => {
     const packageJson = JSON.parse(read("package.json")) as {
-      exports: Record<string, { import: string; types: string; default: string }>;
+      exports: Record<
+        string,
+        { import: string; types: string; default: string }
+      >;
     };
     const componentsIndex = read("src/components/index.ts");
     const rootIndex = read("src/index.ts");
 
     expect(packageJson.exports["./Avatar"]).toEqual({
-      types: "./dist/components/Avatar/index.d.ts",
-      import: "./dist/components/Avatar/index.js",
-      default: "./dist/components/Avatar/index.js",
+      types: "./dist/components/Avatar/Avatar.astro",
+      import: "./dist/components/Avatar/Avatar.astro",
+      default: "./dist/components/Avatar/Avatar.astro",
     });
     expect(componentsIndex).toContain(
-      'export { default as Avatar } from "./Avatar/Avatar.astro";'
+      'export { default as Avatar } from "./Avatar/Avatar.astro";',
     );
     expect(rootIndex).toContain(
-      'export { default as Avatar } from "./components/Avatar/Avatar.astro";'
+      'export { default as Avatar } from "./components/Avatar/Avatar.astro";',
     );
   });
 });
