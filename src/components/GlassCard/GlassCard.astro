@@ -1,0 +1,245 @@
+---
+/**
+ * GlassCard.astro - Glassmorphism UI with 3D tilt effect
+ */
+
+interface Props {
+  title?: string;
+  subtitle?: string;
+  description?: string;
+  icon?: string;
+  iconColor?: string;
+  backgroundColor?: string;
+  borderColor?: string;
+  containerBackground?: string;
+  tiltIntensity?: number;
+  enableTilt?: boolean;
+  titleColor?: string;
+  subtitleColor?: string;
+  descriptionColor?: string;
+  class?: string;
+  style?: string;
+  ariaLabel?: string;
+}
+
+const {
+  title = "Glassmorphism UI",
+  subtitle = "A New Design Trend",
+  description = "This card uses the glassmorphism effect to create a sense of depth and transparency. The 3D tilt and dynamic glare are powered by JavaScript to create a futuristic and engaging user experience.",
+  icon = `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>`,
+  iconColor = "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+  backgroundColor = "rgba(255, 255, 255, 0.1)",
+  borderColor = "rgba(255, 255, 255, 0.2)",
+  containerBackground = "white",
+  tiltIntensity = 10,
+  enableTilt = true,
+  titleColor = "#ffffff",
+  subtitleColor = "#a5b4fc",
+  descriptionColor = "rgba(255, 255, 255, 0.7)",
+  class: className = "",
+  style: styleProp = "",
+  ariaLabel,
+} = Astro.props;
+
+const cardId = `glass-card-${Math.random().toString(36).slice(2, 9)}`;
+const mergedClass = className;
+const mergedStyle = [
+  `--glass-card-bg: ${backgroundColor}`,
+  `--glass-card-border: ${borderColor}`,
+  `--glass-card-enable-tilt: ${enableTilt}`,
+  `--glass-card-title-color: ${titleColor}`,
+  `--glass-card-subtitle-color: ${subtitleColor}`,
+  `--glass-card-description-color: ${descriptionColor}`,
+  styleProp,
+]
+  .filter(Boolean)
+  .join("; ");
+
+const cardLabel = ariaLabel ?? title;
+---
+
+<div
+  class="glass-card-container"
+  style={`background: ${containerBackground};`}
+  class:list={mergedClass}
+>
+  <div
+    class="glass-card"
+    id={cardId}
+    data-glass-card
+    data-tilt-intensity={tiltIntensity}
+    data-enable-tilt={enableTilt}
+    style={mergedStyle}
+    aria-label={cardLabel}
+  >
+    <div class="glass-card-header">
+      <div
+        class="glass-card-icon-container"
+        style={iconColor ? `background: ${iconColor}` : ""}
+      >
+        {
+          icon.startsWith("<svg") ? (
+            <div class="glass-card-icon" set:html={icon} />
+          ) : (
+            <img src={icon} alt="icon" class="glass-card-icon" />
+          )
+        }
+      </div>
+      <div class="glass-card-text-content">
+        <h2>{title}</h2>
+        <p>{subtitle}</p>
+      </div>
+    </div>
+    <p class="glass-card-description">
+      {description}
+    </p>
+  </div>
+</div>
+
+<script define:vars={{ cardId }}>
+  const card = document.getElementById(cardId);
+  if (card) {
+    const tiltIntensity = parseFloat(card.dataset.tiltIntensity || "10");
+    const enableTilt = card.dataset.enableTilt === "true";
+
+    if (enableTilt) {
+      const handleMouseMove = (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateY = ((x - centerX) / centerX) * tiltIntensity;
+        const rotateX = ((y - centerY) / centerY) * -tiltIntensity;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        card.style.setProperty("--glass-card-mouse-x", `${x}px`);
+        card.style.setProperty("--glass-card-mouse-y", `${y}px`);
+      };
+
+      const handleMouseLeave = () => {
+        card.style.transform =
+          "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+      };
+
+      card.addEventListener("mousemove", handleMouseMove);
+      card.addEventListener("mouseleave", handleMouseLeave);
+    }
+  }
+</script>
+
+<style>
+  .glass-card-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .glass-card {
+    background: var(--glass-card-bg, rgba(255, 255, 255, 0.1));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-card-border, rgba(255, 255, 255, 0.2));
+    border-radius: 1.5rem;
+    padding: 2rem;
+    max-width: 28rem;
+    width: 100%;
+    color: white;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      sans-serif;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform-style: preserve-3d;
+    transition: transform 0.15s ease-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at var(--glass-card-mouse-x, 50%) var(--glass-card-mouse-y, 50%),
+      rgba(255, 255, 255, 0.15) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .glass-card:where([data-enable-tilt="true"]):hover::before {
+    opacity: 1;
+  }
+
+  .glass-card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    transform: translateZ(20px);
+  }
+
+  .glass-card-icon-container {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4);
+  }
+
+  .glass-card-icon {
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .glass-card-icon svg,
+  .glass-card-icon img {
+    width: 32px;
+    height: 32px;
+  }
+
+  .glass-card-icon img {
+    object-fit: contain;
+  }
+
+  .glass-card-text-content h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--glass-card-title-color, #ffffff);
+  }
+
+  .glass-card-text-content p {
+    margin: 0.25rem 0 0 0;
+    font-size: 0.875rem;
+    color: var(--glass-card-subtitle-color, #a5b4fc);
+  }
+
+  .glass-card-description {
+    font-size: 0.875rem;
+    line-height: 1.75;
+    color: var(--glass-card-description-color, rgba(255, 255, 255, 0.7));
+    margin: 0;
+    transform: translateZ(10px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glass-card {
+      transition: none;
+    }
+
+    .glass-card::before {
+      transition: none;
+    }
+  }
+</style>

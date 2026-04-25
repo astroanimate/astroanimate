@@ -15,6 +15,7 @@ const filesToCopy = [
   "src/components/BlurFadeIn/BlurFadeIn.astro",
   "src/components/ExpandableCard/ExpandableCard.astro",
   "src/components/FadeInText/FadeInText.astro",
+  "src/components/GlassCard/GlassCard.astro",
   "src/components/Loader/Loader.astro",
   "src/components/Reveal/Reveal.astro",
   "src/components/ScaleIn/ScaleIn.astro",
