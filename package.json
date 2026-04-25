@@ -97,6 +97,11 @@
       "types": "./dist/components/Tooltip/Tooltip.astro",
       "import": "./dist/components/Tooltip/Tooltip.astro",
       "default": "./dist/components/Tooltip/Tooltip.astro"
+    },
+    "./TypewriterText": {
+      "types": "./dist/components/TypewriterText/TypewriterText.astro",
+      "import": "./dist/components/TypewriterText/TypewriterText.astro",
+      "default": "./dist/components/TypewriterText/TypewriterText.astro"
     }
   },
   "files": [

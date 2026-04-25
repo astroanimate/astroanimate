@@ -16,3 +16,4 @@ export { default as ScaleIn } from "./ScaleIn/ScaleIn.astro";
 export { default as SlideIn } from "./SlideIn/SlideIn.astro";
 export { default as TextRotate } from "./TextRotate/TextRotate.astro";
 export { default as Tooltip } from "./Tooltip/Tooltip.astro";
+export { default as TypewriterText } from "./TypewriterText/TypewriterText.astro";

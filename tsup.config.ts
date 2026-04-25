@@ -23,6 +23,7 @@ export default defineConfig({
     "components/SlideIn/index": "src/components/SlideIn/index.ts",
     "components/TextRotate/index": "src/components/TextRotate/index.ts",
     "components/Tooltip/index": "src/components/Tooltip/index.ts",
+    "components/TypewriterText/index": "src/components/TypewriterText/index.ts",
     "internal/fadein": "src/internal/fadein.ts",
     "internal/guards": "src/internal/guards.ts",
     "internal/slidein": "src/internal/slidein.ts",

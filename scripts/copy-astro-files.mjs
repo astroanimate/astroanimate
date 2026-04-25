@@ -20,6 +20,7 @@ const filesToCopy = [
   "src/components/SlideIn/SlideIn.astro",
   "src/components/TextRotate/TextRotate.astro",
   "src/components/Tooltip/Tooltip.astro",
+  "src/components/TypewriterText/TypewriterText.astro",
 ];
 
 for (const relativePath of filesToCopy) {
