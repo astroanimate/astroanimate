@@ -47,6 +47,16 @@
       "types": "./dist/components/TypewriterText/TypewriterText.astro",
       "import": "./dist/components/TypewriterText/TypewriterText.astro",
       "default": "./dist/components/TypewriterText/TypewriterText.astro"
+    },
+    "./GlassCard": {
+      "types": "./dist/components/GlassCard/GlassCard.astro",
+      "import": "./dist/components/GlassCard/GlassCard.astro",
+      "default": "./dist/components/GlassCard/GlassCard.astro"
+    },
+    "./ExpandableCard": {
+      "types": "./dist/components/ExpandableCard/ExpandableCard.astro",
+      "import": "./dist/components/ExpandableCard/ExpandableCard.astro",
+      "default": "./dist/components/ExpandableCard/ExpandableCard.astro"
     }
   },
   "files": [
