@@ -33,6 +33,11 @@
       "import": "./dist/components/Loader/Loader.astro",
       "default": "./dist/components/Loader/Loader.astro"
     },
+    "./ProgressBar": {
+      "types": "./dist/components/ProgressBar/ProgressBar.astro",
+      "import": "./dist/components/ProgressBar/ProgressBar.astro",
+      "default": "./dist/components/ProgressBar/ProgressBar.astro"
+    },
     "./ScaleIn": {
       "types": "./dist/components/ScaleIn/ScaleIn.astro",
       "import": "./dist/components/ScaleIn/ScaleIn.astro",

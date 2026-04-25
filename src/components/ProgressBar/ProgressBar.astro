@@ -1,0 +1,137 @@
+---
+interface Props {
+  /**
+   * Progress value (0–max).
+   * @required
+   */
+  value: number;
+
+  /**
+   * Maximum value. Used to compute the percentage width.
+   * @default 100
+   */
+  max?: number;
+
+  /**
+   * Label text for the progress bar.
+   */
+  label?: string;
+
+  /**
+   * Size variant: "small", "medium", or "large".
+   * @default "medium"
+   */
+  size?: "small" | "medium" | "large";
+
+  /**
+   * Bar fill color.
+   * @default "#3b82f6"
+   */
+  color?: string;
+
+  /**
+   * Track background color.
+   * @default "#e5e7eb"
+   */
+  trackColor?: string;
+
+  /**
+   * Optional class applied to the root element.
+   */
+  class?: string;
+}
+
+const {
+  value,
+  max = 100,
+  label,
+  size = "medium",
+  color = "#3b82f6",
+  trackColor = "#e5e7eb",
+  class: className = "",
+} = Astro.props;
+
+const clampedValue = Math.min(Math.max(value, 0), max);
+const percentage = Math.round((clampedValue / max) * 100);
+
+const sizeStyles = {
+  small: {
+    height: "4px",
+    labelSize: "12px",
+  },
+  medium: {
+    height: "8px",
+    labelSize: "14px",
+  },
+  large: {
+    height: "12px",
+    labelSize: "16px",
+  },
+};
+
+const currentSize = sizeStyles[size];
+---
+
+<style>
+  .progress-root {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .progress-label {
+    font-size: var(--label-size, 14px);
+    font-weight: 500;
+    color: #374151;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .progress-label {
+      color: #000;
+      font-family: sans-serif;
+    }
+  }
+
+  .progress-track {
+    width: 100%;
+    height: var(--track-height, 8px);
+    background: var(--track-color, #e5e7eb);
+    border-radius: 9999px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: var(--progress, 0%);
+    background: var(--fill-color, #3b82f6);
+    border-radius: 9999px;
+    transition: width 300ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .progress-fill {
+      transition: none;
+    }
+  }
+</style>
+
+<div
+  class:list={["progress-root", className]}
+  role="progressbar"
+  aria-valuenow={clampedValue}
+  aria-valuemin={0}
+  aria-valuemax={max}
+  aria-label={label}
+  style={`
+    --progress: ${percentage}%;
+    --track-height: ${currentSize.height};
+    --label-size: ${currentSize.labelSize};
+    --fill-color: ${color};
+  `}
+>
+  {label && <div class="progress-label">{label}</div>}
+  <div class="progress-track" style={`background: ${trackColor};`}>
+    <div class="progress-fill"></div>
+  </div>
+</div>
