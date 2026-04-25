@@ -16,16 +16,11 @@ describe("package contract", () => {
       exports: Record<string, { import: string; types: string }>;
     };
     const animatedButtonExport = packageJson.exports["./AnimatedButton"];
-    const alertExport = packageJson.exports["./Alert"];
-    const auraTrailExport = packageJson.exports["./AuraTrail"];
-    const axisCarousel3DExport = packageJson.exports["./AxisCarousel3D"];
-    const avatarExport = packageJson.exports["./Avatar"];
-    const avatarStackExport = packageJson.exports["./AvatarStack"];
-    const avatarTooltipExport = packageJson.exports["./AvatarTooltip"];
-    const badgeExport = packageJson.exports["./Badge"];
-    const breathingTextExport = packageJson.exports["./BreathingText"];
-    const blurFadeInExport = packageJson.exports["./BlurFadeIn"];
-    const slideInExport = packageJson.exports["./SlideIn"];
+    const fadeInTextExport = packageJson.exports["./FadeInText"];
+    const loaderExport = packageJson.exports["./Loader"];
+    const scaleInExport = packageJson.exports["./ScaleIn"];
+    const tooltipExport = packageJson.exports["./Tooltip"];
+    const typewriterTextExport = packageJson.exports["./TypewriterText"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -34,39 +29,23 @@ describe("package contract", () => {
     expect(animatedButtonExport?.import).toBe(
       "./dist/components/AnimatedButton/AnimatedButton.astro",
     );
-    expect(alertExport).toBeDefined();
-    expect(alertExport?.import).toBe("./dist/components/Alert/Alert.astro");
-    expect(auraTrailExport).toBeDefined();
-    expect(auraTrailExport?.import).toBe(
-      "./dist/components/AuraTrail/AuraTrail.astro",
+    expect(fadeInTextExport).toBeDefined();
+    expect(fadeInTextExport?.import).toBe(
+      "./dist/components/FadeInText/FadeInText.astro",
     );
-    expect(axisCarousel3DExport).toBeDefined();
-    expect(axisCarousel3DExport?.import).toBe(
-      "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+    expect(loaderExport).toBeDefined();
+    expect(loaderExport?.import).toBe("./dist/components/Loader/Loader.astro");
+    expect(scaleInExport).toBeDefined();
+    expect(scaleInExport?.import).toBe(
+      "./dist/components/ScaleIn/ScaleIn.astro",
     );
-    expect(avatarExport).toBeDefined();
-    expect(avatarExport?.import).toBe("./dist/components/Avatar/Avatar.astro");
-    expect(avatarStackExport).toBeDefined();
-    expect(avatarStackExport?.import).toBe(
-      "./dist/components/AvatarStack/AvatarStack.astro",
+    expect(tooltipExport).toBeDefined();
+    expect(tooltipExport?.import).toBe(
+      "./dist/components/Tooltip/Tooltip.astro",
     );
-    expect(avatarTooltipExport).toBeDefined();
-    expect(avatarTooltipExport?.import).toBe(
-      "./dist/components/AvatarTooltip/AvatarTooltip.astro",
-    );
-    expect(badgeExport).toBeDefined();
-    expect(badgeExport?.import).toBe("./dist/components/Badge/Badge.astro");
-    expect(breathingTextExport).toBeDefined();
-    expect(breathingTextExport?.import).toBe(
-      "./dist/components/BreathingText/BreathingText.astro",
-    );
-    expect(blurFadeInExport).toBeDefined();
-    expect(blurFadeInExport?.import).toBe(
-      "./dist/components/BlurFadeIn/BlurFadeIn.astro",
-    );
-    expect(slideInExport).toBeDefined();
-    expect(slideInExport?.import).toBe(
-      "./dist/components/SlideIn/SlideIn.astro",
+    expect(typewriterTextExport).toBeDefined();
+    expect(typewriterTextExport?.import).toBe(
+      "./dist/components/TypewriterText/TypewriterText.astro",
     );
   });
 
@@ -82,63 +61,41 @@ describe("package contract", () => {
     const animatedButton = read(
       "src/components/AnimatedButton/AnimatedButton.astro",
     );
-    const alert = read("src/components/Alert/Alert.astro");
-    const auraTrail = read("src/components/AuraTrail/AuraTrail.astro");
-    const axisCarousel3D = read(
-      "src/components/AxisCarousel3D/AxisCarousel3D.astro",
+    const animatedCard = read("src/components/AnimatedCard/AnimatedCard.astro");
+    const loader = read("src/components/Loader/Loader.astro");
+    const tooltip = read("src/components/Tooltip/Tooltip.astro");
+    const fadeInText = read("src/components/FadeInText/FadeInText.astro");
+    const scaleIn = read("src/components/ScaleIn/ScaleIn.astro");
+    const typewriterText = read(
+      "src/components/TypewriterText/TypewriterText.astro",
     );
-    const avatar = read("src/components/Avatar/Avatar.astro");
-    const avatarStack = read("src/components/AvatarStack/AvatarStack.astro");
-    const avatarTooltip = read(
-      "src/components/AvatarTooltip/AvatarTooltip.astro",
-    );
-    const badge = read("src/components/Badge/Badge.astro");
-    const breathingText = read(
-      "src/components/BreathingText/BreathingText.astro",
-    );
-    const blurFadeIn = read("src/components/BlurFadeIn/BlurFadeIn.astro");
-    const reveal = read("src/components/Reveal/Reveal.astro");
-    const slideIn = read("src/components/SlideIn/SlideIn.astro");
-    const textRotate = read("src/components/TextRotate/TextRotate.astro");
 
+    // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
-    expect(alert).toContain("<script is:inline>");
-    expect(auraTrail).not.toContain("<script");
-    expect(axisCarousel3D).toContain("<script is:inline>");
-    expect(avatar).not.toContain("<script");
-    expect(avatarStack).toContain("<script is:inline>");
-    expect(avatarTooltip).not.toContain("<script");
-    expect(badge).not.toContain("<script");
-    expect(breathingText).not.toContain("<script");
-    expect(blurFadeIn).not.toContain("<script");
-    expect(reveal).toContain("<script is:inline>");
-    expect(slideIn).toContain("<script is:inline>");
-    expect(textRotate).toContain("<script is:inline>");
+    expect(loader).not.toContain("<script");
 
+    // Components with conditional scripts
+    expect(animatedCard).toContain("<script");
+    expect(tooltip).toContain("<script is:inline>");
+    expect(fadeInText).toContain("<script is:inline>");
+    expect(scaleIn).toContain("<script is:inline>");
+    expect(typewriterText).toContain("<script is:inline>");
+
+    // No astro:* events or client: directives
     expect(animatedButton).not.toContain("astro:page-load");
     expect(animatedButton).not.toContain("client:");
-    expect(alert).not.toContain("astro:page-load");
-    expect(auraTrail).not.toContain("astro:page-load");
-    expect(axisCarousel3D).not.toContain("astro:page-load");
-    expect(avatar).not.toContain("astro:page-load");
-    expect(avatarStack).not.toContain("astro:page-load");
-    expect(avatarTooltip).not.toContain("astro:page-load");
-    expect(badge).not.toContain("astro:page-load");
-    expect(breathingText).not.toContain("astro:page-load");
-    expect(blurFadeIn).not.toContain("astro:page-load");
-    expect(reveal).not.toContain("astro:page-load");
-    expect(slideIn).not.toContain("astro:page-load");
-    expect(alert).not.toContain("client:");
-    expect(auraTrail).not.toContain("client:");
-    expect(axisCarousel3D).not.toContain("client:");
-    expect(avatar).not.toContain("client:");
-    expect(avatarStack).not.toContain("client:");
-    expect(avatarTooltip).not.toContain("client:");
-    expect(badge).not.toContain("client:");
-    expect(breathingText).not.toContain("client:");
-    expect(blurFadeIn).not.toContain("client:");
-    expect(slideIn).not.toContain("client:");
-    expect(textRotate).not.toContain("client:");
+    expect(animatedCard).not.toContain("astro:page-load");
+    expect(animatedCard).not.toContain("client:");
+    expect(loader).not.toContain("astro:page-load");
+    expect(loader).not.toContain("client:");
+    expect(tooltip).not.toContain("astro:page-load");
+    expect(tooltip).not.toContain("client:");
+    expect(fadeInText).not.toContain("astro:page-load");
+    expect(fadeInText).not.toContain("client:");
+    expect(scaleIn).not.toContain("astro:page-load");
+    expect(scaleIn).not.toContain("client:");
+    expect(typewriterText).not.toContain("astro:page-load");
+    expect(typewriterText).not.toContain("client:");
   });
 
   it("copies published Astro component files into dist", () => {
@@ -151,64 +108,29 @@ describe("package contract", () => {
       ),
     ).toBe(true);
     expect(
-      existsSync(resolve(process.cwd(), "dist/components/Alert/Alert.astro")),
+      existsSync(
+        resolve(process.cwd(), "dist/components/FadeInText/FadeInText.astro"),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(resolve(process.cwd(), "dist/components/Loader/Loader.astro")),
     ).toBe(true);
     expect(
       existsSync(
-        resolve(process.cwd(), "dist/components/AuraTrail/AuraTrail.astro"),
+        resolve(process.cwd(), "dist/components/ScaleIn/ScaleIn.astro"),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(process.cwd(), "dist/components/Tooltip/Tooltip.astro"),
       ),
     ).toBe(true);
     expect(
       existsSync(
         resolve(
           process.cwd(),
-          "dist/components/AxisCarousel3D/AxisCarousel3D.astro",
+          "dist/components/TypewriterText/TypewriterText.astro",
         ),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(resolve(process.cwd(), "dist/components/Avatar/Avatar.astro")),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(process.cwd(), "dist/components/AvatarStack/AvatarStack.astro"),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(
-          process.cwd(),
-          "dist/components/AvatarTooltip/AvatarTooltip.astro",
-        ),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(resolve(process.cwd(), "dist/components/Badge/Badge.astro")),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(
-          process.cwd(),
-          "dist/components/BreathingText/BreathingText.astro",
-        ),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(process.cwd(), "dist/components/BlurFadeIn/BlurFadeIn.astro"),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(resolve(process.cwd(), "dist/components/Reveal/Reveal.astro")),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(process.cwd(), "dist/components/SlideIn/SlideIn.astro"),
-      ),
-    ).toBe(true);
-    expect(
-      existsSync(
-        resolve(process.cwd(), "dist/components/TextRotate/TextRotate.astro"),
       ),
     ).toBe(true);
   });

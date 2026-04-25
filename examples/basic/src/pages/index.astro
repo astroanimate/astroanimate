@@ -1,7 +1,7 @@
 ---
-import FadeIn from "@astroanimate/core/FadeIn";
-import Reveal from "@astroanimate/core/Reveal";
-import TextRotate from "@astroanimate/core/TextRotate";
+import FadeInText from "@astroanimate/core/FadeInText";
+import ScaleIn from "@astroanimate/core/ScaleIn";
+import TypewriterText from "@astroanimate/core/TypewriterText";
 ---
 
 <html lang="en">
@@ -13,19 +13,19 @@ import TextRotate from "@astroanimate/core/TextRotate";
   <body>
     <main>
       <h1>
-        <TextRotate
-          texts={["Astro-native", "Progressively enhanced", "Motion-aware"]}
-          enhance
-        />
+        <TypewriterText text="Astro-native" enhance speed={100} />
       </h1>
 
-      <FadeIn enhance direction="up" distance={24}>
-        <p>FadeIn stays visible without JavaScript and enhances when opted in.</p>
-      </FadeIn>
+      <FadeInText duration={0.6} delay={0} enhance={true}>
+        <p>
+          FadeInText stays visible without JavaScript and enhances when opted
+          in.
+        </p>
+      </FadeInText>
 
-      <Reveal enhance effect="slide-up" delay={120}>
-        <p>Reveal now follows the same opt-in enhancement pattern.</p>
-      </Reveal>
+      <ScaleIn enhance duration={0.6} delay={0.2}>
+        <p>ScaleIn follows the same opt-in enhancement pattern.</p>
+      </ScaleIn>
     </main>
   </body>
 </html>

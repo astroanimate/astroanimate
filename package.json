@@ -23,51 +23,6 @@
       "import": "./dist/components/AnimatedCard/AnimatedCard.astro",
       "default": "./dist/components/AnimatedCard/AnimatedCard.astro"
     },
-    "./Alert": {
-      "types": "./dist/components/Alert/Alert.astro",
-      "import": "./dist/components/Alert/Alert.astro",
-      "default": "./dist/components/Alert/Alert.astro"
-    },
-    "./AuraTrail": {
-      "types": "./dist/components/AuraTrail/AuraTrail.astro",
-      "import": "./dist/components/AuraTrail/AuraTrail.astro",
-      "default": "./dist/components/AuraTrail/AuraTrail.astro"
-    },
-    "./AxisCarousel3D": {
-      "types": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
-      "import": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro",
-      "default": "./dist/components/AxisCarousel3D/AxisCarousel3D.astro"
-    },
-    "./Avatar": {
-      "types": "./dist/components/Avatar/Avatar.astro",
-      "import": "./dist/components/Avatar/Avatar.astro",
-      "default": "./dist/components/Avatar/Avatar.astro"
-    },
-    "./AvatarStack": {
-      "types": "./dist/components/AvatarStack/AvatarStack.astro",
-      "import": "./dist/components/AvatarStack/AvatarStack.astro",
-      "default": "./dist/components/AvatarStack/AvatarStack.astro"
-    },
-    "./AvatarTooltip": {
-      "types": "./dist/components/AvatarTooltip/AvatarTooltip.astro",
-      "import": "./dist/components/AvatarTooltip/AvatarTooltip.astro",
-      "default": "./dist/components/AvatarTooltip/AvatarTooltip.astro"
-    },
-    "./Badge": {
-      "types": "./dist/components/Badge/Badge.astro",
-      "import": "./dist/components/Badge/Badge.astro",
-      "default": "./dist/components/Badge/Badge.astro"
-    },
-    "./BreathingText": {
-      "types": "./dist/components/BreathingText/BreathingText.astro",
-      "import": "./dist/components/BreathingText/BreathingText.astro",
-      "default": "./dist/components/BreathingText/BreathingText.astro"
-    },
-    "./BlurFadeIn": {
-      "types": "./dist/components/BlurFadeIn/BlurFadeIn.astro",
-      "import": "./dist/components/BlurFadeIn/BlurFadeIn.astro",
-      "default": "./dist/components/BlurFadeIn/BlurFadeIn.astro"
-    },
     "./FadeInText": {
       "types": "./dist/components/FadeInText/FadeInText.astro",
       "import": "./dist/components/FadeInText/FadeInText.astro",
@@ -78,20 +33,10 @@
       "import": "./dist/components/Loader/Loader.astro",
       "default": "./dist/components/Loader/Loader.astro"
     },
-    "./Reveal": {
-      "types": "./dist/components/Reveal/Reveal.astro",
-      "import": "./dist/components/Reveal/Reveal.astro",
-      "default": "./dist/components/Reveal/Reveal.astro"
-    },
-    "./SlideIn": {
-      "types": "./dist/components/SlideIn/SlideIn.astro",
-      "import": "./dist/components/SlideIn/SlideIn.astro",
-      "default": "./dist/components/SlideIn/SlideIn.astro"
-    },
-    "./TextRotate": {
-      "types": "./dist/components/TextRotate/TextRotate.astro",
-      "import": "./dist/components/TextRotate/TextRotate.astro",
-      "default": "./dist/components/TextRotate/TextRotate.astro"
+    "./ScaleIn": {
+      "types": "./dist/components/ScaleIn/ScaleIn.astro",
+      "import": "./dist/components/ScaleIn/ScaleIn.astro",
+      "default": "./dist/components/ScaleIn/ScaleIn.astro"
     },
     "./Tooltip": {
       "types": "./dist/components/Tooltip/Tooltip.astro",
