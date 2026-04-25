@@ -13,6 +13,7 @@ const filesToCopy = [
   "src/components/Badge/Badge.astro",
   "src/components/BreathingText/BreathingText.astro",
   "src/components/BlurFadeIn/BlurFadeIn.astro",
+  "src/components/ExpandableCard/ExpandableCard.astro",
   "src/components/FadeInText/FadeInText.astro",
   "src/components/Loader/Loader.astro",
   "src/components/Reveal/Reveal.astro",

@@ -8,6 +8,7 @@ export default defineConfig({
     "components/index": "src/components/index.ts",
     "components/AnimatedButton/index": "src/components/AnimatedButton/index.ts",
     "components/AnimatedCard/index": "src/components/AnimatedCard/index.ts",
+    "components/ExpandableCard/index": "src/components/ExpandableCard/index.ts",
     "components/FadeInText/index": "src/components/FadeInText/index.ts",
     "components/Loader/index": "src/components/Loader/index.ts",
     "components/ScaleIn/index": "src/components/ScaleIn/index.ts",

@@ -1,5 +1,6 @@
 export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";
 export { default as AnimatedCard } from "./AnimatedCard/AnimatedCard.astro";
+export { default as ExpandableCard } from "./ExpandableCard/ExpandableCard.astro";
 export { default as FadeInText } from "./FadeInText/FadeInText.astro";
 export { default as Loader } from "./Loader/Loader.astro";
 export { default as ScaleIn } from "./ScaleIn/ScaleIn.astro";
