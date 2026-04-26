@@ -62,6 +62,11 @@
       "types": "./dist/components/ExpandableCard/ExpandableCard.astro",
       "import": "./dist/components/ExpandableCard/ExpandableCard.astro",
       "default": "./dist/components/ExpandableCard/ExpandableCard.astro"
+    },
+    "./RevealImage": {
+      "types": "./dist/components/RevealImage/RevealImage.astro",
+      "import": "./dist/components/RevealImage/RevealImage.astro",
+      "default": "./dist/components/RevealImage/RevealImage.astro"
     }
   },
   "files": [
