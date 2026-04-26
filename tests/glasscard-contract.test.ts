@@ -16,7 +16,7 @@ describe("GlassCard component contract", () => {
     expect(glassCard).toContain("data-enable-tilt");
     expect(glassCard).toContain("style={mergedStyle}");
     expect(glassCard).toContain("aria-label");
-    expect(glassCard).toContain("<script define:vars={{ cardId }}>");
+    expect(glassCard).toContain("<script is:inline define:vars={{ cardId }}>");
     expect(glassCard).toContain("prefers-reduced-motion: reduce");
     expect(glassCard).toContain("getElementById");
     expect(glassCard).toContain("addEventListener");

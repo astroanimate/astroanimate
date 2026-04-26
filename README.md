@@ -1,6 +1,6 @@
 # astroanimate
 
-Astro-native animation components: **AnimatedButton**, **AnimatedCard**, **FadeInText**, **Loader**, **ScaleIn**, **Tooltip**, and **TypewriterText**.
+Astro-native animation components: **AnimatedButton**, **AnimatedCard**, **ExpandableCard**, **FadeInText**, **GlassCard**, **Loader**, **ProgressBar**, **RevealImage**, **ScaleIn**, **Tooltip**, and **TypewriterText**.
 
 ## Install
 
@@ -63,6 +63,8 @@ import FadeInText from "@astroanimate/core/FadeInText";
 </FadeInText>
 ```
 
+> When `enhance=true`, the element starts hidden and waits for JavaScript to initialise the IntersectionObserver. If JS is slow to load, the element has a built-in 2s CSS fallback animation that fires automatically — ensuring content never stays permanently invisible. This means in slow-JS environments, users may see content appear after roughly 2 seconds before the scroll-trigger behaviour takes over.
+
 ### Loader
 
 CSS-only loading indicators with multiple variants.
@@ -118,14 +120,85 @@ import TypewriterText from "@astroanimate/core/TypewriterText";
 <TypewriterText text="Hello, World!" enhance speed={50} />
 ```
 
+### GlassCard
+
+Glassmorphism UI with 3D tilt effect and dynamic glare.
+
+```astro
+---
+import GlassCard from "@astroanimate/core/GlassCard";
+---
+
+<GlassCard
+  title="Glassmorphism UI"
+  subtitle="A New Design Trend"
+  description="This card uses the glassmorphism effect to create a sense of depth and transparency."
+  enableTilt={true}
+  tiltIntensity={10}
+/>
+```
+
+### ExpandableCard
+
+Expandable/collapsible card with CSS baseline and optional JS enhancement.
+
+```astro
+---
+import ExpandableCard from "@astroanimate/core/ExpandableCard";
+---
+
+<ExpandableCard
+  title="Expandable Card"
+  subtitle="Click to expand"
+  initialOpen={false}
+  enhance={true}
+  duration={300}
+>
+  <p>This content can be expanded and collapsed.</p>
+</ExpandableCard>
+```
+
+### ProgressBar
+
+Progress bar with size variants (small, medium, large).
+
+```astro
+---
+import ProgressBar from "@astroanimate/core/ProgressBar";
+---
+
+<ProgressBar value={75} max={100} label="Loading" size="medium" color="#3b82f6" />
+```
+
+### RevealImage
+
+Text with two images that reveal on hover (pure CSS).
+
+```astro
+---
+import RevealImage from "@astroanimate/core/RevealImage";
+---
+
+<RevealImage
+  text="Hover Me"
+  image1="/path/to/image1.jpg"
+  image2="/path/to/image2.jpg"
+  alt="Reveal images"
+/>
+```
+
 ## Exports
 
 | Import                              | Component            |
 | ----------------------------------- | -------------------- |
 | `@astroanimate/core/AnimatedButton` | AnimatedButton.astro |
 | `@astroanimate/core/AnimatedCard`   | AnimatedCard.astro   |
+| `@astroanimate/core/ExpandableCard` | ExpandableCard.astro |
 | `@astroanimate/core/FadeInText`     | FadeInText.astro     |
+| `@astroanimate/core/GlassCard`      | GlassCard.astro      |
 | `@astroanimate/core/Loader`         | Loader.astro         |
+| `@astroanimate/core/ProgressBar`    | ProgressBar.astro    |
+| `@astroanimate/core/RevealImage`    | RevealImage.astro    |
 | `@astroanimate/core/ScaleIn`        | ScaleIn.astro        |
 | `@astroanimate/core/Tooltip`        | Tooltip.astro        |
 | `@astroanimate/core/TypewriterText` | TypewriterText.astro |

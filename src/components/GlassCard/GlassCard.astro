@@ -96,7 +96,7 @@ const cardLabel = ariaLabel ?? title;
   </div>
 </div>
 
-<script define:vars={{ cardId }}>
+<script is:inline define:vars={{ cardId }}>
   const card = document.getElementById(cardId);
   if (card) {
     const tiltIntensity = parseFloat(card.dataset.tiltIntensity || "10");
