@@ -5,6 +5,7 @@ export { default as FadeInText } from "./FadeInText/FadeInText.astro";
 export { default as GlassCard } from "./GlassCard/GlassCard.astro";
 export { default as Loader } from "./Loader/Loader.astro";
 export { default as ProgressBar } from "./ProgressBar/ProgressBar.astro";
+export { default as RevealImage } from "./RevealImage/RevealImage.astro";
 export { default as ScaleIn } from "./ScaleIn/ScaleIn.astro";
 export { default as Tooltip } from "./Tooltip/Tooltip.astro";
 export { default as TypewriterText } from "./TypewriterText/TypewriterText.astro";

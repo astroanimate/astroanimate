@@ -13,6 +13,7 @@ export default defineConfig({
     "components/GlassCard/index": "src/components/GlassCard/index.ts",
     "components/Loader/index": "src/components/Loader/index.ts",
     "components/ProgressBar/index": "src/components/ProgressBar/index.ts",
+    "components/RevealImage/index": "src/components/RevealImage/index.ts",
     "components/ScaleIn/index": "src/components/ScaleIn/index.ts",
     "components/Tooltip/index": "src/components/Tooltip/index.ts",
     "components/TypewriterText/index": "src/components/TypewriterText/index.ts",

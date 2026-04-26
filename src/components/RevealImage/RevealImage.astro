@@ -1,0 +1,160 @@
+---
+/**
+ * RevealImage — Displays text with two images that reveal on hover.
+ *
+ * Pure CSS component with no JavaScript. Images are initially small
+ * and expand to full size on hover, with one image rotated for visual effect.
+ * Respects prefers-reduced-motion to disable animations.
+ */
+
+interface Props {
+  /**
+   * Text to display.
+   * @required
+   */
+  text: string;
+
+  /**
+   * First image source URL.
+   * @required
+   */
+  image1: string;
+
+  /**
+   * Second image source URL.
+   * @required
+   */
+  image2: string;
+
+  /**
+   * Alt text for images.
+   * @default ""
+   */
+  alt?: string;
+
+  /**
+   * Optional class applied to the root element.
+   */
+  class?: string;
+}
+
+const {
+  text,
+  image1,
+  image2,
+  alt = "",
+  class: className = "",
+} = Astro.props;
+---
+
+<style>
+  .reveal-image-item {
+    position: relative;
+    padding: 32px 0;
+    overflow: visible;
+  }
+
+  .reveal-image-item-text {
+    font-size: 72px;
+    font-weight: 900;
+    color: #000;
+    transition: opacity 0.5s ease;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .reveal-image-item-text {
+      color: #000;
+    }
+  }
+
+  .reveal-image-item:hover .reveal-image-item-text {
+    opacity: 0.4;
+  }
+
+  .reveal-image-container {
+    position: absolute;
+    right: 32px;
+    top: -4px;
+    z-index: 40;
+    height: 80px;
+    width: 64px;
+  }
+
+  .reveal-image-effect {
+    position: relative;
+    duration: 500ms;
+    delay: 100ms;
+    scale: 0;
+    opacity: 0;
+    width: 64px;
+    height: 64px;
+    overflow: hidden;
+    border-radius: 6px;
+    transition: all 0.5s ease 0.1s;
+  }
+
+  .reveal-image-item:hover .reveal-image-effect {
+    scale: 1;
+    opacity: 1;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .reveal-image-effect img {
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .reveal-image-container-rotated {
+    position: absolute;
+    right: 32px;
+    top: -4px;
+    z-index: 40;
+    height: 80px;
+    width: 64px;
+    transition: all 0.5s ease 0.15s;
+  }
+
+  .reveal-image-item:hover .reveal-image-container-rotated {
+    transform: translateX(24px) translateY(24px) rotate(12deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-image-item-text,
+    .reveal-image-effect,
+    .reveal-image-container-rotated {
+      transition: none;
+    }
+
+    .reveal-image-item:hover .reveal-image-item-text {
+      opacity: 1;
+    }
+
+    .reveal-image-item:hover .reveal-image-effect {
+      scale: 1;
+      opacity: 1;
+      width: 64px;
+      height: 64px;
+    }
+
+    .reveal-image-item:hover .reveal-image-container-rotated {
+      transform: none;
+    }
+  }
+</style>
+
+<div class:list={["reveal-image-item", className]}>
+  <h1 class="reveal-image-item-text">{text}</h1>
+  <div class="reveal-image-container">
+    <div class="reveal-image-effect">
+      <img alt={alt} src={image2} loading="lazy" />
+    </div>
+  </div>
+  <div class="reveal-image-container-rotated">
+    <div class="reveal-image-effect" style="transition-duration: 0.2s;">
+      <img alt={alt} src={image1} loading="lazy" />
+    </div>
+  </div>
+</div>

@@ -9,6 +9,7 @@ const filesToCopy = [
   "src/components/GlassCard/GlassCard.astro",
   "src/components/Loader/Loader.astro",
   "src/components/ProgressBar/ProgressBar.astro",
+  "src/components/RevealImage/RevealImage.astro",
   "src/components/ScaleIn/ScaleIn.astro",
   "src/components/Tooltip/Tooltip.astro",
   "src/components/TypewriterText/TypewriterText.astro",
