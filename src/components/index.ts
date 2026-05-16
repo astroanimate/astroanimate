@@ -1,3 +1,4 @@
+export { default as AnimatedTabs } from "./AnimatedTabs/AnimatedTabs.astro";
 export { default as AnimatedButton } from "./AnimatedButton/AnimatedButton.astro";
 export { default as AnimatedCard } from "./AnimatedCard/AnimatedCard.astro";
 export { default as ExpandableCard } from "./ExpandableCard/ExpandableCard.astro";

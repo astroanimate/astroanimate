@@ -1,0 +1,348 @@
+---
+/**
+ * AnimatedTabs — A CSS-first tab component with JS enhancement for smooth indicator transitions.
+ * 
+ * Satisfies 8-checkpoint standard:
+ * 1. Visible Without JS: Initial tab panel is visible by default.
+ * 2. Zero Hydration: No framework hydration required.
+ * 3. Multiple Instances Safe: Uses unique selectors and WeakMap tracking.
+ * 4. Works in Build + Preview: Standard Astro component.
+ * 5. No Astro Internals: Uses public slots API.
+ * 6. Reduced Motion Respected: CSS and JS guards for prefers-reduced-motion.
+ * 7. CSS-First: Layout and state driven by data-attributes.
+ * 8. JS Only Enhances: Smooth indicator and keyboard navigation added by JS.
+ */
+
+interface TabDef {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  tabs: TabDef[];
+  defaultTab?: string;
+  variant?: "pill" | "underline";
+  color?: string;
+  size?: "sm" | "md" | "lg";
+  backgroundColor?: string;
+  inactiveTextColor?: string;
+  activeTextColor?: string;
+  showBorder?: boolean;
+  fullWidth?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  tabs = [],
+  defaultTab,
+  variant = "pill",
+  color = "#3b82f6",
+  backgroundColor = "#f1f5f9",
+  inactiveTextColor = "#64748b",
+  activeTextColor,
+  showBorder = true,
+  fullWidth = true,
+  size = "md",
+  class: className = "",
+  ...rest
+} = Astro.props as Props;
+
+const safeTabs = Array.isArray(tabs)
+  ? tabs.filter((t) => t && t.id && t.label)
+  : [];
+
+const initialTab =
+  defaultTab && safeTabs.some((t) => t.id === defaultTab)
+    ? defaultTab
+    : safeTabs[0]?.id;
+
+const panelHtmlById = new Map<string, string>();
+for (const t of safeTabs) {
+  const slotName = `panel:${t.id}`;
+  panelHtmlById.set(t.id, await Astro.slots.render(slotName));
+}
+---
+
+<style>
+  .astro-animated-tabs {
+    width: 100%;
+    font-family: system-ui, -apple-system, sans-serif;
+    --tab-accent: var(--tabs-color, #3b82f6);
+    --tab-bg-inactive: var(--tabs-bg-inactive, #f1f5f9);
+    --tab-text-inactive: var(--tabs-text-inactive, #64748b);
+    --tab-text-active: var(--tabs-text-active, #ffffff);
+    --tab-border: #e2e8f0;
+  }
+
+  .tablist {
+    display: flex;
+    gap: 0.25rem;
+    background: var(--tab-bg-inactive);
+    padding: 0.25rem;
+    border-radius: 0.5rem;
+    position: relative;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .tablist::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Indicator - Positioned via data attributes set by JS */
+  .indicator {
+    position: absolute;
+    height: calc(100% - 0.5rem);
+    top: 0.25rem;
+    left: 0;
+    background: var(--tab-accent);
+    border-radius: 0.375rem;
+    width: 0;
+    transform: translateX(0);
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  /* Show indicator once JS has calculated positions */
+  [data-ready="true"] .indicator {
+    opacity: 1;
+    transform: translateX(calc(var(--indicator-x, 0) * 1px));
+    width: calc(var(--indicator-w, 0) * 1px);
+  }
+
+  /* Underline Variant */
+  [data-variant="underline"] .tablist {
+    background: transparent;
+    border-bottom: 2px solid var(--tab-border);
+    border-radius: 0;
+    padding: 0;
+  }
+
+  [data-variant="underline"] .indicator {
+    height: 2px;
+    top: auto;
+    bottom: -2px;
+    left: 0;
+    border-radius: 0;
+  }
+
+  .tab {
+    border: none;
+    background: transparent;
+    color: var(--tab-text-inactive);
+    font-weight: 500;
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+    padding: 0.625rem 1rem;
+    font-size: 0.95rem;
+    flex: 0 0 auto;
+    text-align: center;
+  }
+
+  [data-full-width="true"] .tab {
+    flex: 1;
+  }
+
+  .tab[data-active="true"] {
+    color: var(--tab-text-active);
+  }
+
+  [data-variant="underline"] .tab[data-active="true"] {
+    color: var(--tab-accent);
+  }
+
+  /* Sizes */
+  [data-size="sm"] .tab { padding: 0.4rem 0.75rem; font-size: 0.875rem; }
+  [data-size="lg"] .tab { padding: 0.75rem 1.25rem; font-size: 1rem; }
+
+  .panels {
+    margin-top: 1rem;
+  }
+
+  .panel {
+    display: none;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 0.5rem;
+  }
+
+  [data-show-border="true"] .panel {
+    border: 1px solid var(--tab-border);
+  }
+
+  .panel[data-active="true"] {
+    display: block;
+    animation: astroTabsFadeIn 0.2s ease;
+  }
+
+  @keyframes astroTabsFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .indicator, .tab, .panel[data-active="true"] {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>
+
+<div
+  {...rest}
+  class:list={["astro-animated-tabs", className]}
+  data-astro-tabs
+  data-variant={variant}
+  data-size={size}
+  data-show-border={showBorder.toString()}
+  data-full-width={fullWidth.toString()}
+  data-default-tab={initialTab}
+  style={`--tabs-color: ${color}; --tabs-bg-inactive: ${backgroundColor}; --tabs-text-inactive: ${inactiveTextColor}; --tabs-text-active: ${activeTextColor || (variant === "pill" ? "#ffffff" : color)};`}
+>
+  <div class="tablist" role="tablist" aria-label="Tabs" data-tablist>
+    <div class="indicator" data-indicator></div>
+    {
+      safeTabs.map((t) => (
+        <button
+          class="tab"
+          type="button"
+          role="tab"
+          data-tab
+          data-tab-id={t.id}
+          data-active={t.id === initialTab ? "true" : "false"}
+          aria-selected={t.id === initialTab ? "true" : "false"}
+          tabindex={t.id === initialTab ? 0 : -1}
+        >
+          {t.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="panels">
+    {
+      safeTabs.map((t) => (
+        <div
+          class="panel"
+          role="tabpanel"
+          data-panel
+          data-panel-id={t.id}
+          data-active={t.id === initialTab ? "true" : "false"}
+          hidden={t.id !== initialTab}
+        >
+          <Fragment set:html={panelHtmlById.get(t.id) ?? ""} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script is:inline>
+  (function() {
+    if (typeof window === 'undefined') return;
+    
+    var initialized = new WeakMap();
+
+    function enhanceTabs(root) {
+      if (initialized.has(root)) return;
+      
+      var tablist = root.querySelector('[data-tablist]');
+      var indicator = root.querySelector('[data-indicator]');
+      var tabs = Array.from(root.querySelectorAll('[data-tab]'));
+      var panels = Array.from(root.querySelectorAll('[data-panel]'));
+      
+      if (!tablist || !indicator || tabs.length === 0) return;
+
+      var activeIndex = tabs.findIndex(function(t) { 
+        return t.dataset.tabId === root.dataset.defaultTab; 
+      });
+      if (activeIndex === -1) activeIndex = 0;
+
+      function updateIndicator() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        
+        var activeTab = tabs[activeIndex];
+        if (!activeTab) return;
+        
+        var listRect = tablist.getBoundingClientRect();
+        var tabRect = activeTab.getBoundingClientRect();
+        
+        var x = tabRect.left - listRect.left + tablist.scrollLeft;
+        var w = tabRect.width;
+        
+        root.style.setProperty('--indicator-x', x);
+        root.style.setProperty('--indicator-w', w);
+        root.dataset.ready = "true";
+      }
+
+      function setActive(index, focus) {
+        activeIndex = index;
+        tabs.forEach(function(t, i) {
+          var isActive = i === index;
+          t.dataset.active = isActive ? "true" : "false";
+          t.setAttribute('aria-selected', isActive ? "true" : "false");
+          t.tabIndex = isActive ? 0 : -1;
+        });
+        
+        panels.forEach(function(p) {
+          var isActive = p.dataset.panelId === tabs[index].dataset.tabId;
+          p.dataset.active = isActive ? "true" : "false";
+          if (isActive) {
+            p.removeAttribute('hidden');
+          } else {
+            p.setAttribute('hidden', '');
+          }
+        });
+        
+        updateIndicator();
+        if (focus) tabs[index].focus();
+      }
+
+      tablist.addEventListener('click', function(e) {
+        var btn = e.target.closest('[data-tab]');
+        if (!btn) return;
+        setActive(tabs.indexOf(btn), true);
+      });
+
+      tablist.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          setActive((activeIndex + 1) % tabs.length, true);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          setActive((activeIndex - 1 + tabs.length) % tabs.length, true);
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          setActive(0, true);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          setActive(tabs.length - 1, true);
+        }
+      });
+
+      window.addEventListener('resize', updateIndicator);
+      
+      // Initial update
+      setActive(activeIndex);
+      setTimeout(updateIndicator, 0);
+
+      var cleanupObserver = new MutationObserver(function() {
+        if (!document.contains(root)) {
+          window.removeEventListener('resize', updateIndicator);
+          cleanupObserver.disconnect();
+          initialized.delete(root);
+        }
+      });
+      cleanupObserver.observe(document.body, { childList: true, subtree: true });
+      
+      initialized.set(root, true);
+    }
+
+    document.querySelectorAll('[data-astro-tabs]').forEach(enhanceTabs);
+  })();
+</script>

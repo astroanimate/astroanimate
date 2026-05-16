@@ -6,6 +6,7 @@ export default defineConfig({
   entry: {
     index: "src/index.ts",
     "components/index": "src/components/index.ts",
+    "components/AnimatedTabs/index": "src/components/AnimatedTabs/index.ts",
     "components/AnimatedButton/index": "src/components/AnimatedButton/index.ts",
     "components/AnimatedCard/index": "src/components/AnimatedCard/index.ts",
     "components/ExpandableCard/index": "src/components/ExpandableCard/index.ts",
@@ -18,6 +19,7 @@ export default defineConfig({
     "components/Tooltip/index": "src/components/Tooltip/index.ts",
     "components/TypewriterText/index": "src/components/TypewriterText/index.ts",
     "internal/fadein": "src/internal/fadein.ts",
+    "internal/tabs": "src/internal/tabs.ts",
     "internal/guards": "src/internal/guards.ts",
   },
   external: ["astro", /\.astro$/],

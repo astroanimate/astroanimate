@@ -2,6 +2,7 @@ import { cpSync, existsSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const filesToCopy = [
+  "src/components/AnimatedTabs/AnimatedTabs.astro",
   "src/components/AnimatedButton/AnimatedButton.astro",
   "src/components/AnimatedCard/AnimatedCard.astro",
   "src/components/ExpandableCard/ExpandableCard.astro",

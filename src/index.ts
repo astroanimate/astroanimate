@@ -3,6 +3,7 @@
  * @see https://github.com/astroanimate/astroanimate
  */
 
+export { default as AnimatedTabs } from "./components/AnimatedTabs/AnimatedTabs.astro";
 export { default as AnimatedButton } from "./components/AnimatedButton/AnimatedButton.astro";
 export { default as AnimatedCard } from "./components/AnimatedCard/AnimatedCard.astro";
 export { default as ExpandableCard } from "./components/ExpandableCard/ExpandableCard.astro";
