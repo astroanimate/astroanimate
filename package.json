@@ -72,6 +72,11 @@
       "types": "./dist/components/RevealImage/RevealImage.astro",
       "import": "./dist/components/RevealImage/RevealImage.astro",
       "default": "./dist/components/RevealImage/RevealImage.astro"
+    },
+    "./CardStack": {
+      "types": "./dist/components/CardStack/CardStack.astro",
+      "import": "./dist/components/CardStack/CardStack.astro",
+      "default": "./dist/components/CardStack/CardStack.astro"
     }
   },
   "files": [
