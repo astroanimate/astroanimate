@@ -77,6 +77,11 @@
       "types": "./dist/components/CardStack/CardStack.astro",
       "import": "./dist/components/CardStack/CardStack.astro",
       "default": "./dist/components/CardStack/CardStack.astro"
+    },
+    "./CountUp": {
+      "types": "./dist/components/CountUp/CountUp.astro",
+      "import": "./dist/components/CountUp/CountUp.astro",
+      "default": "./dist/components/CountUp/CountUp.astro"
     }
   },
   "files": [

@@ -1,0 +1,89 @@
+---
+interface Props {
+  value: number;
+  start?: number;
+  duration?: number;
+  decimals?: number;
+  prefix?: string;
+  suffix?: string;
+  threshold?: number;
+  mainClassName?: string;
+  enhance?: boolean;
+  textColor?: string;
+  fontSize?: string;
+  fontFamily?: string;
+}
+
+const {
+  value,
+  start = 0,
+  duration = 2000,
+  decimals = 0,
+  prefix = "",
+  suffix = "",
+  threshold = 0.1,
+  mainClassName = "",
+  enhance = false,
+  textColor = "inherit",
+  fontSize = "inherit",
+  fontFamily = "inherit",
+} = Astro.props;
+
+const baselineValue =
+  prefix +
+  value.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  }) +
+  suffix;
+---
+
+<span
+  class:list={["count-up", mainClassName]}
+  data-countup
+  data-value={value}
+  data-start={start}
+  data-duration={duration}
+  data-decimals={decimals}
+  data-prefix={prefix}
+  data-suffix={suffix}
+  data-threshold={threshold}
+  data-enhance={enhance ? "true" : "false"}
+  style={`--count-up-color: ${textColor}; --count-up-size: ${fontSize}; --count-up-font-family: ${fontFamily};`}
+>
+  {baselineValue}
+</span>
+
+<style>
+  .count-up {
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    font-size: var(--count-up-size, 4rem);
+    font-weight: 700;
+    color: var(--count-up-color, #ff7700);
+    font-family: var(--count-up-font-family, system-ui, -apple-system, sans-serif);
+    transition: color 0.2s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .count-up {
+      transition: none !important;
+    }
+  }
+</style>
+
+{
+  enhance && (
+    <script>
+      import { enhanceCountUp } from "../../internal/countup";
+
+      document
+        .querySelectorAll('[data-countup][data-enhance="true"]')
+        .forEach((el) => {
+          if (el instanceof HTMLElement) {
+            enhanceCountUp(el);
+          }
+        });
+    </script>
+  )
+}

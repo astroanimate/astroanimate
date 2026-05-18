@@ -11,3 +11,4 @@ export { default as ScaleIn } from "./ScaleIn/ScaleIn.astro";
 export { default as Tooltip } from "./Tooltip/Tooltip.astro";
 export { default as TypewriterText } from "./TypewriterText/TypewriterText.astro";
 export { default as CardStack } from "./CardStack/CardStack.astro";
+export { default as CountUp } from "./CountUp/CountUp.astro";

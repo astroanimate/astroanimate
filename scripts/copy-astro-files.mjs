@@ -15,6 +15,7 @@ const filesToCopy = [
   "src/components/Tooltip/Tooltip.astro",
   "src/components/TypewriterText/TypewriterText.astro",
   "src/components/CardStack/CardStack.astro",
+  "src/components/CountUp/CountUp.astro",
 ];
 
 for (const relativePath of filesToCopy) {
