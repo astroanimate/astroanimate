@@ -1,0 +1,567 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'nav'> {
+  /** 
+   * Maximum magnification scale. 
+   * @default 1.8
+   */
+  magnification?: number;
+  /** 
+   * Distance in pixels where magnification begins. 
+   * @default 150
+   */
+  distance?: number;
+  /** 
+   * Background color of the dock. 
+   * @default "rgba(20, 20, 20, 0.7)"
+   */
+  color?: string;
+  /** 
+   * Blur intensity for the glass effect. 
+   * @default "20px"
+   */
+  blur?: string;
+  /** 
+   * Opt-in to interactive magnification. 
+   * @default false
+   */
+  enhance?: boolean;
+  /** 
+   * Position of the dock on screen.
+   * @default "bottom"
+   */
+  position?: "bottom" | "top";
+  /** 
+   * Size of dock items.
+   * @default "md"
+   */
+  size?: "sm" | "md" | "lg";
+  class?: string;
+}
+
+const {
+  magnification = 1.8,
+  distance = 150,
+  color = "rgba(20, 20, 20, 0.7)",
+  blur = "20px",
+  enhance = false,
+  position = "bottom",
+  size = "md",
+  class: className = "",
+  ...rest
+} = Astro.props;
+---
+
+<style>
+  .astro-dock-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+    width: 100%;
+    perspective: 1000px;
+  }
+
+  /* Position variants */
+  .astro-dock-container[data-position="bottom"] {
+    padding-bottom: 1.5rem;
+  }
+  .astro-dock-container[data-position="top"] {
+    padding-top: 1.5rem;
+  }
+  .astro-dock-container[data-position="left"] {
+    padding-left: 1.5rem;
+    justify-content: flex-start;
+  }
+  .astro-dock-container[data-position="right"] {
+    padding-right: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  .astro-dock {
+    display: flex;
+    align-items: center;
+    padding: 0 var(--dock-padding, 0.4rem);
+    background: var(--dock-color);
+    backdrop-filter: blur(var(--dock-blur));
+    -webkit-backdrop-filter: blur(var(--dock-blur));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 1.2rem;
+    pointer-events: auto;
+    box-shadow: 
+      0 10px 40px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    height: var(--dock-height, 4.5rem);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    will-change: width;
+  }
+
+  /* Position-based transforms */
+  .astro-dock[data-position="bottom"] {
+    --dock-origin: bottom center;
+    --tooltip-bottom: calc(100% + 0.75rem);
+    --tooltip-top: auto;
+    --tooltip-left: 50%;
+    --tooltip-right: auto;
+    --tooltip-transform: translateX(-50%) translateY(4px);
+    --tooltip-transform-hover: translateX(-50%) translateY(0);
+    --tooltip-arrow-top: 100%;
+    --tooltip-arrow-bottom: auto;
+    --tooltip-arrow-left: 50%;
+    --tooltip-arrow-right: auto;
+    --tooltip-arrow-transform: translateX(-50%);
+    --tooltip-arrow-border-color: rgba(0, 0, 0, 0.85) transparent transparent transparent;
+  }
+  .astro-dock[data-position="top"] {
+    --dock-origin: top center;
+    --tooltip-bottom: auto;
+    --tooltip-top: calc(100% + 0.75rem);
+    --tooltip-left: 50%;
+    --tooltip-right: auto;
+    --tooltip-transform: translateX(-50%) translateY(-4px);
+    --tooltip-transform-hover: translateX(-50%) translateY(0);
+    --tooltip-arrow-top: auto;
+    --tooltip-arrow-bottom: 100%;
+    --tooltip-arrow-left: 50%;
+    --tooltip-arrow-right: auto;
+    --tooltip-arrow-transform: translateX(-50%);
+    --tooltip-arrow-border-color: transparent transparent rgba(0, 0, 0, 0.85) transparent;
+  }
+
+
+  :global(.dock-item) {
+    position: relative;
+    width: var(--item-size, 3.2rem);
+    height: var(--item-size, 3.2rem);
+    border-radius: 0.75rem;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(var(--dock-item-scale, 1)) translateY(var(--dock-item-y, 0px));
+    margin: 0 var(--dock-item-margin, 4px);
+    transition: transform 0.2s ease-out, margin 0.2s ease-out;
+    transform-origin: var(--dock-origin, bottom center);
+    will-change: transform, margin;
+    flex-shrink: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+  }
+
+  :global(.dock-item img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: filter 0.2s ease;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0) scale(1);
+    -webkit-transform: translateZ(0) scale(1);
+    transform-style: preserve-3d;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :global(.dock-item:hover img),
+  :global(.dock-item.is-active img) {
+    image-rendering: -webkit-optimize-contrast;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+  }
+
+  /* Running indicator dot */
+  :global(.dock-item.is-active)::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  :global(.dock-item::before) {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(145deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+
+  :global(.dock-item:hover::before) {
+    opacity: 1;
+  }
+
+  /* Glow effect */
+  :global(.dock-item::after) {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 1.1rem;
+    background: linear-gradient(145deg, var(--item-glow, transparent), transparent);
+    opacity: 0;
+    filter: blur(8px);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+  }
+
+  :global(.dock-item.is-active::after),
+  :global(.dock-item:hover::after) {
+    opacity: 0.6;
+  }
+
+  /* Selected/Active state */
+  :global(.dock-item.is-selected) {
+    background: linear-gradient(145deg, #3a3a3a 0%, #2a2a2a 100%);
+    box-shadow: 
+      0 4px 12px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 0 0 2px rgba(255, 255, 255, 0.2);
+  }
+
+  :global(.dock-item.is-selected::before) {
+    opacity: 1;
+    background: linear-gradient(145deg, rgba(255,255,255,0.15) 0%, transparent 50%);
+  }
+
+  /* Size variants */
+  .astro-dock[data-size="sm"] {
+    --item-size: 2.6rem;
+    --dock-height: 3.8rem;
+    --dock-gap: 0.5rem;
+    --dock-padding: 0.35rem;
+    --dock-padding-column: 0.6rem;
+  }
+  .astro-dock[data-size="lg"] {
+    --item-size: 3.8rem;
+    --dock-height: 5.2rem;
+    --dock-gap: 1rem;
+    --dock-padding: 0.45rem;
+    --dock-padding-column: 0.7rem;
+  }
+
+  /* Tooltip/Label styling */
+  :global(.dock-label) {
+    position: absolute;
+    bottom: var(--tooltip-bottom, calc(100% + 0.75rem));
+    top: var(--tooltip-top, auto);
+    left: var(--tooltip-left, 50%);
+    right: var(--tooltip-right, auto);
+    transform: var(--tooltip-transform, translateX(-50%) translateY(4px)) scale(var(--dock-label-scale, 1));
+    transform-origin: inherit;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family: system-ui, -apple-system, sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: opacity, transform;
+  }
+
+  /* Tooltip arrow */
+  :global(.dock-label::after) {
+    content: '';
+    position: absolute;
+    top: var(--tooltip-arrow-top, 100%);
+    bottom: var(--tooltip-arrow-bottom, auto);
+    left: var(--tooltip-arrow-left, 50%);
+    right: var(--tooltip-arrow-right, auto);
+    transform: var(--tooltip-arrow-transform, translateX(-50%));
+    border: 5px solid transparent;
+    border-color: var(--tooltip-arrow-border-color, rgba(0, 0, 0, 0.85) transparent transparent transparent);
+  }
+
+  /* Icon styling */
+  :global(.dock-icon) {
+    width: 50%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.3));
+    transition: transform 0.2s ease;
+  }
+
+  :global(.dock-item:hover .dock-icon) {
+    transform: scale(1.1);
+  }
+
+  /* Click ripple effect container */
+  :global(.dock-item-ripple) {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  :global(.dock-ripple) {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: dockRipple 0.5s ease-out;
+    pointer-events: none;
+  }
+
+  @keyframes dockRipple {
+    to {
+      transform: scale(4);
+      opacity: 0;
+    }
+  }
+
+  /* Default hover (CSS fallback if enhance is false) */
+  [data-enhance="false"] :global(.dock-item:hover) {
+    --dock-item-scale: 1.25;
+    --dock-label-scale: 0.8;
+    --dock-item-y: -8px;
+    --dock-item-margin: 8px;
+  }
+
+  /* FIX (Criterion 6): All animations/transitions neutralized */
+  @media (prefers-reduced-motion: reduce) {
+    :global(.dock-item) {
+      transition: none !important;
+      transform: none !important;
+    }
+    :global(.dock-item img) {
+      transition: none !important;
+    }
+    :global(.dock-item::before) {
+      transition: none !important;
+    }
+    :global(.dock-item::after) {
+      transition: none !important;
+    }
+    :global(.dock-label) {
+      transition: none !important;
+    }
+    :global(.dock-icon) {
+      transition: none !important;
+    }
+    :global(.dock-ripple) {
+      animation: none !important;
+    }
+    .astro-dock {
+      transition: none !important;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .astro-dock {
+      --item-size: 2.6rem;
+      --dock-height: 3.8rem;
+      --dock-gap: 0.5rem;
+      --dock-padding: 0.35rem;
+      --dock-padding-column: 0.6rem;
+    }
+    .astro-dock-container[data-position="left"],
+    .astro-dock-container[data-position="right"] {
+      display: none;
+    }
+  }
+</style>
+
+<div 
+  class:list={["astro-dock-container", className]}
+  data-position={position}
+>
+  <nav
+    class="astro-dock"
+    data-astro-dock
+    data-enhance={enhance ? "true" : "false"}
+    data-magnification={magnification}
+    data-distance={distance}
+    data-position={position}
+    data-size={size}
+    style={`--dock-color: ${color}; --dock-blur: ${blur};`}
+    role="toolbar"
+    aria-label="Application dock"
+    {...rest}
+  >
+    <slot />
+  </nav>
+</div>
+
+{enhance && (
+  <script is:inline>
+    (function() {
+      if (typeof window === "undefined") return;
+
+      function canEnhance() {
+        if (typeof window === "undefined") return false;
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          return false;
+        }
+        return true;
+      }
+
+      var initialized = new WeakMap();
+
+      function enhanceDock(root) {
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        if (!canEnhance()) return;
+        if (initialized.has(root)) return;
+
+        var items = Array.from(root.querySelectorAll(".dock-item"));
+        var rippleTimers = new Map();
+
+        var updateDock = function (mouseX) {
+          var closestIndex = -1;
+          var closestDistance = Infinity;
+
+          items.forEach(function(item, index) {
+            var rect = item.getBoundingClientRect();
+            var centerX = rect.left + rect.width / 2;
+            var distance = Math.abs(mouseX - centerX);
+
+            if (distance < closestDistance) {
+              closestDistance = distance;
+              closestIndex = index;
+            }
+          });
+
+          items.forEach(function(item) {
+            item.style.setProperty("--dock-item-scale", "1");
+            item.style.setProperty("--dock-label-scale", "1");
+            item.style.setProperty("--dock-item-y", "0px");
+            item.style.setProperty("--dock-item-margin", "4px");
+            item.classList.remove("is-active");
+          });
+
+          if (closestIndex === -1) return;
+
+          var transformations = [
+            { idx: closestIndex - 2, scale: 1.05, translateY: 0, margin: 4 },
+            { idx: closestIndex - 1, scale: 1.15, translateY: -4, margin: 6 },
+            { idx: closestIndex, scale: 1.5, translateY: -15, margin: 8 },
+            { idx: closestIndex + 1, scale: 1.15, translateY: -4, margin: 6 },
+            { idx: closestIndex + 2, scale: 1.05, translateY: 0, margin: 4 },
+          ];
+
+          transformations.forEach(function (t) {
+            var idx = t.idx;
+            var scale = t.scale;
+            var translateY = t.translateY;
+            var margin = t.margin;
+            if (items[idx]) {
+              items[idx].style.setProperty("--dock-item-scale", String(scale));
+              items[idx].style.setProperty(
+                "--dock-label-scale",
+                String(1 / scale),
+              );
+              
+              var finalTranslateY = root.dataset.position === "top" ? -translateY : translateY;
+              items[idx].style.setProperty("--dock-item-y", finalTranslateY + "px");
+              items[idx].style.setProperty("--dock-item-margin", margin + "px");
+            }
+          });
+
+          if (items[closestIndex]) {
+            items[closestIndex].classList.add("is-active");
+          }
+        };
+
+        var handleMouseMove = function (e) {
+          updateDock(e.clientX);
+        };
+
+        var handleMouseLeave = function () {
+          items.forEach(function(item) {
+            item.style.setProperty("--dock-item-scale", "1");
+            item.style.setProperty("--dock-label-scale", "1");
+            item.style.setProperty("--dock-item-y", "0px");
+            item.style.setProperty("--dock-item-margin", "4px");
+            item.classList.remove("is-active");
+          });
+        };
+
+        var handleClick = function (e) {
+          var target = e.currentTarget;
+          var ripple = document.createElement("span");
+          ripple.className = "dock-ripple";
+
+          var rect = target.getBoundingClientRect();
+          var size = Math.max(rect.width, rect.height);
+          ripple.style.width = ripple.style.height = size + "px";
+          ripple.style.left = (e.clientX - rect.left - size / 2) + "px";
+          ripple.style.top = (e.clientY - rect.top - size / 2) + "px";
+
+          target.appendChild(ripple);
+
+          var existing = rippleTimers.get(target);
+          if (existing) clearTimeout(existing);
+
+          var t = setTimeout(function() {
+            ripple.remove();
+            rippleTimers.delete(target);
+          }, 500);
+          rippleTimers.set(target, t);
+        };
+
+        items.forEach(function(item) {
+          item.addEventListener("click", handleClick);
+        });
+
+        root.addEventListener("mousemove", handleMouseMove, { passive: true });
+        root.addEventListener("mouseleave", handleMouseLeave);
+
+        initialized.set(root, true);
+
+        var observer = new MutationObserver(function() {
+          if (!document.contains(root)) {
+            root.removeEventListener("mousemove", handleMouseMove);
+            root.removeEventListener("mouseleave", handleMouseLeave);
+            items.forEach(function(item) {
+              item.removeEventListener("click", handleClick);
+            });
+            rippleTimers.forEach(function(t) { clearTimeout(t); });
+            rippleTimers.clear();
+            observer.disconnect();
+            initialized.delete(root);
+          }
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+      }
+
+      var init = function() {
+        document.querySelectorAll('[data-astro-dock][data-enhance="true"]:not([data-ready])')
+          .forEach(function(el) {
+            if (el instanceof HTMLElement) {
+              el.dataset.ready = "true";
+              enhanceDock(el);
+            }
+          });
+      };
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
+      } else {
+        init();
+      }
+    })();
+  </script>
+)}

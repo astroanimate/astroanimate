@@ -82,6 +82,16 @@
       "types": "./dist/components/CountUp/CountUp.astro",
       "import": "./dist/components/CountUp/CountUp.astro",
       "default": "./dist/components/CountUp/CountUp.astro"
+    },
+    "./Dock": {
+      "types": "./dist/components/Dock/Dock.astro",
+      "import": "./dist/components/Dock/Dock.astro",
+      "default": "./dist/components/Dock/Dock.astro"
+    },
+    "./DockItem": {
+      "types": "./dist/components/Dock/DockItem.astro",
+      "import": "./dist/components/Dock/DockItem.astro",
+      "default": "./dist/components/Dock/DockItem.astro"
     }
   },
   "files": [

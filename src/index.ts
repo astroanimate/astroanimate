@@ -16,3 +16,5 @@ export { default as Tooltip } from "./components/Tooltip/Tooltip.astro";
 export { default as TypewriterText } from "./components/TypewriterText/TypewriterText.astro";
 export { default as CardStack } from "./components/CardStack/CardStack.astro";
 export { default as CountUp } from "./components/CountUp/CountUp.astro";
+export { default as Dock } from "./components/Dock/Dock.astro";
+export { default as DockItem } from "./components/Dock/DockItem.astro";

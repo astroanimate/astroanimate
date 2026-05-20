@@ -1,0 +1,135 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'div'> {
+  /** Label shown in tooltip on hover */
+  label?: string;
+  /** Whether this item is currently active/running */
+  active?: boolean;
+  /** Custom class names */
+  class?: string;
+}
+
+const { label, active = false, class: className = "", ...rest } = Astro.props;
+---
+
+<div class:list={["dock-item", { "is-active": active }, className]} {...rest}>
+  {label && <span class="dock-label">{label}</span>}
+  <slot />
+</div>
+
+<style>
+  .dock-item {
+    position: relative;
+    width: var(--item-size, 3.2rem);
+    height: var(--item-size, 3.2rem);
+    border-radius: 0.75rem;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: scale(var(--dock-item-scale, 1))
+      translateY(var(--dock-item-y, 0px));
+    margin: 0 var(--dock-item-margin, 4px);
+    transition:
+      transform 0.2s ease-out,
+      margin 0.2s ease-out;
+    transform-origin: var(--dock-origin, bottom center);
+    will-change: transform, margin;
+    flex-shrink: 0;
+    overflow: visible;
+    transform-style: preserve-3d;
+  }
+
+  .dock-item :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: filter 0.2s ease;
+    image-rendering: -webkit-optimize-contrast;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+  }
+
+  .dock-item:hover :global(img),
+  .dock-item.is-active :global(img) {
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+  }
+
+  /* Running indicator dot */
+  .dock-item.is-active::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .dock-label {
+    position: absolute;
+    bottom: var(--tooltip-bottom, calc(100% + 0.75rem));
+    top: var(--tooltip-top, auto);
+    left: var(--tooltip-left, 50%);
+    right: var(--tooltip-right, auto);
+    transform: var(--tooltip-transform, translateX(-50%) translateY(4px))
+      scale(var(--dock-label-scale, 1));
+    transform-origin: inherit;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    padding: 0.4rem 0.9rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    white-space: nowrap;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    will-change: opacity, transform;
+  }
+
+  .dock-label::after {
+    content: "";
+    position: absolute;
+    top: var(--tooltip-arrow-top, 100%);
+    bottom: var(--tooltip-arrow-bottom, auto);
+    left: var(--tooltip-arrow-left, 50%);
+    right: var(--tooltip-arrow-right, auto);
+    transform: var(--tooltip-arrow-transform, translateX(-50%));
+    border: 5px solid transparent;
+    border-color: var(--tooltip-arrow-border-color, rgba(0, 0, 0, 0.85) transparent transparent transparent);
+  }
+
+  .dock-item:hover .dock-label {
+    opacity: 1;
+    transform: var(--tooltip-transform-hover, translateX(-50%) translateY(0)) scale(var(--dock-label-scale, 1));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dock-item {
+      transition: none !important;
+      transform: none !important;
+    }
+    .dock-item :global(img) {
+      transition: none !important;
+    }
+    .dock-label {
+      transition: none !important;
+      transform: translateX(-50%) translateY(0) !important;
+    }
+  }
+</style>
