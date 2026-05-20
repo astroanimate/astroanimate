@@ -92,6 +92,11 @@
       "types": "./dist/components/Dock/DockItem.astro",
       "import": "./dist/components/Dock/DockItem.astro",
       "default": "./dist/components/Dock/DockItem.astro"
+    },
+    "./Dropdown": {
+      "types": "./dist/components/Dropdown/Dropdown.astro",
+      "import": "./dist/components/Dropdown/Dropdown.astro",
+      "default": "./dist/components/Dropdown/Dropdown.astro"
     }
   },
   "files": [

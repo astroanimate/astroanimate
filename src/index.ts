@@ -18,3 +18,4 @@ export { default as CardStack } from "./components/CardStack/CardStack.astro";
 export { default as CountUp } from "./components/CountUp/CountUp.astro";
 export { default as Dock } from "./components/Dock/Dock.astro";
 export { default as DockItem } from "./components/Dock/DockItem.astro";
+export { default as Dropdown } from "./components/Dropdown/Dropdown.astro";

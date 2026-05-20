@@ -21,6 +21,7 @@ describe("package contract", () => {
     const scaleInExport = packageJson.exports["./ScaleIn"];
     const tooltipExport = packageJson.exports["./Tooltip"];
     const typewriterTextExport = packageJson.exports["./TypewriterText"];
+    const dropdownExport = packageJson.exports["./Dropdown"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -46,6 +47,10 @@ describe("package contract", () => {
     expect(typewriterTextExport).toBeDefined();
     expect(typewriterTextExport?.import).toBe(
       "./dist/components/TypewriterText/TypewriterText.astro",
+    );
+    expect(dropdownExport).toBeDefined();
+    expect(dropdownExport?.import).toBe(
+      "./dist/components/Dropdown/Dropdown.astro",
     );
   });
 
@@ -130,6 +135,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/TypewriterText/TypewriterText.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/Dropdown/Dropdown.astro",
         ),
       ),
     ).toBe(true);

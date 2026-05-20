@@ -18,6 +18,7 @@ const filesToCopy = [
   "src/components/CountUp/CountUp.astro",
   "src/components/Dock/Dock.astro",
   "src/components/Dock/DockItem.astro",
+  "src/components/Dropdown/Dropdown.astro",
 ];
 
 for (const relativePath of filesToCopy) {

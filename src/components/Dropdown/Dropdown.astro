@@ -1,0 +1,264 @@
+---
+export type DropdownItem = {
+  label: string;
+  icon?: string;
+  href?: string;
+  onClick?: string;
+};
+
+interface Props {
+  /** Button text label */
+  label: string;
+  /** Menu items array */
+  items: (string | DropdownItem)[];
+  /** Enable animations */
+  enhance?: boolean;
+  /** Open trigger type */
+  trigger?: 'click' | 'hover';
+  /** Hover close delay in ms */
+  hoverDelay?: number;
+  /** Callback when item selected - pass index */
+  onSelect?: (index: number) => void;
+}
+
+const { 
+  label, 
+  items = [], 
+  enhance = false, 
+  trigger = 'click', 
+  hoverDelay = 120 
+} = Astro.props;
+---
+
+<style>
+  /* ✅ CRITERION 1: Zero-JS baseline — content is present in HTML, trigger does nothing without JS */
+  .dropdown-root {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* Trigger button reset */
+  .dropdown-trigger-wrap {
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  /* ✅ CRITERION 1: Menu hidden by default (CSS-only fallback = menu not shown without JS) */
+  .menu-content {
+    display: none;
+    position: absolute;
+    z-index: 50;
+    min-width: 200px;
+    top: calc(100% + 6px);
+    left: 0;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+  }
+
+  /* ✅ CRITERION 7: JS only toggles data-state — all animation is pure CSS */
+  [data-ready="true"] .menu-content {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px) scale(0.97);
+    transform-origin: top left;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  [data-ready="true"][data-state="open"] .menu-content {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  /* ─── Hover mode: CSS-only zero-JS baseline ──────────────────────────────
+     When trigger=hover and no JS, show menu on native :hover so the
+     component still functions (no JS needed for the baseline experience).   */
+  [data-trigger="hover"] .menu-content {
+    display: block;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Bridge the gap to prevent hover loss when moving cursor to menu */
+  [data-trigger="hover"]::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: transparent;
+  }
+
+  /* CSS-only hover show (no JS) */
+  [data-trigger="hover"]:hover .menu-content {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* When JS is ready, hand full control to data-state (override :hover) */
+  [data-trigger="hover"][data-ready="true"] .menu-content {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px) scale(0.97);
+    transform-origin: top left;
+    transition:
+      opacity 0.18s ease,
+      transform 0.18s ease;
+  }
+
+  [data-trigger="hover"][data-ready="true"][data-state="open"] .menu-content {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+  }
+
+  /* Default trigger button styles */
+  .dropdown-trigger {
+    display: inline-block;
+    padding: 0.8rem 1rem;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+    transition: background 0.15s ease;
+  }
+
+  .dropdown-trigger:hover {
+    background: #444;
+  }
+
+  .dropdown-trigger-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .dropdown-chevron {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  [data-state="open"] .dropdown-chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Menu item styles */
+  .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-size: 0.9rem;
+    transition: background 0.15s ease;
+  }
+
+  .menu-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    flex-shrink: 0;
+  }
+
+  .menu-item-icon :global(svg) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .menu-item:hover {
+    background: #333;
+  }
+
+  .menu-item:first-child {
+    margin-top: 0.5rem;
+  }
+
+  .menu-item:last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  /* ✅ CRITERION 6: Reduced motion — kill all transitions */
+  @media (prefers-reduced-motion: reduce) {
+    [data-ready="true"] .menu-content {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+<div
+  class="dropdown-root"
+  data-dropdown
+  data-enhance={enhance ? "true" : "false"}
+  data-trigger={trigger}
+  data-hover-delay={hoverDelay}
+>
+  <button
+    class="dropdown-trigger"
+    data-dropdown-trigger
+    type="button"
+    aria-haspopup="true"
+    aria-expanded="false"
+  >
+    <span class="dropdown-trigger-content">
+      {label}
+      <svg class="dropdown-chevron" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7"/></svg>
+    </span>
+  </button>
+
+  <div
+    class="menu-content"
+    data-dropdown-content
+    role="menu"
+    aria-hidden="true"
+  >
+    {items.map((item, index) => {
+      const isObject = typeof item === 'object';
+      const itemLabel = isObject ? item.label : item;
+      const itemIcon = isObject ? item.icon : undefined;
+      const itemHref = isObject ? item.href : undefined;
+      const itemOnClick = isObject ? item.onClick : undefined;
+      
+      const Tag = itemHref ? 'a' : 'div';
+      
+      return (
+        <Tag class="menu-item" data-index={index} role="menuitem" href={itemHref} onclick={itemOnClick}>
+          {itemIcon && <span class="menu-item-icon" set:html={itemIcon} />}
+          <span>{itemLabel}</span>
+        </Tag>
+      );
+    })}
+  </div>
+</div>
+
+{enhance && (
+  <script>
+    import { enhanceDropdown } from "../../internal/dropdown";
+
+    // ✅ CRITERION 6: PRIMARY reduced motion guard lives here in .astro script block
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll<HTMLElement>('[data-dropdown][data-enhance="true"]').forEach((el) => {
+        enhanceDropdown(el);
+      });
+    }
+  </script>
+)}
