@@ -22,6 +22,7 @@ describe("package contract", () => {
     const tooltipExport = packageJson.exports["./Tooltip"];
     const typewriterTextExport = packageJson.exports["./TypewriterText"];
     const dropdownExport = packageJson.exports["./Dropdown"];
+    const gridDotsBackgroundExport = packageJson.exports["./GridDotsBackground"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -52,6 +53,10 @@ describe("package contract", () => {
     expect(dropdownExport?.import).toBe(
       "./dist/components/Dropdown/Dropdown.astro",
     );
+    expect(gridDotsBackgroundExport).toBeDefined();
+    expect(gridDotsBackgroundExport?.import).toBe(
+      "./dist/components/GridDotsBackground/GridDotsBackground.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -74,10 +79,14 @@ describe("package contract", () => {
     const typewriterText = read(
       "src/components/TypewriterText/TypewriterText.astro",
     );
+    const gridDotsBackground = read(
+      "src/components/GridDotsBackground/GridDotsBackground.astro",
+    );
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
     expect(loader).not.toContain("<script");
+    expect(gridDotsBackground).not.toContain("<script");
 
     // Components with conditional scripts
     expect(animatedCard).toContain("<script");
@@ -93,6 +102,8 @@ describe("package contract", () => {
     expect(animatedCard).not.toContain("client:");
     expect(loader).not.toContain("astro:page-load");
     expect(loader).not.toContain("client:");
+    expect(gridDotsBackground).not.toContain("astro:page-load");
+    expect(gridDotsBackground).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -143,6 +154,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/Dropdown/Dropdown.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/GridDotsBackground/GridDotsBackground.astro",
         ),
       ),
     ).toBe(true);

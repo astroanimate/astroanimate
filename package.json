@@ -97,6 +97,11 @@
       "types": "./dist/components/Dropdown/Dropdown.astro",
       "import": "./dist/components/Dropdown/Dropdown.astro",
       "default": "./dist/components/Dropdown/Dropdown.astro"
+    },
+    "./GridDotsBackground": {
+      "types": "./dist/components/GridDotsBackground/GridDotsBackground.astro",
+      "import": "./dist/components/GridDotsBackground/GridDotsBackground.astro",
+      "default": "./dist/components/GridDotsBackground/GridDotsBackground.astro"
     }
   },
   "files": [
