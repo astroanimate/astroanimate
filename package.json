@@ -107,6 +107,11 @@
       "types": "./dist/components/HighlightText/HighlightText.astro",
       "import": "./dist/components/HighlightText/HighlightText.astro",
       "default": "./dist/components/HighlightText/HighlightText.astro"
+    },
+    "./InfiniteMarquee": {
+      "types": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
+      "import": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
+      "default": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro"
     }
   },
   "files": [

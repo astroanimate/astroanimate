@@ -1,0 +1,339 @@
+---
+/**
+ * InfiniteScroll - A premium continuous scrolling component.
+ * Supports horizontal and vertical directions with glassmorphism and smooth motion.
+ */
+interface Testimonial {
+    name: string;
+    handle: string;
+    img?: string;
+    quote: string;
+}
+
+interface Props {
+    direction?: "left" | "right" | "up" | "down";
+    speed?: string;
+    pauseOnHover?: boolean;
+    gap?: string;
+    fade?: boolean;
+    mainClassName?: string;
+    cardMode?: boolean;
+    cardWidth?: string;
+    testimonials?: Testimonial[];
+    cardBg?: string;
+    cardBorderColor?: string;
+    cardRadius?: string;
+    cardPadding?: string;
+    textColor?: string;
+    nameColor?: string;
+    handleColor?: string;
+}
+
+const {
+    direction = "left",
+    speed = "30s",
+    pauseOnHover = true,
+    gap = "2rem",
+    fade = true,
+    mainClassName = "",
+    cardMode = false,
+    cardWidth = "320px",
+    testimonials = [],
+    cardBg = "white",
+    cardBorderColor = "#e5e5e5",
+    cardRadius = "16px",
+    cardPadding = "1.5rem",
+    textColor = "#333",
+    nameColor = "#111",
+    handleColor = "#666",
+} = Astro.props;
+
+// Render the slot content once so we can duplicate it multiple times
+let slotContent = '';
+if (!cardMode && Astro.slots.has('default')) {
+    slotContent = await Astro.slots.render('default');
+}
+
+// Generate 6 copies to ensure it always fills the screen, even if the content is short
+const parts = Array.from({ length: 6 });
+---
+
+<div
+    class:list={[
+        "marquee-container",
+        `marquee-${direction}`,
+        { "pause-hover": pauseOnHover },
+        { "fade-mask": fade },
+        mainClassName,
+    ]}
+    style={`
+        --speed: ${speed}; 
+        --gap: ${gap};
+        --card-width: ${cardWidth};
+        --card-bg: ${cardBg};
+        --card-border-color: ${cardBorderColor};
+        --card-radius: ${cardRadius};
+        --card-padding: ${cardPadding};
+        --text-color: ${textColor};
+        --name-color: ${nameColor};
+        --handle-color: ${handleColor};
+    `}
+>
+    <div class="marquee-track">
+        {
+            parts.map((_, i) => (
+                <div class="marquee-content" data-marquee-part={i + 1} aria-hidden={i > 0 ? "true" : undefined}>
+                    {
+                        cardMode && testimonials.length > 0 ? (
+                            testimonials.map((t) => (
+                                <div class="marquee-card">
+                                    <div class="marquee-card-header">
+                                        <div class="marquee-card-avatar">
+                                            {t.img ? (
+                                                <img src={t.img} alt={t.name} />
+                                            ) : null}
+                                        </div>
+                                        <div class="marquee-card-info">
+                                            <p class="marquee-card-name">{t.name}</p>
+                                            <p class="marquee-card-handle">
+                                                {t.handle.startsWith("@")
+                                                    ? t.handle
+                                                    : "@" + t.handle}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p class="marquee-card-content">{t.quote}</p>
+                                </div>
+                            ))
+                        ) : (
+                            <Fragment set:html={slotContent} />
+                        )
+                    }
+                </div>
+            ))
+        }
+    </div>
+</div>
+
+<style>
+    .marquee-container {
+        position: relative;
+        display: flex;
+        overflow: hidden;
+        user-select: none;
+        width: 100%;
+        background: transparent;
+    }
+
+    /* Horizontal layouts */
+    .marquee-left,
+    .marquee-right {
+        flex-direction: row;
+    }
+
+    /* Vertical layouts */
+    .marquee-up,
+    .marquee-down {
+        flex-direction: column;
+        height: 400px; /* Constrain height so it clips properly and doesn't reveal empty space */
+        max-height: 100vh;
+        width: fit-content;
+    }
+
+    .marquee-track {
+        display: flex;
+        flex-shrink: 0;
+        gap: var(--gap);
+        width: max-content;
+    }
+
+    .marquee-up .marquee-track,
+    .marquee-down .marquee-track {
+        flex-direction: column;
+        width: max-content; /* Changed from 100% so track only spans the width of the cards */
+        height: max-content;
+    }
+
+    .marquee-content {
+        flex-shrink: 0;
+        display: flex;
+        gap: var(--gap);
+        padding: 10px 0; /* Only top/bottom padding to not affect horizontal scroll width */
+    }
+
+    .marquee-up .marquee-content,
+    .marquee-down .marquee-content {
+        flex-direction: column;
+        min-width: auto;
+        padding: 0 10px; /* Only left/right padding to not affect vertical scroll height */
+    }
+
+    /* Horizontal Animations applied to individual content blocks */
+    .marquee-left .marquee-content {
+        animation: scroll-left var(--speed) linear infinite;
+    }
+
+    .marquee-right .marquee-content {
+        animation: scroll-right var(--speed) linear infinite;
+    }
+
+    /* Vertical Animations applied to individual content blocks */
+    .marquee-up .marquee-content {
+        animation: scroll-up var(--speed) linear infinite;
+    }
+
+    .marquee-down .marquee-content {
+        animation: scroll-down var(--speed) linear infinite;
+    }
+
+    /* Only pause when hovering the actual track (items), not the empty space in the container */
+    .pause-hover .marquee-track:hover .marquee-content {
+        animation-play-state: paused;
+    }
+
+    @keyframes scroll-left {
+        to {
+            transform: translateX(calc(-100% - var(--gap)));
+        }
+    }
+
+    @keyframes scroll-right {
+        from {
+            transform: translateX(calc(-100% - var(--gap)));
+        }
+        to {
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes scroll-up {
+        to {
+            transform: translateY(calc(-100% - var(--gap)));
+        }
+    }
+
+    @keyframes scroll-down {
+        from {
+            transform: translateY(calc(-100% - var(--gap)));
+        }
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    /* Edge Fading */
+    .fade-mask.marquee-left,
+    .fade-mask.marquee-right {
+        mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
+    }
+
+    .fade-mask.marquee-up,
+    .fade-mask.marquee-down {
+        mask-image: linear-gradient(
+            to bottom,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+        );
+    }
+
+    /* Premium item styles (can be overridden by slots) */
+    :global(.marquee-item) {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 12px;
+        padding: 1rem 2rem;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        color: rgba(255, 255, 255, 0.8);
+    }
+
+    :global(.marquee-item:hover) {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Card Styles */
+    .marquee-card {
+        flex-shrink: 0;
+        width: var(--card-width);
+        background: var(--card-bg);
+        border: 1px solid var(--card-border-color);
+        border-radius: var(--card-radius);
+        padding: var(--card-padding);
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .marquee-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .marquee-card-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #e5e5e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+    .marquee-card-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .marquee-card-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .marquee-card-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--name-color);
+        margin: 0;
+    }
+
+    .marquee-card-handle {
+        font-size: 0.85rem;
+        color: var(--handle-color);
+        margin: 0;
+    }
+
+    .marquee-card-content {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: var(--text-color);
+        margin: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .marquee-track, .marquee-content {
+            animation: none !important;
+            transform: none !important;
+        }
+    }
+</style>

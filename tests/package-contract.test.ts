@@ -24,6 +24,7 @@ describe("package contract", () => {
     const dropdownExport = packageJson.exports["./Dropdown"];
     const gridDotsBackgroundExport = packageJson.exports["./GridDotsBackground"];
     const highlightTextExport = packageJson.exports["./HighlightText"];
+    const infiniteMarqueeExport = packageJson.exports["./InfiniteMarquee"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -62,6 +63,10 @@ describe("package contract", () => {
     expect(highlightTextExport?.import).toBe(
       "./dist/components/HighlightText/HighlightText.astro",
     );
+    expect(infiniteMarqueeExport).toBeDefined();
+    expect(infiniteMarqueeExport?.import).toBe(
+      "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -90,12 +95,16 @@ describe("package contract", () => {
     const highlightText = read(
       "src/components/HighlightText/HighlightText.astro",
     );
+    const infiniteMarquee = read(
+      "src/components/InfiniteMarquee/InfiniteMarquee.astro",
+    );
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
     expect(loader).not.toContain("<script");
     expect(gridDotsBackground).not.toContain("<script");
     expect(highlightText).not.toContain("<script");
+    expect(infiniteMarquee).not.toContain("<script");
 
     // Components with conditional scripts
     expect(animatedCard).toContain("<script");
@@ -115,6 +124,8 @@ describe("package contract", () => {
     expect(gridDotsBackground).not.toContain("client:");
     expect(highlightText).not.toContain("astro:page-load");
     expect(highlightText).not.toContain("client:");
+    expect(infiniteMarquee).not.toContain("astro:page-load");
+    expect(infiniteMarquee).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -181,6 +192,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/HighlightText/HighlightText.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/InfiniteMarquee/InfiniteMarquee.astro",
         ),
       ),
     ).toBe(true);

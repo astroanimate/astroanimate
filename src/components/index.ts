@@ -17,3 +17,4 @@ export { default as DockItem } from "./Dock/DockItem.astro";
 export { default as Dropdown } from "./Dropdown/Dropdown.astro";
 export { default as GridDotsBackground } from "./GridDotsBackground/GridDotsBackground.astro";
 export { default as HighlightText } from "./HighlightText/HighlightText.astro";
+export { default as InfiniteMarquee } from "./InfiniteMarquee/InfiniteMarquee.astro";
