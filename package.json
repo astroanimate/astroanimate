@@ -102,6 +102,11 @@
       "types": "./dist/components/GridDotsBackground/GridDotsBackground.astro",
       "import": "./dist/components/GridDotsBackground/GridDotsBackground.astro",
       "default": "./dist/components/GridDotsBackground/GridDotsBackground.astro"
+    },
+    "./HighlightText": {
+      "types": "./dist/components/HighlightText/HighlightText.astro",
+      "import": "./dist/components/HighlightText/HighlightText.astro",
+      "default": "./dist/components/HighlightText/HighlightText.astro"
     }
   },
   "files": [

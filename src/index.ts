@@ -20,3 +20,4 @@ export { default as Dock } from "./components/Dock/Dock.astro";
 export { default as DockItem } from "./components/Dock/DockItem.astro";
 export { default as Dropdown } from "./components/Dropdown/Dropdown.astro";
 export { default as GridDotsBackground } from "./components/GridDotsBackground/GridDotsBackground.astro";
+export { default as HighlightText } from "./components/HighlightText/HighlightText.astro";

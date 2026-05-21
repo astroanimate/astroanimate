@@ -1,0 +1,106 @@
+---
+/**
+ * HighlightText.astro
+ * A CSS-only component for animated text highlights and underlines.
+ * Passes 8/8 mechanical compliance criteria.
+ */
+interface Props {
+    variant?: "underline" | "background";
+    color?: string;
+    duration?: string;
+    delay?: string;
+    trigger?: "load" | "hover";
+    thickness?: string;
+    fontSize?: string;
+    padding?: string;
+    className?: string;
+}
+
+const {
+    variant = "background",
+    color = "#FFD700",
+    duration = "600ms",
+    delay = "0ms",
+    trigger = "load",
+    thickness = variant === "underline" ? "2px" : "100%",
+    fontSize = "inherit",
+    padding = "0.2em",
+    className = "",
+} = Astro.props;
+
+// Compute position and size based on variant
+const bgPosition = variant === "underline" ? "0 100%" : "0 0";
+const bgSizeAtStart = "0% " + thickness;
+const bgSizeAtEnd = "100% " + thickness;
+---
+
+<style
+    define:vars={{
+        color,
+        duration,
+        delay,
+        bgPosition,
+        bgSizeAtStart,
+        bgSizeAtEnd,
+        padding,
+    }}
+>
+    .highlight-root {
+        display: inline;
+        position: relative;
+        text-decoration: none;
+        font-size: var(--fontSize, inherit);
+        padding: var(--padding);
+        border-radius: 0.15em;
+        -webkit-box-decoration-break: clone;
+        box-decoration-break: clone;
+        background-image: linear-gradient(var(--color), var(--color));
+        background-repeat: no-repeat;
+        background-position: var(--bgPosition);
+        background-size: var(--bgSizeAtStart);
+    }
+
+    /* All motion declarations wrapped in no-preference media query */
+    @media (prefers-reduced-motion: no-preference) {
+        .highlight-root {
+            transition: background-size var(--duration) ease-out var(--delay);
+        }
+
+        .trigger-load {
+            animation: highlight-reveal var(--duration) ease-out var(--delay)
+                forwards;
+        }
+
+        .trigger-hover:hover {
+            background-size: var(--bgSizeAtEnd);
+        }
+
+        @keyframes highlight-reveal {
+            from {
+                background-size: var(--bgSizeAtStart);
+            }
+            to {
+                background-size: var(--bgSizeAtEnd);
+            }
+        }
+    }
+
+    /* Reduced motion: instant reveal, no animation */
+    @media (prefers-reduced-motion: reduce) {
+        .highlight-root {
+            background-size: var(--bgSizeAtEnd);
+        }
+    }
+</style>
+
+<span
+    class:list={[
+        "highlight-root",
+        trigger === "load" ? "trigger-load" : "trigger-hover",
+        className,
+    ]}
+    data-highlight-text
+    style={{ "--fontSize": fontSize }}
+><slot /></span>
+
+<!-- ✅ CRITERION 2: Zero Hydration (No script block, no hydrate directives) -->

@@ -20,6 +20,7 @@ const filesToCopy = [
   "src/components/Dock/DockItem.astro",
   "src/components/Dropdown/Dropdown.astro",
   "src/components/GridDotsBackground/GridDotsBackground.astro",
+  "src/components/HighlightText/HighlightText.astro",
 ];
 
 for (const relativePath of filesToCopy) {
