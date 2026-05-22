@@ -22,3 +22,4 @@ export { default as Dropdown } from "./components/Dropdown/Dropdown.astro";
 export { default as GridDotsBackground } from "./components/GridDotsBackground/GridDotsBackground.astro";
 export { default as HighlightText } from "./components/HighlightText/HighlightText.astro";
 export { default as InfiniteMarquee } from "./components/InfiniteMarquee/InfiniteMarquee.astro";
+export { default as LiquidGlassCard } from "./components/LiquidGlassCard/LiquidGlassCard.astro";

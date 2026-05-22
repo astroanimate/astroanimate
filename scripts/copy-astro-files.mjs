@@ -22,6 +22,7 @@ const filesToCopy = [
   "src/components/GridDotsBackground/GridDotsBackground.astro",
   "src/components/HighlightText/HighlightText.astro",
   "src/components/InfiniteMarquee/InfiniteMarquee.astro",
+  "src/components/LiquidGlassCard/LiquidGlassCard.astro",
 ];
 
 for (const relativePath of filesToCopy) {

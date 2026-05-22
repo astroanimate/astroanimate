@@ -1,0 +1,569 @@
+---
+/**
+ * LiquidGlassCard.astro
+ */
+
+interface Props {
+  class?: string;
+  contentClass?: string;
+  draggable?: boolean;
+  expandable?: boolean;
+  width?: string;
+  height?: string;
+  expandedWidth?: string;
+  expandedHeight?: string;
+  blurIntensity?: "sm" | "md" | "lg" | "xl";
+  borderRadius?: string;
+  glowIntensity?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  shadowIntensity?: "none" | "xs" | "sm" | "md" | "lg" | "xl" | "2xl";
+  paddingTop?: string;
+  paddingBottom?: string;
+  paddingLeft?: string;
+  paddingRight?: string;
+  [key: string]: unknown;
+}
+
+const {
+  class: className = "",
+  contentClass = "",
+  draggable = false,
+  expandable = false,
+  width = "360px",
+  height = "160px",
+  expandedWidth = "520px",
+  expandedHeight = "320px",
+  blurIntensity = "sm",
+  borderRadius = "24px",
+  glowIntensity = "sm",
+  shadowIntensity = "md",
+  paddingTop = "24px",
+  paddingBottom = "24px",
+  paddingLeft = "24px",
+  paddingRight = "24px",
+  ...rest
+} = Astro.props;
+
+const blurMap = { sm: "8px", md: "14px", lg: "20px", xl: "28px" };
+const blurPx = blurMap[blurIntensity] ?? "8px";
+
+const glowMap = {
+  none: "none",
+  xs: "0 0 8px rgba(255,255,255,.08)",
+  sm: "0 0 16px rgba(255,255,255,.12)",
+  md: "0 0 28px rgba(255,255,255,.18)",
+  lg: "0 0 40px rgba(255,255,255,.22)",
+  xl: "0 0 56px rgba(255,255,255,.28)",
+  "2xl": "0 0 72px rgba(255,255,255,.35)",
+};
+const glowShadow = glowMap[glowIntensity] ?? glowMap.sm;
+
+const shadowMap = {
+  none: "none",
+  xs: "inset 0 0 6px rgba(0,0,0,.06)",
+  sm: "inset 0 2px 8px rgba(0,0,0,.10)",
+  md: "inset 0 4px 18px rgba(0,0,0,.18)",
+  lg: "inset 0 6px 28px rgba(0,0,0,.24)",
+  xl: "inset 0 8px 40px rgba(0,0,0,.30)",
+  "2xl": "inset 0 12px 56px rgba(0,0,0,.36)",
+};
+const innerShadow = shadowMap[shadowIntensity] ?? shadowMap.md;
+
+const boxShadow = [
+  "0 4px 32px rgba(0,0,0,.18)",
+  glowShadow !== "none" ? glowShadow : null,
+  innerShadow !== "none" ? innerShadow : null,
+  "inset 0 1px 0 rgba(255,255,255,.35)",
+]
+  .filter(Boolean)
+  .join(", ");
+
+const instanceId = `lg-${Math.random().toString(36).slice(2, 10)}`;
+
+const inlineStyle = [
+  `--lg-width:${width};`,
+  `--lg-height:${height};`,
+  `--lg-expanded-width:${expandedWidth};`,
+  `--lg-expanded-height:${expandedHeight};`,
+  `--lg-blur:${blurPx};`,
+  `--lg-radius:${borderRadius};`,
+  `--lg-shadow:${boxShadow};`,
+  `--lg-padding-top:${paddingTop};`,
+  `--lg-padding-bottom:${paddingBottom};`,
+  `--lg-padding-left:${paddingLeft};`,
+  `--lg-padding-right:${paddingRight};`,
+].join("");
+---
+
+<div
+  data-lg-instance={instanceId}
+  class:list={["lg-card", className]}
+  data-lg-expanded="false"
+  data-lg-draggable={draggable ? "true" : undefined}
+  data-lg-expandable={expandable ? "true" : undefined}
+  data-lg-width={width}
+  data-lg-height={height}
+  data-lg-expanded-width={expandedWidth}
+  data-lg-expanded-height={expandedHeight}
+  style={inlineStyle}
+  {...rest}
+>
+  <div class:list={["lg-content", contentClass]}>
+    <slot>
+      <div class="lg-default-content">
+        <span class="lg-kicker">Liquid Glass</span>
+        <strong>Glass Card</strong>
+        <p>Draggable, expandable, and beautifully blurred.</p>
+      </div>
+    </slot>
+  </div>
+</div>
+
+<style>
+  .lg-card {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    flex: none;
+    display: block;
+    box-sizing: border-box;
+    width: var(--lg-width);
+    height: var(--lg-height);
+    --lg-tx: 0px;
+    --lg-ty: 0px;
+    transform: translate(var(--lg-tx), var(--lg-ty));
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(var(--lg-blur, 8px));
+    -webkit-backdrop-filter: blur(var(--lg-blur, 8px));
+    border-radius: var(--lg-radius, 32px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: var(--lg-shadow);
+    transition:
+      box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+      width 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      height 350ms cubic-bezier(0.4, 0, 0.2, 1),
+      transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: default;
+    user-select: none;
+    color: white;
+    font-family:
+      Inter,
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+  }
+
+  .lg-card[data-lg-expanded="true"] {
+    width: var(--lg-expanded-width);
+    height: var(--lg-expanded-height);
+  }
+
+  .lg-card[data-lg-draggable="true"] {
+    cursor: grab;
+    position: relative;
+  }
+
+  .lg-card[data-lg-draggable="true"][data-lg-dragging="true"] {
+    cursor: grabbing;
+    z-index: 100;
+    transition:
+      box-shadow 100ms ease,
+      border-color 100ms ease;
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .lg-card[data-lg-snap="true"] {
+    transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+
+  .lg-card[data-lg-expandable="true"] {
+    cursor: pointer;
+  }
+
+  .lg-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.04) 40%,
+      transparent 70%
+    );
+    transition: background 300ms ease;
+  }
+
+  .lg-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      inset 0 0 20px -6px rgba(255, 255, 255, 0.18),
+      inset 0 0 2px 0 rgba(255, 255, 255, 0.3);
+    transition: box-shadow 300ms ease;
+  }
+
+  .lg-card:hover {
+    border-color: rgba(255, 255, 255, 0.38);
+  }
+
+  .lg-card:hover::before {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.3) 0%,
+      rgba(255, 255, 255, 0.06) 40%,
+      transparent 65%
+    );
+  }
+
+  .lg-card:hover::after {
+    box-shadow:
+      inset 0 0 28px -6px rgba(255, 255, 255, 0.26),
+      inset 0 0 3px 0 rgba(255, 255, 255, 0.42);
+  }
+
+  .lg-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    padding-top: var(--lg-padding-top, 24px);
+    padding-bottom: var(--lg-padding-bottom, 24px);
+    padding-left: var(--lg-padding-left, 24px);
+    padding-right: var(--lg-padding-right, 24px);
+    box-sizing: border-box;
+    text-shadow: 0 1px 18px rgba(0, 0, 0, 0.22);
+  }
+
+  .lg-content :global(*) {
+    box-sizing: border-box;
+  }
+
+  .lg-content :global(p),
+  .lg-content :global(h1),
+  .lg-content :global(h2),
+  .lg-content :global(h3),
+  .lg-content :global(h4) {
+    margin: 0;
+  }
+
+  .lg-content :global(.lg-hourly) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .lg-content :global(.lg-hour-item) {
+    display: flex;
+    min-width: 3.5rem;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .lg-content :global(.lg-panel) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lg-content :global(.lg-title) {
+    font-size: 3.75rem;
+    line-height: 1;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .lg-content :global(.lg-subtitle) {
+    margin-top: 0.35rem;
+    font-size: 1.125rem;
+    line-height: 1.4;
+  }
+
+  .lg-content :global(.lg-pill) {
+    margin-top: 1rem;
+    display: inline-flex;
+    align-items: center;
+    border: 0;
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    color: inherit;
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 500;
+    background: rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }
+
+  .lg-content :global(.lg-list) {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 1rem;
+  }
+
+  .lg-content :global(.lg-list-row) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .lg-default-content {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+  }
+
+  .lg-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.72;
+  }
+
+  .lg-default-content strong {
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .lg-default-content p {
+    max-width: 17rem;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    opacity: 0.82;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lg-card,
+    .lg-card[data-lg-snap="true"],
+    .lg-card[data-lg-expanded="true"],
+    .lg-card::before,
+    .lg-card::after {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .lg-card {
+      transform: translate(0, 0) !important;
+      --lg-tx: 0px !important;
+      --lg-ty: 0px !important;
+    }
+
+    .lg-card:hover,
+    .lg-card:hover::before,
+    .lg-card:hover::after {
+      transition: none !important;
+    }
+  }
+</style>
+
+<script is:inline define:vars={{ draggable, expandable, blurPx, instanceId }}>
+  (function () {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const root = document.querySelector(`[data-lg-instance="${instanceId}"]`);
+    if (!root) return;
+
+    if (root._lgCleanup) return;
+    root._lgCleanup = [];
+
+    const filterId = `lgf-${instanceId}`;
+    const NS = "http://www.w3.org/2000/svg";
+
+    let svg = document.querySelector(`svg[data-lg-instance="${instanceId}"]`);
+    if (!svg) {
+      svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("data-lg-instance", instanceId);
+      svg.setAttribute("width", "0");
+      svg.setAttribute("height", "0");
+      svg.setAttribute("aria-hidden", "true");
+      svg.style.cssText =
+        "position:absolute;overflow:hidden;pointer-events:none;";
+
+      const defs = document.createElementNS(NS, "defs");
+      const filt = document.createElementNS(NS, "filter");
+      filt.id = filterId;
+      filt.setAttribute("x", "-10%");
+      filt.setAttribute("y", "-10%");
+      filt.setAttribute("width", "120%");
+      filt.setAttribute("height", "120%");
+      filt.setAttribute("color-interpolation-filters", "sRGB");
+
+      const turb = document.createElementNS(NS, "feTurbulence");
+      Object.entries({
+        type: "fractalNoise",
+        baseFrequency: "0.012 0.018",
+        numOctaves: "3",
+        seed: "42",
+        result: "noise",
+      }).forEach(([k, v]) => turb.setAttribute(k, v));
+
+      const gblur = document.createElementNS(NS, "feGaussianBlur");
+      Object.entries({
+        in: "noise",
+        stdDeviation: "2.5",
+        result: "blurred",
+      }).forEach(([k, v]) => gblur.setAttribute(k, v));
+
+      const disp = document.createElementNS(NS, "feDisplacementMap");
+      Object.entries({
+        in: "SourceGraphic",
+        in2: "blurred",
+        scale: "18",
+        xChannelSelector: "R",
+        yChannelSelector: "G",
+      }).forEach(([k, v]) => disp.setAttribute(k, v));
+
+      filt.append(turb, gblur, disp);
+      defs.append(filt);
+      svg.append(defs);
+      document.body.appendChild(svg);
+      root._lgCleanup.push(() => svg.remove());
+    }
+
+    let styleEl = document.querySelector(
+      `style[data-lg-instance="${instanceId}"]`,
+    );
+    if (!styleEl) {
+      styleEl = document.createElement("style");
+      styleEl.setAttribute("data-lg-instance", instanceId);
+      styleEl.textContent = `[data-lg-instance="${instanceId}"]{backdrop-filter:url(#${filterId}) blur(${blurPx});-webkit-backdrop-filter:blur(${blurPx});}`;
+      document.head.appendChild(styleEl);
+      root._lgCleanup.push(() => styleEl.remove());
+    }
+
+    if (expandable) {
+      const expandHandler = () => {
+        const expanded = root.dataset.lgExpanded === "true";
+        root.dataset.lgExpanded = String(!expanded);
+      };
+      root.addEventListener("click", expandHandler, { passive: true });
+      root._lgCleanup.push(() =>
+        root.removeEventListener("click", expandHandler),
+      );
+    }
+
+    if (draggable) {
+      let sx = 0;
+      let sy = 0;
+      let ox = 0;
+      let oy = 0;
+      let cx = 0;
+      let cy = 0;
+      let active = false;
+      let raf = null;
+      let snapTimer = null;
+
+      const move = (e) => {
+        if (!active) return;
+        e.preventDefault();
+        const px = e.touches?.[0].clientX ?? e.clientX;
+        const py = e.touches?.[0].clientY ?? e.clientY;
+        ox = px - sx;
+        oy = py - sy;
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => {
+          root.style.setProperty("--lg-tx", `${ox}px`);
+          root.style.setProperty("--lg-ty", `${oy}px`);
+          cx = ox;
+          cy = oy;
+        });
+      };
+
+      const up = () => {
+        if (!active) return;
+        active = false;
+        root.dataset.lgDragging = "false";
+
+        window.removeEventListener("mousemove", move);
+        window.removeEventListener("touchmove", move);
+        window.removeEventListener("mouseup", up);
+        window.removeEventListener("touchend", up);
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          root.style.setProperty("--lg-tx", "0px");
+          root.style.setProperty("--lg-ty", "0px");
+          cx = 0;
+          cy = 0;
+          root.dataset.lgSnap = "false";
+        } else {
+          root.dataset.lgSnap = "true";
+          root.style.setProperty("--lg-tx", "0px");
+          root.style.setProperty("--lg-ty", "0px");
+          cx = 0;
+          cy = 0;
+
+          clearTimeout(snapTimer);
+          snapTimer = setTimeout(() => {
+            root.dataset.lgSnap = "false";
+          }, 510);
+        }
+      };
+
+      const down = (e) => {
+        active = true;
+        const px = e.touches?.[0].clientX ?? e.clientX;
+        const py = e.touches?.[0].clientY ?? e.clientY;
+        sx = px - cx;
+        sy = py - cy;
+        root.dataset.lgDragging = "true";
+
+        window.addEventListener("mousemove", move, { passive: false });
+        window.addEventListener("touchmove", move, { passive: false });
+        window.addEventListener("mouseup", up, { passive: true });
+        window.addEventListener("touchend", up, { passive: true });
+      };
+
+      root.addEventListener("mousedown", down, { passive: true });
+      root.addEventListener("touchstart", down, { passive: true });
+
+      root._lgCleanup.push(() => {
+        root.removeEventListener("mousedown", down);
+        root.removeEventListener("touchstart", down);
+        window.removeEventListener("mousemove", move);
+        window.removeEventListener("touchmove", move);
+        window.removeEventListener("mouseup", up);
+        window.removeEventListener("touchend", up);
+        if (raf) cancelAnimationFrame(raf);
+        clearTimeout(snapTimer);
+      });
+    }
+
+    const observer = new MutationObserver(() => {
+      if (!document.contains(root)) {
+        if (root._lgCleanup) {
+          root._lgCleanup.forEach((fn) => fn());
+          root._lgCleanup = null;
+        }
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+    root._lgCleanup.push(() => observer.disconnect());
+  })();
+</script>

@@ -112,6 +112,11 @@
       "types": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
       "import": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
       "default": "./dist/components/InfiniteMarquee/InfiniteMarquee.astro"
+    },
+    "./LiquidGlassCard": {
+      "types": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro",
+      "import": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro",
+      "default": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro"
     }
   },
   "files": [
