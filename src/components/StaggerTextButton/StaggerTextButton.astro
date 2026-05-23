@@ -1,0 +1,132 @@
+---
+interface Props {
+  as?: "button" | "a";
+  href?: string;
+  label: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
+const {
+  as = "button",
+  href,
+  label,
+  type = "button",
+  class: className = "",
+} = Astro.props;
+
+const chars = [...label];
+---
+
+<style>
+  /* ✅ CRITERION 7: CSS-FIRST */
+
+  [data-stb] {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding-inline: 1.5rem;
+    min-height: 2.75rem;
+
+    border: none;
+    border-radius: 999px;
+
+    background: #3653f8;
+    color: white;
+
+    font-weight: 700;
+    cursor: pointer;
+    overflow: hidden;
+
+    text-decoration: none;
+  }
+
+  .layer {
+    display: flex;
+    overflow: hidden;
+  }
+
+  .layer.secondary {
+    position: absolute;
+  }
+
+  .layer.secondary span {
+    transform: translateY(-1.2em);
+  }
+
+  [data-stb]:hover .layer.primary span {
+    transform: translateY(1.2em);
+  }
+
+  [data-stb]:hover .layer.secondary span {
+    transform: translateY(0);
+  }
+
+  .layer span {
+    display: inline-block;
+    transition: transform 300ms ease;
+    white-space: pre;
+  }
+
+  /* Stagger system */
+  .layer span:nth-child(1) { transition-delay: 0ms; }
+  .layer span:nth-child(2) { transition-delay: 50ms; }
+  .layer span:nth-child(3) { transition-delay: 100ms; }
+  .layer span:nth-child(4) { transition-delay: 150ms; }
+  .layer span:nth-child(5) { transition-delay: 200ms; }
+  .layer span:nth-child(6) { transition-delay: 250ms; }
+  .layer span:nth-child(7) { transition-delay: 300ms; }
+  .layer span:nth-child(8) { transition-delay: 350ms; }
+  .layer span:nth-child(9) { transition-delay: 400ms; }
+  .layer span:nth-child(10) { transition-delay: 450ms; }
+
+  /* Accessibility */
+  [data-stb]:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+
+  /* ✅ CRITERION 6: REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    [data-stb],
+    [data-stb] * {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+{as === "a" ? (
+  <a
+    data-stb
+    href={href}
+    class={className}
+    aria-label={label}
+  >
+    <span class="layer primary" aria-hidden="true">
+      {chars.map((char) => <span>{char}</span>)}
+    </span>
+
+    <span class="layer secondary" aria-hidden="true">
+      {chars.map((char) => <span>{char}</span>)}
+    </span>
+  </a>
+) : (
+  <button
+    data-stb
+    type={type}
+    class={className}
+    aria-label={label}
+  >
+    <span class="layer primary" aria-hidden="true">
+      {chars.map((char) => <span>{char}</span>)}
+    </span>
+
+    <span class="layer secondary" aria-hidden="true">
+      {chars.map((char) => <span>{char}</span>)}
+    </span>
+  </button>
+)}

@@ -142,6 +142,11 @@
       "types": "./dist/components/GitHubShineButton/GitHubShineButton.astro",
       "import": "./dist/components/GitHubShineButton/GitHubShineButton.astro",
       "default": "./dist/components/GitHubShineButton/GitHubShineButton.astro"
+    },
+    "./StaggerTextButton": {
+      "types": "./dist/components/StaggerTextButton/StaggerTextButton.astro",
+      "import": "./dist/components/StaggerTextButton/StaggerTextButton.astro",
+      "default": "./dist/components/StaggerTextButton/StaggerTextButton.astro"
     }
   },
   "files": [

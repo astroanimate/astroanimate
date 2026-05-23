@@ -28,3 +28,4 @@ export { default as ArrowCTAButton } from "./components/ArrowCTAButton/ArrowCTAB
 export { default as SlidingOverlayButton } from "./components/SlidingOverlayButton/SlidingOverlayButton.astro";
 export { default as FillHoverButton } from "./components/FillHoverButton/FillHoverButton.astro";
 export { default as GitHubShineButton } from "./components/GitHubShineButton/GitHubShineButton.astro";
+export { default as StaggerTextButton } from "./components/StaggerTextButton/StaggerTextButton.astro";

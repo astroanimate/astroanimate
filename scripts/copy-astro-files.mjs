@@ -28,6 +28,7 @@ const filesToCopy = [
   "src/components/SlidingOverlayButton/SlidingOverlayButton.astro",
   "src/components/FillHoverButton/FillHoverButton.astro",
   "src/components/GitHubShineButton/GitHubShineButton.astro",
+  "src/components/StaggerTextButton/StaggerTextButton.astro",
 ];
 
 for (const relativePath of filesToCopy) {
