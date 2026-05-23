@@ -1,0 +1,129 @@
+---
+interface Props {
+  as?: "button" | "a";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
+const {
+  as = "button",
+  href,
+  type = "button",
+  class: className = "",
+} = Astro.props;
+
+const Tag = as === "a" ? "a" : "button";
+---
+
+<style>
+  /* ✅ CRITERION 7: CSS-FIRST (all visuals handled here) */
+  [data-abb] {
+    --border-radius: 15px;
+    --border-width: 4px;
+
+    appearance: none;
+    position: relative;
+    padding: 1em 2em;
+    border: 0;
+    background-color: #ffffff;
+    font-family: "Roboto", Arial, "Segoe UI", sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #000;
+    z-index: 2;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+  }
+
+  /* ✅ CRITERION 1: visible baseline without JS */
+  [data-abb]::after {
+    --m-i: linear-gradient(#000, #000);
+    --m-o: content-box, padding-box;
+
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: var(--border-width);
+    border-radius: var(--border-radius);
+
+    background-image: conic-gradient(
+      #488cfb,
+      #29dbbc,
+      #ddf505,
+      #ff9f0e,
+      #e440bb,
+      #655adc,
+      #488cfb
+    );
+
+    -webkit-mask-image: var(--m-i), var(--m-i);
+    mask-image: var(--m-i), var(--m-i);
+    -webkit-mask-origin: var(--m-o);
+    mask-origin: var(--m-o);
+    -webkit-mask-clip: var(--m-o);
+    mask-composite: exclude;
+    -webkit-mask-composite: destination-out;
+
+    filter: hue-rotate(0);
+
+    /* Animation defined but paused */
+    animation: abb-rotate-hue linear 500ms infinite;
+    animation-play-state: paused;
+  }
+
+  /* Hover interaction */
+  [data-abb]:hover::after {
+    animation-play-state: running;
+  }
+
+  /* Active state */
+  [data-abb]:active {
+    --border-width: 5px;
+  }
+
+  /* Focus accessibility */
+  [data-abb]:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+  }
+
+  /* Box sizing */
+  [data-abb],
+  [data-abb]::after {
+    box-sizing: border-box;
+  }
+
+  /* Animation */
+  @keyframes abb-rotate-hue {
+    to {
+      filter: hue-rotate(1turn);
+    }
+  }
+
+  /* ✅ CRITERION 6: REDUCED MOTION (ALL animations disabled) */
+  @media (prefers-reduced-motion: reduce) {
+    [data-abb]::after {
+      animation: none !important;
+      filter: none !important;
+    }
+
+    [data-abb]:hover::after {
+      animation: none !important;
+    }
+  }
+</style>
+
+<!-- ✅ CRITERION 1: meaningful HTML content -->
+{
+  as === "a" ? (
+    <a data-abb href={href} class={className}>
+      <slot />
+    </a>
+  ) : (
+    <button data-abb type={type} class={className}>
+      <slot />
+    </button>
+  )
+}

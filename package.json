@@ -117,6 +117,11 @@
       "types": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro",
       "import": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro",
       "default": "./dist/components/LiquidGlassCard/LiquidGlassCard.astro"
+    },
+    "./AnimatedBorderButton": {
+      "types": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro",
+      "import": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro",
+      "default": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro"
     }
   },
   "files": [

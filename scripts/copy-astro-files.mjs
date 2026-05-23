@@ -23,6 +23,7 @@ const filesToCopy = [
   "src/components/HighlightText/HighlightText.astro",
   "src/components/InfiniteMarquee/InfiniteMarquee.astro",
   "src/components/LiquidGlassCard/LiquidGlassCard.astro",
+  "src/components/AnimatedBorderButton/AnimatedBorderButton.astro",
 ];
 
 for (const relativePath of filesToCopy) {

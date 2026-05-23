@@ -20,6 +20,7 @@ export default defineConfig({
     "components/TypewriterText/index": "src/components/TypewriterText/index.ts",
     "components/CardStack/index": "src/components/CardStack/index.ts",
     "components/CountUp/index": "src/components/CountUp/index.ts",
+    "components/AnimatedBorderButton/index": "src/components/AnimatedBorderButton/index.ts",
     "internal/fadein": "src/internal/fadein.ts",
     "internal/tabs": "src/internal/tabs.ts",
     "internal/guards": "src/internal/guards.ts",

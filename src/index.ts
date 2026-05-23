@@ -23,3 +23,4 @@ export { default as GridDotsBackground } from "./components/GridDotsBackground/G
 export { default as HighlightText } from "./components/HighlightText/HighlightText.astro";
 export { default as InfiniteMarquee } from "./components/InfiniteMarquee/InfiniteMarquee.astro";
 export { default as LiquidGlassCard } from "./components/LiquidGlassCard/LiquidGlassCard.astro";
+export { default as AnimatedBorderButton } from "./components/AnimatedBorderButton/AnimatedBorderButton.astro";
