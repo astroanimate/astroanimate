@@ -25,3 +25,4 @@ export { default as InfiniteMarquee } from "./components/InfiniteMarquee/Infinit
 export { default as LiquidGlassCard } from "./components/LiquidGlassCard/LiquidGlassCard.astro";
 export { default as AnimatedBorderButton } from "./components/AnimatedBorderButton/AnimatedBorderButton.astro";
 export { default as ArrowCTAButton } from "./components/ArrowCTAButton/ArrowCTAButton.astro";
+export { default as SlidingOverlayButton } from "./components/SlidingOverlayButton/SlidingOverlayButton.astro";

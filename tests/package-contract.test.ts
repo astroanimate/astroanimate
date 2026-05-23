@@ -25,6 +25,7 @@ describe("package contract", () => {
     const gridDotsBackgroundExport = packageJson.exports["./GridDotsBackground"];
     const highlightTextExport = packageJson.exports["./HighlightText"];
     const infiniteMarqueeExport = packageJson.exports["./InfiniteMarquee"];
+    const slidingOverlayButtonExport = packageJson.exports["./SlidingOverlayButton"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -67,6 +68,10 @@ describe("package contract", () => {
     expect(infiniteMarqueeExport?.import).toBe(
       "./dist/components/InfiniteMarquee/InfiniteMarquee.astro",
     );
+    expect(slidingOverlayButtonExport).toBeDefined();
+    expect(slidingOverlayButtonExport?.import).toBe(
+      "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -98,6 +103,9 @@ describe("package contract", () => {
     const infiniteMarquee = read(
       "src/components/InfiniteMarquee/InfiniteMarquee.astro",
     );
+    const slidingOverlayButton = read(
+      "src/components/SlidingOverlayButton/SlidingOverlayButton.astro",
+    );
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
@@ -105,6 +113,7 @@ describe("package contract", () => {
     expect(gridDotsBackground).not.toContain("<script");
     expect(highlightText).not.toContain("<script");
     expect(infiniteMarquee).not.toContain("<script");
+    expect(slidingOverlayButton).not.toContain("<script");
 
     // Components with conditional scripts
     expect(animatedCard).toContain("<script");
@@ -126,6 +135,8 @@ describe("package contract", () => {
     expect(highlightText).not.toContain("client:");
     expect(infiniteMarquee).not.toContain("astro:page-load");
     expect(infiniteMarquee).not.toContain("client:");
+    expect(slidingOverlayButton).not.toContain("astro:page-load");
+    expect(slidingOverlayButton).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -200,6 +211,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/InfiniteMarquee/InfiniteMarquee.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
         ),
       ),
     ).toBe(true);

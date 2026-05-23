@@ -127,6 +127,11 @@
       "types": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro",
       "import": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro",
       "default": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro"
+    },
+    "./SlidingOverlayButton": {
+      "types": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
+      "import": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
+      "default": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro"
     }
   },
   "files": [
