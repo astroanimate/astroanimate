@@ -147,6 +147,11 @@
       "types": "./dist/components/StaggerTextButton/StaggerTextButton.astro",
       "import": "./dist/components/StaggerTextButton/StaggerTextButton.astro",
       "default": "./dist/components/StaggerTextButton/StaggerTextButton.astro"
+    },
+    "./JobCard": {
+      "types": "./dist/components/JobCard/JobCard.astro",
+      "import": "./dist/components/JobCard/JobCard.astro",
+      "default": "./dist/components/JobCard/JobCard.astro"
     }
   },
   "files": [

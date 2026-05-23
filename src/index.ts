@@ -29,3 +29,4 @@ export { default as SlidingOverlayButton } from "./components/SlidingOverlayButt
 export { default as FillHoverButton } from "./components/FillHoverButton/FillHoverButton.astro";
 export { default as GitHubShineButton } from "./components/GitHubShineButton/GitHubShineButton.astro";
 export { default as StaggerTextButton } from "./components/StaggerTextButton/StaggerTextButton.astro";
+export { default as JobCard } from "./components/JobCard/JobCard.astro";

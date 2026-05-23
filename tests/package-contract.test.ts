@@ -27,6 +27,7 @@ describe("package contract", () => {
     const infiniteMarqueeExport = packageJson.exports["./InfiniteMarquee"];
     const slidingOverlayButtonExport = packageJson.exports["./SlidingOverlayButton"];
     const staggerTextButtonExport = packageJson.exports["./StaggerTextButton"];
+    const jobCardExport = packageJson.exports["./JobCard"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -77,6 +78,10 @@ describe("package contract", () => {
     expect(staggerTextButtonExport?.import).toBe(
       "./dist/components/StaggerTextButton/StaggerTextButton.astro",
     );
+    expect(jobCardExport).toBeDefined();
+    expect(jobCardExport?.import).toBe(
+      "./dist/components/JobCard/JobCard.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -114,6 +119,7 @@ describe("package contract", () => {
     const staggerTextButton = read(
       "src/components/StaggerTextButton/StaggerTextButton.astro",
     );
+    const jobCard = read("src/components/JobCard/JobCard.astro");
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
@@ -123,6 +129,7 @@ describe("package contract", () => {
     expect(infiniteMarquee).not.toContain("<script");
     expect(slidingOverlayButton).not.toContain("<script");
     expect(staggerTextButton).not.toContain("<script");
+    expect(jobCard).not.toContain("<script");
 
     // Components with conditional scripts
     expect(animatedCard).toContain("<script");
@@ -148,6 +155,8 @@ describe("package contract", () => {
     expect(slidingOverlayButton).not.toContain("client:");
     expect(staggerTextButton).not.toContain("astro:page-load");
     expect(staggerTextButton).not.toContain("client:");
+    expect(jobCard).not.toContain("astro:page-load");
+    expect(jobCard).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -238,6 +247,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/StaggerTextButton/StaggerTextButton.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/JobCard/JobCard.astro",
         ),
       ),
     ).toBe(true);
