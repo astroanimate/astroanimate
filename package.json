@@ -152,6 +152,11 @@
       "types": "./dist/components/JobCard/JobCard.astro",
       "import": "./dist/components/JobCard/JobCard.astro",
       "default": "./dist/components/JobCard/JobCard.astro"
+    },
+    "./ProductReviewCard": {
+      "types": "./dist/components/ProductReviewCard/ProductReviewCard.astro",
+      "import": "./dist/components/ProductReviewCard/ProductReviewCard.astro",
+      "default": "./dist/components/ProductReviewCard/ProductReviewCard.astro"
     }
   },
   "files": [

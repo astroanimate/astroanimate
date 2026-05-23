@@ -30,3 +30,4 @@ export { default as FillHoverButton } from "./components/FillHoverButton/FillHov
 export { default as GitHubShineButton } from "./components/GitHubShineButton/GitHubShineButton.astro";
 export { default as StaggerTextButton } from "./components/StaggerTextButton/StaggerTextButton.astro";
 export { default as JobCard } from "./components/JobCard/JobCard.astro";
+export { default as ProductReviewCard } from "./components/ProductReviewCard/ProductReviewCard.astro";

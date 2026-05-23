@@ -28,6 +28,7 @@ describe("package contract", () => {
     const slidingOverlayButtonExport = packageJson.exports["./SlidingOverlayButton"];
     const staggerTextButtonExport = packageJson.exports["./StaggerTextButton"];
     const jobCardExport = packageJson.exports["./JobCard"];
+    const productReviewCardExport = packageJson.exports["./ProductReviewCard"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -82,6 +83,10 @@ describe("package contract", () => {
     expect(jobCardExport?.import).toBe(
       "./dist/components/JobCard/JobCard.astro",
     );
+    expect(productReviewCardExport).toBeDefined();
+    expect(productReviewCardExport?.import).toBe(
+      "./dist/components/ProductReviewCard/ProductReviewCard.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -120,6 +125,7 @@ describe("package contract", () => {
       "src/components/StaggerTextButton/StaggerTextButton.astro",
     );
     const jobCard = read("src/components/JobCard/JobCard.astro");
+    const productReviewCard = read("src/components/ProductReviewCard/ProductReviewCard.astro");
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
@@ -130,6 +136,7 @@ describe("package contract", () => {
     expect(slidingOverlayButton).not.toContain("<script");
     expect(staggerTextButton).not.toContain("<script");
     expect(jobCard).not.toContain("<script");
+    expect(productReviewCard).not.toContain("<script");
 
     // Components with conditional scripts
     expect(animatedCard).toContain("<script");
@@ -157,6 +164,8 @@ describe("package contract", () => {
     expect(staggerTextButton).not.toContain("client:");
     expect(jobCard).not.toContain("astro:page-load");
     expect(jobCard).not.toContain("client:");
+    expect(productReviewCard).not.toContain("astro:page-load");
+    expect(productReviewCard).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -255,6 +264,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/JobCard/JobCard.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/ProductReviewCard/ProductReviewCard.astro",
         ),
       ),
     ).toBe(true);

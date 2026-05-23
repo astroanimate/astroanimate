@@ -30,6 +30,7 @@ const filesToCopy = [
   "src/components/GitHubShineButton/GitHubShineButton.astro",
   "src/components/StaggerTextButton/StaggerTextButton.astro",
   "src/components/JobCard/JobCard.astro",
+  "src/components/ProductReviewCard/ProductReviewCard.astro",
 ];
 
 for (const relativePath of filesToCopy) {
