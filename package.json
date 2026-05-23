@@ -122,6 +122,11 @@
       "types": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro",
       "import": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro",
       "default": "./dist/components/AnimatedBorderButton/AnimatedBorderButton.astro"
+    },
+    "./ArrowCTAButton": {
+      "types": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro",
+      "import": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro",
+      "default": "./dist/components/ArrowCTAButton/ArrowCTAButton.astro"
     }
   },
   "files": [

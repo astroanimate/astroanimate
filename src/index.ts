@@ -24,3 +24,4 @@ export { default as HighlightText } from "./components/HighlightText/HighlightTe
 export { default as InfiniteMarquee } from "./components/InfiniteMarquee/InfiniteMarquee.astro";
 export { default as LiquidGlassCard } from "./components/LiquidGlassCard/LiquidGlassCard.astro";
 export { default as AnimatedBorderButton } from "./components/AnimatedBorderButton/AnimatedBorderButton.astro";
+export { default as ArrowCTAButton } from "./components/ArrowCTAButton/ArrowCTAButton.astro";
