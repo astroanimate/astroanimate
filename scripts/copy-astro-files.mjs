@@ -31,6 +31,7 @@ const filesToCopy = [
   "src/components/StaggerTextButton/StaggerTextButton.astro",
   "src/components/JobCard/JobCard.astro",
   "src/components/ProductReviewCard/ProductReviewCard.astro",
+  "src/components/ArticleCard/ArticleCard.astro",
 ];
 
 for (const relativePath of filesToCopy) {

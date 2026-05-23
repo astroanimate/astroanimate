@@ -157,6 +157,11 @@
       "types": "./dist/components/ProductReviewCard/ProductReviewCard.astro",
       "import": "./dist/components/ProductReviewCard/ProductReviewCard.astro",
       "default": "./dist/components/ProductReviewCard/ProductReviewCard.astro"
+    },
+    "./ArticleCard": {
+      "types": "./dist/components/ArticleCard/ArticleCard.astro",
+      "import": "./dist/components/ArticleCard/ArticleCard.astro",
+      "default": "./dist/components/ArticleCard/ArticleCard.astro"
     }
   },
   "files": [

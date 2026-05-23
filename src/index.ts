@@ -31,3 +31,4 @@ export { default as GitHubShineButton } from "./components/GitHubShineButton/Git
 export { default as StaggerTextButton } from "./components/StaggerTextButton/StaggerTextButton.astro";
 export { default as JobCard } from "./components/JobCard/JobCard.astro";
 export { default as ProductReviewCard } from "./components/ProductReviewCard/ProductReviewCard.astro";
+export { default as ArticleCard } from "./components/ArticleCard/ArticleCard.astro";
