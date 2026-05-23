@@ -27,3 +27,4 @@ export { default as AnimatedBorderButton } from "./components/AnimatedBorderButt
 export { default as ArrowCTAButton } from "./components/ArrowCTAButton/ArrowCTAButton.astro";
 export { default as SlidingOverlayButton } from "./components/SlidingOverlayButton/SlidingOverlayButton.astro";
 export { default as FillHoverButton } from "./components/FillHoverButton/FillHoverButton.astro";
+export { default as GitHubShineButton } from "./components/GitHubShineButton/GitHubShineButton.astro";

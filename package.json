@@ -137,6 +137,11 @@
       "types": "./dist/components/FillHoverButton/FillHoverButton.astro",
       "import": "./dist/components/FillHoverButton/FillHoverButton.astro",
       "default": "./dist/components/FillHoverButton/FillHoverButton.astro"
+    },
+    "./GitHubShineButton": {
+      "types": "./dist/components/GitHubShineButton/GitHubShineButton.astro",
+      "import": "./dist/components/GitHubShineButton/GitHubShineButton.astro",
+      "default": "./dist/components/GitHubShineButton/GitHubShineButton.astro"
     }
   },
   "files": [

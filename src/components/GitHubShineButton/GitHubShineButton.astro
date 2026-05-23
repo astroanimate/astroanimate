@@ -1,0 +1,208 @@
+---
+interface Props {
+  as?: "button" | "a";
+  href?: string;
+  stars?: number | string;
+  showStars?: boolean;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+  fontFamily?: string;
+}
+
+const {
+  as = "button",
+  href,
+  stars = 0,
+  showStars = true,
+  type = "button",
+  class: className = "",
+  fontFamily = "Inter, sans-serif",
+} = Astro.props;
+---
+
+<style>
+  /* ✅ CRITERION 7: CSS-FIRST */
+
+  [data-ghsb] {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    height: 2.6rem;
+    padding-inline: 1rem;
+
+    border-radius: 0.5rem;
+    background: black;
+    color: white;
+
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+
+    transition:
+      background-color 300ms ease,
+      box-shadow 300ms ease,
+      transform 300ms ease;
+  }
+
+  /* Shine */
+  [data-ghsb]::before {
+    content: "";
+    position: absolute;
+    top: -4rem;
+    right: 0;
+
+    width: 2rem;
+    height: 8rem;
+
+    transform: translateX(3rem) rotate(12deg);
+
+    background: rgba(255,255,255,0.1);
+
+    transition: transform 1000ms ease;
+  }
+
+  [data-ghsb]:hover::before {
+    transform: translateX(-10rem) rotate(12deg);
+  }
+
+  [data-ghsb]:hover {
+    background: rgba(0,0,0,0.9);
+    box-shadow: 0 0 0 2px white;
+  }
+
+  .main,
+  .stats {
+    position: relative;
+    z-index: 1;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .github-icon,
+  .star-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+    flex-shrink: 0;
+  }
+
+  .star-icon {
+    color: #a3a3a3;
+    transition: color 300ms ease;
+  }
+
+  [data-ghsb]:hover .star-icon {
+    color: #fde047;
+  }
+
+  .count {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
+  }
+
+  /* Accessibility */
+  [data-ghsb]:focus-visible {
+    outline: 2px solid white;
+    outline-offset: 4px;
+  }
+
+  /* ✅ CRITERION 6: REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    [data-ghsb],
+    [data-ghsb] * {
+      transition: none !important;
+      transform: none !important;
+    }
+  }
+</style>
+
+{as === "a" ? (
+  <a
+    data-ghsb
+    href={href}
+    class={className}
+    style={`font-family: ${fontFamily};`}
+  >
+    <span class="main">
+      <svg
+        class="github-icon"
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12 .5C5.648.5.5 5.648.5 12a11.5 11.5 0 0 0 7.863 10.923c.575.106.787-.25.787-.556 0-.275-.012-1.188-.018-2.156-3.2.694-3.877-1.544-3.877-1.544-.525-1.337-1.282-1.694-1.282-1.694-1.05-.719.081-.706.081-.706 1.162.081 1.775 1.194 1.775 1.194 1.031 1.769 2.706 1.258 3.369.962.106-.75.406-1.256.737-1.544-2.556-.288-5.244-1.281-5.244-5.706 0-1.262.45-2.294 1.188-3.106-.119-.288-.519-1.45.112-3.019 0 0 .969-.31 3.175 1.188A11.06 11.06 0 0 1 12 6.094c.975.006 1.956.131 2.875.381 2.206-1.5 3.175-1.188 3.175-1.188.631 1.569.231 2.731.112 3.019.738.812 1.188 1.844 1.188 3.106 0 4.438-2.694 5.413-5.256 5.694.419.362.794 1.075.794 2.169 0 1.569-.013 2.831-.013 3.219 0 .306.206.669.794.556A11.503 11.503 0 0 0 23.5 12C23.5 5.648 18.352.5 12 .5Z"
+        />
+      </svg>
+
+      <span>
+        <slot />
+      </span>
+    </span>
+
+    {showStars && (
+      <span class="stats">
+        <svg
+          class="star-icon"
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="currentColor"
+            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+          />
+        </svg>
+
+        <span class="count">{stars}</span>
+      </span>
+    )}
+  </a>
+) : (
+  <button
+    data-ghsb
+    type={type}
+    class={className}
+    style={`font-family: ${fontFamily};`}
+  >
+    <span class="main">
+      <svg
+  class="github-icon"
+  aria-hidden="true"
+  viewBox="0 0 24 24"
+>
+  <path
+    fill="currentColor"
+    d="M12 .5C5.648.5.5 5.648.5 12a11.5 11.5 0 0 0 7.863 10.923c.575.106.787-.25.787-.556 0-.275-.012-1.188-.018-2.156-3.2.694-3.877-1.544-3.877-1.544-.525-1.337-1.282-1.694-1.282-1.694-1.05-.719.081-.706.081-.706 1.162.081 1.775 1.194 1.775 1.194 1.031 1.769 2.706 1.258 3.369.962.106-.75.406-1.256.737-1.544-2.556-.288-5.244-1.281-5.244-5.706 0-1.262.45-2.294 1.188-3.106-.119-.288-.519-1.45.112-3.019 0 0 .969-.31 3.175 1.188A11.06 11.06 0 0 1 12 6.094c.975.006 1.956.131 2.875.381 2.206-1.5 3.175-1.188 3.175-1.188.631 1.569.231 2.731.112 3.019.738.812 1.188 1.844 1.188 3.106 0 4.438-2.694 5.413-5.256 5.694.419.362.794 1.075.794 2.169 0 1.569-.013 2.831-.013 3.219 0 .306.206.669.794.556A11.503 11.503 0 0 0 23.5 12C23.5 5.648 18.352.5 12 .5Z"
+  />
+</svg>
+
+      <span>
+        <slot />
+      </span>
+    </span>
+
+    {showStars && (
+      <span class="stats">
+        <svg
+    class="star-icon"
+    aria-hidden="true"
+    viewBox="0 0 24 24"
+  >
+    <path
+      fill="currentColor"
+      d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+    />
+  </svg>
+
+        <span class="count">{stars}</span>
+      </span>
+    )}
+  </button>
+)}
