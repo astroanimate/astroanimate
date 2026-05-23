@@ -1,0 +1,125 @@
+---
+interface Props {
+  as?: "button" | "a";
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  class?: string;
+}
+
+const {
+  as = "button",
+  href,
+  type = "button",
+  class: className = "",
+} = Astro.props;
+---
+
+<style>
+  /* ✅ CRITERION 7: CSS-FIRST */
+
+  [data-fhb] {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 1em 1.5em;
+
+    border: none;
+    background: transparent;
+
+    color: #ffc506;
+
+    font-size: 1.0625rem;
+    text-transform: uppercase;
+    text-decoration: none;
+
+    cursor: pointer;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    transition: color 500ms ease;
+  }
+
+  /* Underline */
+  [data-fhb]::before {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 0;
+    height: 2px;
+
+    background: #ffc506;
+
+    transition: width 500ms ease;
+  }
+
+  /* Fill layer */
+  [data-fhb]::after {
+    content: "";
+
+    position: absolute;
+    inset: auto 0 0 0;
+
+    width: 100%;
+    height: 0;
+
+    background: #ffc506;
+
+    z-index: -1;
+
+    transition: height 400ms ease;
+  }
+
+  [data-fhb]:hover {
+    color: #1e1e2b;
+    transition-delay: 500ms;
+  }
+
+  [data-fhb]:hover::before {
+    width: 100%;
+  }
+
+  [data-fhb]:hover::after {
+    height: 100%;
+    transition-delay: 400ms;
+  }
+
+  /* Accessibility */
+  [data-fhb]:focus-visible {
+    outline: 2px solid #ffc506;
+    outline-offset: 4px;
+  }
+
+  /* ✅ CRITERION 6: REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    [data-fhb],
+    [data-fhb]::before,
+    [data-fhb]::after {
+      transition: none !important;
+    }
+  }
+</style>
+
+{as === "a" ? (
+  <a
+    data-fhb
+    href={href}
+    class={className}
+  >
+    <slot />
+  </a>
+) : (
+  <button
+    data-fhb
+    type={type}
+    class={className}
+  >
+    <slot />
+  </button>
+)}

@@ -22,3 +22,4 @@ export { default as LiquidGlassCard } from "./LiquidGlassCard/LiquidGlassCard.as
 export { default as AnimatedBorderButton } from "./AnimatedBorderButton/AnimatedBorderButton.astro";
 export { default as ArrowCTAButton } from "./ArrowCTAButton/ArrowCTAButton.astro";
 export { default as SlidingOverlayButton } from "./SlidingOverlayButton/SlidingOverlayButton.astro";
+export { default as FillHoverButton } from "./FillHoverButton/FillHoverButton.astro";

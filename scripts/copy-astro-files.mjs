@@ -26,6 +26,7 @@ const filesToCopy = [
   "src/components/AnimatedBorderButton/AnimatedBorderButton.astro",
   "src/components/ArrowCTAButton/ArrowCTAButton.astro",
   "src/components/SlidingOverlayButton/SlidingOverlayButton.astro",
+  "src/components/FillHoverButton/FillHoverButton.astro",
 ];
 
 for (const relativePath of filesToCopy) {

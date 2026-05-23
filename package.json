@@ -132,6 +132,11 @@
       "types": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
       "import": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro",
       "default": "./dist/components/SlidingOverlayButton/SlidingOverlayButton.astro"
+    },
+    "./FillHoverButton": {
+      "types": "./dist/components/FillHoverButton/FillHoverButton.astro",
+      "import": "./dist/components/FillHoverButton/FillHoverButton.astro",
+      "default": "./dist/components/FillHoverButton/FillHoverButton.astro"
     }
   },
   "files": [
