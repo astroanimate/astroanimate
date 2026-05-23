@@ -30,6 +30,7 @@ describe("package contract", () => {
     const jobCardExport = packageJson.exports["./JobCard"];
     const productReviewCardExport = packageJson.exports["./ProductReviewCard"];
     const articleCardExport = packageJson.exports["./ArticleCard"];
+    const newsletterPopupCardExport = packageJson.exports["./NewsletterPopupCard"];
 
     expect(packageJson.main).toBe("./dist/index.js");
     expect(packageJson.module).toBe("./dist/index.js");
@@ -92,6 +93,10 @@ describe("package contract", () => {
     expect(articleCardExport?.import).toBe(
       "./dist/components/ArticleCard/ArticleCard.astro",
     );
+    expect(newsletterPopupCardExport).toBeDefined();
+    expect(newsletterPopupCardExport?.import).toBe(
+      "./dist/components/NewsletterPopupCard/NewsletterPopupCard.astro",
+    );
   });
 
   it("uses Astro-aware typechecking", () => {
@@ -132,6 +137,7 @@ describe("package contract", () => {
     const jobCard = read("src/components/JobCard/JobCard.astro");
     const productReviewCard = read("src/components/ProductReviewCard/ProductReviewCard.astro");
     const articleCard = read("src/components/ArticleCard/ArticleCard.astro");
+    const newsletterPopupCard = read("src/components/NewsletterPopupCard/NewsletterPopupCard.astro");
 
     // Components without scripts (CSS-only)
     expect(animatedButton).not.toContain("<script");
@@ -151,6 +157,7 @@ describe("package contract", () => {
     expect(fadeInText).toContain("<script is:inline>");
     expect(scaleIn).toContain("<script is:inline>");
     expect(typewriterText).toContain("<script is:inline>");
+    expect(newsletterPopupCard).toContain("<script is:inline>");
 
     // No astro:* events or client: directives
     expect(animatedButton).not.toContain("astro:page-load");
@@ -175,6 +182,8 @@ describe("package contract", () => {
     expect(productReviewCard).not.toContain("client:");
     expect(articleCard).not.toContain("astro:page-load");
     expect(articleCard).not.toContain("client:");
+    expect(newsletterPopupCard).not.toContain("astro:page-load");
+    expect(newsletterPopupCard).not.toContain("client:");
     expect(tooltip).not.toContain("astro:page-load");
     expect(tooltip).not.toContain("client:");
     expect(fadeInText).not.toContain("astro:page-load");
@@ -289,6 +298,14 @@ describe("package contract", () => {
         resolve(
           process.cwd(),
           "dist/components/ArticleCard/ArticleCard.astro",
+        ),
+      ),
+    ).toBe(true);
+    expect(
+      existsSync(
+        resolve(
+          process.cwd(),
+          "dist/components/NewsletterPopupCard/NewsletterPopupCard.astro",
         ),
       ),
     ).toBe(true);

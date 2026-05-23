@@ -28,3 +28,4 @@ export { default as StaggerTextButton } from "./StaggerTextButton/StaggerTextBut
 export { default as JobCard } from "./JobCard/JobCard.astro";
 export { default as ProductReviewCard } from "./ProductReviewCard/ProductReviewCard.astro";
 export { default as ArticleCard } from "./ArticleCard/ArticleCard.astro";
+export { default as NewsletterPopupCard } from "./NewsletterPopupCard/NewsletterPopupCard.astro";
