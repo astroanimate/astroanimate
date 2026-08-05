@@ -1,0 +1,8 @@
+{
+  "name": "basic-example",
+  "type": "module",
+  "dependencies": {
+    "@astroanimate/core": "*",
+    "astro": "^5.0.0"
+  }
+}

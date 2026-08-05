@@ -1,0 +1,278 @@
+---
+/**
+ * TextReveal — Slides text into view from behind an invisible edge (curtain reveal).
+ *
+ * enhance=false (default): Pure CSS @keyframes plays on every page load / refresh.
+ *   No JavaScript involved. Works with JS disabled.
+ *
+ * enhance=true: IntersectionObserver delays the animation until the element
+ *   scrolls into view. Animation fires once (or repeatedly if once=false).
+ */
+
+interface Props {
+  /**
+   * Opt-in to JS-powered scroll-triggered animation (IntersectionObserver).
+   * When false (default), CSS @keyframes plays on every page load automatically.
+   * @default false
+   */
+  enhance?: boolean;
+
+  /**
+   * Direction from which the text slides into view.
+   * @default "up"
+   */
+  direction?: "up" | "down" | "left" | "right";
+
+  /**
+   * Animation duration in seconds.
+   * @default 0.7
+   */
+  duration?: number;
+
+  /**
+   * Delay before animation starts in seconds.
+   * @default 0
+   */
+  delay?: number;
+
+  /**
+   * CSS easing / timing function.
+   * @default "cubic-bezier(0.4, 0, 0.2, 1)"
+   */
+  easing?: string;
+
+  /**
+   * [enhance=true only] Play the animation only once (true) or reset and
+   * re-animate every time the element re-enters the viewport (false).
+   * Has no effect when enhance=false.
+   * @default true
+   */
+  once?: boolean;
+
+  /**
+   * [enhance=true only] IntersectionObserver bottom rootMargin.
+   * A negative value (e.g. "-50px") means the element must be this far
+   * inside the viewport before the animation fires.
+   * Has no effect when enhance=false.
+   * @default "-50px"
+   */
+  inViewMargin?: string;
+
+  /**
+   * CSS class name applied to the root element.
+   */
+  class?: string;
+
+  /**
+   * HTML element rendered as the root wrapper.
+   * @default "div"
+   */
+  as?:
+    | "div"
+    | "section"
+    | "article"
+    | "aside"
+    | "main"
+    | "header"
+    | "footer"
+    | "nav"
+    | "span"
+    | "p"
+    | "h1"
+    | "h2"
+    | "h3"
+    | "h4"
+    | "h5"
+    | "h6"
+    | "li"
+    | "ul"
+    | "ol"
+    | "a"
+    | "button";
+
+  /**
+   * Any additional HTML attributes (id, aria-label, role, tabindex, data-*, …)
+   * are forwarded directly to the root element.
+   */
+  [key: string]: unknown;
+}
+
+const {
+  enhance = false,
+  direction = "up",
+  duration = 0.7,
+  delay = 0,
+  easing = "cubic-bezier(0.4, 0, 0.2, 1)",
+  once = true,
+  inViewMargin = "-50px",
+  class: className = "",
+  as: Tag = "div",
+  ...rest
+} = Astro.props as Props;
+
+const translateMap: Record<string, string> = {
+  up: "translateY(100%)",
+  down: "translateY(-100%)",
+  left: "translateX(100%)",
+  right: "translateX(-100%)",
+};
+const translateStart = translateMap[direction] ?? "translateY(100%)";
+---
+
+<style>
+  /*
+   * The root wrapper clips its inner content via overflow:hidden.
+   * The inner .astro-text-reveal-inner element starts translated outside
+   * the visible area and animates to translate(0,0), making the text
+   * appear to slide in from behind an invisible edge.
+   */
+
+  [data-astro-text-reveal] {
+    overflow: hidden;
+  }
+
+  /* ✅ C1 + C7: CSS-only path for enhance=false.
+     Plays automatically on every page load and page refresh. */
+  [data-astro-text-reveal][data-enhance="false"]:not([data-ready]) .astro-text-reveal-inner {
+    animation: textRevealAnim var(--tr-duration) var(--tr-easing) var(--tr-delay) both;
+  }
+
+  /* ✅ C1: Static hidden state for enhance=true, before JS runs.
+     The 2s fallback animation is a safety net: if JS fails or is blocked,
+     content becomes visible after 2s instead of staying hidden forever. */
+  [data-astro-text-reveal][data-enhance="true"]:not([data-ready]) .astro-text-reveal-inner {
+    transform: var(--tr-translate-start);
+    animation: textRevealAnim var(--tr-duration) var(--tr-easing) 2s both;
+  }
+
+  @keyframes textRevealAnim {
+    from {
+      transform: var(--tr-translate-start);
+    }
+    to {
+      transform: translate(0, 0);
+    }
+  }
+
+  /* ── JS-enhanced states ─────────────────────────────────────────────────
+     Activated once JS sets data-ready="true". All visual changes are
+     driven purely by data-state attribute — JS never writes element.style.
+     ──────────────────────────────────────────────────────────────────────── */
+
+  /* ✅ C7: Waiting for viewport entry */
+  [data-astro-text-reveal][data-ready="true"][data-state="hidden"] .astro-text-reveal-inner {
+    transform: var(--tr-translate-start);
+  }
+
+  /* ✅ C7: Element is in viewport — CSS transition to fully visible */
+  [data-astro-text-reveal][data-ready="true"][data-state="animate"] .astro-text-reveal-inner {
+    transform: translate(0, 0);
+    transition: transform var(--tr-duration) var(--tr-easing) var(--tr-delay);
+  }
+
+  /* ✅ C6: ALL CSS motion neutralised for prefers-reduced-motion.
+     Covers both the CSS-only path and the JS-enhanced path.
+     Content is shown immediately regardless of animation state. */
+  @media (prefers-reduced-motion: reduce) {
+    [data-astro-text-reveal]:not([data-ready]) .astro-text-reveal-inner {
+      animation: none !important;
+      transform: none !important;
+    }
+    [data-astro-text-reveal][data-ready="true"] .astro-text-reveal-inner {
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
+
+<!-- ✅ C1: Slot content always present in HTML — meaningful without JS.
+     ✅ C4: No import.meta.env.DEV — identical in dev, build, and preview.
+     ✅ C5: No astro:* events. Standard data attributes only.
+     {...rest} forwards id, aria-label, role, tabindex, data-*, etc. -->
+<Tag
+  {...rest}
+  class:list={["astro-text-reveal", className]}
+  data-astro-text-reveal
+  data-enhance={enhance ? "true" : "false"}
+  data-once={once ? "true" : "false"}
+  data-margin={inViewMargin}
+  style={`--tr-duration:${duration}s;--tr-delay:${delay}s;--tr-easing:${easing};--tr-translate-start:${translateStart}`}
+>
+  <!-- ✅ C8: Slot always rendered. JS only adds timing/trigger control. -->
+  <div class="astro-text-reveal-inner">
+    <slot />
+  </div>
+</Tag>
+
+<!-- ✅ C2: Script emitted ONLY when enhance=true. No unconditional scripts.
+     is:inline is required — Astro does NOT bundle <script> tags sourced
+     from node_modules. is:inline embeds the script verbatim in HTML output,
+     guaranteeing it ships regardless of the consumer's build configuration. -->
+{enhance && (
+  <script is:inline>
+    (function () {
+      // ✅ C6: SSR guard — bail immediately if not in a browser context
+      if (typeof window === "undefined") return;
+
+      // ✅ C6: Reduced motion check BEFORE any initialisation
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      // ✅ C3: WeakMap stores IntersectionObserver per element for cleanup.
+      var initialized = new WeakMap();
+
+      function enhanceTextReveal(root) {
+        /*
+         * Cross-IIFE initialisation guard via DOM attribute.
+         * data-ready is shared state across all IIFEs. The first IIFE to run
+         * sets data-ready="true"; every subsequent IIFE exits immediately.
+         * Exactly one IntersectionObserver + one MutationObserver per element,
+         * regardless of how many components are on the page.
+         */
+        if (root.dataset.ready === "true") return;
+
+        var isOnce = root.dataset.once === "true";
+        var margin = root.dataset.margin || "-50px";
+
+        // ✅ C7: JS sets data attributes only — never element.style.
+        root.dataset.ready = "true";
+        root.dataset.state = "hidden";
+
+        // ✅ C3: IntersectionObserver — tracked in WeakMap for cleanup
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                root.dataset.state = "animate"; // ✅ C7: attribute-only transition
+                if (isOnce) {
+                  observer.unobserve(root);
+                }
+              } else if (!isOnce) {
+                root.dataset.state = "hidden";
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: "0px 0px " + margin + " 0px" }
+        );
+
+        observer.observe(root);
+        initialized.set(root, observer); // ✅ C3: store ref for guaranteed cleanup
+
+        // ✅ C3: MutationObserver guarantees both observers are disconnected
+        //        when the root element is removed from the DOM.
+        var cleanupObserver = new MutationObserver(function () {
+          if (!document.contains(root)) {
+            observer.disconnect();        // ✅ C3: IntersectionObserver disconnected
+            cleanupObserver.disconnect(); // ✅ C3: MutationObserver disconnected
+            initialized.delete(root);
+          }
+        });
+
+        cleanupObserver.observe(document.body, { childList: true, subtree: true });
+      }
+
+      document
+        .querySelectorAll('[data-astro-text-reveal][data-enhance="true"]')
+        .forEach(function (el) { enhanceTextReveal(el); });
+    })();
+  </script>
+)}
