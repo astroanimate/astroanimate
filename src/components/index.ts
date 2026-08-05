@@ -29,3 +29,4 @@ export { default as JobCard } from "./JobCard/JobCard.astro";
 export { default as ProductReviewCard } from "./ProductReviewCard/ProductReviewCard.astro";
 export { default as ArticleCard } from "./ArticleCard/ArticleCard.astro";
 export { default as NewsletterPopupCard } from "./NewsletterPopupCard/NewsletterPopupCard.astro";
+export { default as TextReveal } from "./TextReveal/TextReveal.astro";

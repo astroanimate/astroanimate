@@ -25,6 +25,7 @@ export default defineConfig({
     "internal/tabs": "src/internal/tabs.ts",
     "internal/guards": "src/internal/guards.ts",
     "internal/countup": "src/internal/countup.ts",
+    "components/TextReveal/index": "src/components/TextReveal/index.ts",
   },
   external: ["astro", /\.astro$/],
   format: ["esm"],

@@ -167,6 +167,11 @@
       "types": "./dist/components/NewsletterPopupCard/NewsletterPopupCard.astro",
       "import": "./dist/components/NewsletterPopupCard/NewsletterPopupCard.astro",
       "default": "./dist/components/NewsletterPopupCard/NewsletterPopupCard.astro"
+    },
+    "./TextReveal": {
+      "types": "./dist/components/TextReveal/TextReveal.astro",
+      "import": "./dist/components/TextReveal/TextReveal.astro",
+      "default": "./dist/components/TextReveal/TextReveal.astro"
     }
   },
   "files": [

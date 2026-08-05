@@ -33,6 +33,7 @@ const filesToCopy = [
   "src/components/ProductReviewCard/ProductReviewCard.astro",
   "src/components/ArticleCard/ArticleCard.astro",
   "src/components/NewsletterPopupCard/NewsletterPopupCard.astro",
+  "src/components/TextReveal/TextReveal.astro",
 ];
 
 for (const relativePath of filesToCopy) {

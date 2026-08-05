@@ -2,6 +2,7 @@
 import FadeInText from "@astroanimate/core/FadeInText";
 import ScaleIn from "@astroanimate/core/ScaleIn";
 import TypewriterText from "@astroanimate/core/TypewriterText";
+import TextReveal from "@astroanimate/core/TextReveal";
 ---
 
 <html lang="en">
@@ -13,7 +14,7 @@ import TypewriterText from "@astroanimate/core/TypewriterText";
   <body>
     <main>
       <h1>
-        <TypewriterText text="Astro-native" enhance speed={100} />
+        <TypewriterText texts={["Astro-native", "zero-JS"]} enhance speed={100} />
       </h1>
 
       <FadeInText duration={0.6} delay={0} enhance={true}>
@@ -26,6 +27,14 @@ import TypewriterText from "@astroanimate/core/TypewriterText";
       <ScaleIn enhance duration={0.6} delay={0.2}>
         <p>ScaleIn follows the same opt-in enhancement pattern.</p>
       </ScaleIn>
+
+      <TextReveal direction="up" duration={0.7}>
+        <p>TextReveal slides content into view from behind an invisible edge.</p>
+      </TextReveal>
+
+      <TextReveal enhance={true} direction="left" once={true}>
+        <p>TextReveal with enhance fires when scrolled into view.</p>
+      </TextReveal>
     </main>
   </body>
 </html>
